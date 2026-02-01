@@ -155,22 +155,24 @@ class MarketMoversService:
                 else: info = {}
 
             ltp = q_data.get('last_price', 0)
-            
-            # SAFEGUARD: ohlc can be None for some BSE stocks
-            ohlc = q_data.get('ohlc')
-            if not ohlc: ohlc = {}
-            close = ohlc.get('close', 0) # Previous Close
-            
-            # Compute Change %
-            # Note: q_data has 'net_change' but calculating Pct Change safely is better
             change = q_data.get('net_change', 0)
             
-            # If prev close is valid, use it for % change
-            # Default API usually provides it, but calculating ensures control
-            if close and close > 0:
-                pct_change = (change / close) * 100
+            # FIX: Calculate Previous Close from Net Change to ensure correct % accuracy
+            # (OHLC 'close' can sometimes be today's close after market hours)
+            if ltp != 0:
+                prev_close = ltp - change
+            else:
+                # If LTP is 0, try to use OHLC close as fallback
+                ohlc = q_data.get('ohlc') or {}
+                prev_close = ohlc.get('close', 0)
+
+            # Compute Change %
+            if prev_close and prev_close > 0:
+                pct_change = (change / prev_close) * 100
             else:
                 pct_change = 0.0
+                
+            vol = q_data.get('volume', 0)
                 
             vol = q_data.get('volume', 0)
             

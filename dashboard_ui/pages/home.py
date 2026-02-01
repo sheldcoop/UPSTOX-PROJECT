@@ -198,15 +198,7 @@ def render_page(state):
     # Stats Grid
     stats_widget(state)
     
-    # Split Layout
-    with ui.grid(columns=2).classes('w-full gap-6 mt-6'):
+    # Full Width Layout
+    with ui.column().classes('w-full mt-6'):
         # Market Status Card -> REPLACED WITH MOVERS
         render_gainers_losers_widget()
-
-        # Quick Actions Card
-        with Components.card():
-            ui.label('Quick Actions').classes('text-lg font-bold text-white mb-4')
-            with ui.row().classes('gap-2 flex-wrap'):
-                ui.button('Place Order', icon='add').props('outline color=indigo')
-                ui.button('Square Off All', icon='close').props('outline color=red')
-                ui.button('Option Chain', icon='link').props('outline color=grey')
