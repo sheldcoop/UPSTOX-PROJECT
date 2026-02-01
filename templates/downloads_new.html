@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Download Center - Upstox Trading</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Download Form Card */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .symbols-input {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            min-height: 44px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .symbol-tag {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .symbol-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+
+        .symbols-input input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            min-width: 100px;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .symbols-input input:focus {
+            outline: none;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #f0f4ff;
+            border: 1px solid #e0e7ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Status Message */
+        .status-message {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .status-message.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        /* Download History */
+        .history-grid {
+            margin-top: 40px;
+        }
+
+        .history-grid h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .file-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .file-icon {
+            font-size: 32px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f4ff;
+            border-radius: 8px;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .file-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Data Download Center</h1>
+            <p>Download OHLC (Open, High, Low, Close) historical data for backtesting, analysis, and strategy development. Supports multiple timeframes and export formats.</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-grid">
+            <!-- Download Form -->
+            <div class="card">
+                <h2>📥 Download Historical Data</h2>
+
+                <div class="info-box">
+                    <h3>ℹ️ How it works</h3>
+                    <p>Select symbols, date range, and timeframe. Data will be downloaded from Yahoo Finance and saved locally.</p>
+                </div>
+
+                <form id="downloadForm">
+                    <!-- Symbols -->
+                    <div class="form-group">
+                        <label>Symbols (Enter stock symbol)</label>
+                        <div class="symbols-input" id="symbolsInput">
+                            <input type="text" id="symbolInput" placeholder="e.g., INFY, TCS, RELIANCE" autocomplete="off">
+                        </div>
+                        <small style="color: #999; margin-top: 4px;">Press Enter or comma to add symbols</small>
+                    </div>
+
+                    <!-- Date Range -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+
+                    <!-- Timeframe -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Timeframe</label>
+                            <select id="interval" required>
+                                <option value="1d">Daily (1D)</option>
+                                <option value="1h">Hourly (1H)</option>
+                                <option value="30m">30 Minutes (30M)</option>
+                                <option value="15m">15 Minutes (15M)</option>
+                                <option value="5m">5 Minutes (5M)</option>
+                                <option value="1m">1 Minute (1M)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Export Format</label>
+                            <select id="format" required>
+                                <option value="parquet">Parquet (Recommended)</option>
+                                <option value="csv">CSV</option>
+                                <option value="json">JSON</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="form-group">
+                        <label>Options</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="saveDb" checked>
+                                Save to Database
+                            </label>
+                            <label>
+                                <input type="checkbox" id="validateData" checked>
+                                Validate Data
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div class="status-message" id="statusMessage"></div>
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <span>⬇️</span> Download Data
+                        </button>
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div>
+                <!-- Stats -->
+                <div class="card">
+                    <h2>📈 Quick Stats</h2>
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <div class="number" id="statsSymbols">0</div>
+                            <div class="label">Symbols Selected</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="number" id="statsDays">0</div>
+                            <div class="label">Days Range</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="number" id="statsFiles">0</div>
+                            <div class="label">Files Downloaded</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular Symbols -->
+                <div class="card" style="margin-top: 20px;">
+                    <h2>⭐ Popular Symbols</h2>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;">
+                        <button type="button" class="btn btn-secondary" style="flex: none; padding: 8px 12px;" onclick="addSymbol('INFY')">INFY</button>
+                        <button type="button" class="btn btn-secondary" style="flex: none; padding: 8px 12px;" onclick="addSymbol('TCS')">TCS</button>
+                        <button type="button" class="btn btn-secondary" style="flex: none; padding: 8px 12px;" onclick="addSymbol('RELIANCE')">RELIANCE</button>
+                        <button type="button" class="btn btn-secondary" style="flex: none; padding: 8px 12px;" onclick="addSymbol('HDFCBANK')">HDFCBANK</button>
+                        <button type="button" class="btn btn-secondary" style="flex: none; padding: 8px 12px;" onclick="addSymbol('ICICIBANK')">ICICIBANK</button>
+                        <button type="button" class="btn btn-secondary" style="flex: none; padding: 8px 12px;" onclick="addSymbol('SBIN')">SBIN</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download History -->
+        <div class="history-grid">
+            <h2>📁 Download History</h2>
+            <div class="file-list" id="fileList">
+                <div class="empty-state">
+                    <p>No files downloaded yet. Start by downloading some data!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default dates (last 30 days)
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+        document.getElementById('endDate').valueAsDate = today;
+        document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+
+        // Symbols management
+        let symbols = [];
+
+        const symbolInput = document.getElementById('symbolInput');
+        const symbolsContainer = document.getElementById('symbolsInput');
+
+        symbolInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                addSymbol(symbolInput.value.trim().toUpperCase());
+                symbolInput.value = '';
+                updateStats();
+            }
+        });
+
+        function addSymbol(sym) {
+            if (sym && !symbols.includes(sym)) {
+                symbols.push(sym);
+                renderSymbols();
+                updateStats();
+            }
+        }
+
+        function removeSymbol(sym) {
+            symbols = symbols.filter(s => s !== sym);
+            renderSymbols();
+            updateStats();
+        }
+
+        function renderSymbols() {
+            const tags = symbols.map(s => 
+                `<div class="symbol-tag">${s}<button onclick="removeSymbol('${s}')" type="button">✕</button></div>`
+            ).join('');
+            symbolInput.parentElement.innerHTML = tags + 
+                '<input type="text" id="symbolInput" placeholder="e.g., INFY, TCS" autocomplete="off">';
+            
+            document.getElementById('symbolInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    addSymbol(document.getElementById('symbolInput').value.trim().toUpperCase());
+                    document.getElementById('symbolInput').value = '';
+                    updateStats();
+                }
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('statsSymbols').textContent = symbols.length;
+            
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('statsDays').textContent = Math.max(0, days);
+        }
+
+        // Form submission
+        document.getElementById('downloadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (symbols.length === 0) {
+                showStatus('Please add at least one symbol', 'error');
+                return;
+            }
+
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const interval = document.getElementById('interval').value;
+            const format = document.getElementById('format').value;
+            const saveDb = document.getElementById('saveDb').checked;
+
+            showStatus('Downloading data... This may take a minute.', 'loading');
+
+            try {
+                const response = await fetch('/api/download/stocks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        symbols: symbols,
+                        start_date: startDate,
+                        end_date: endDate,
+                        interval: interval,
+                        save_db: saveDb,
+                        export_format: format
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus(`✅ Downloaded ${data.rows} rows for ${symbols.length} symbols`, 'success');
+                    loadDownloadHistory();
+                } else {
+                    showStatus(`❌ Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Network error: ${error.message}`, 'error');
+            }
+        });
+
+        function showStatus(message, type) {
+            const msg = document.getElementById('statusMessage');
+            msg.textContent = message;
+            msg.className = `status-message ${type}`;
+        }
+
+        async function loadDownloadHistory() {
+            try {
+                const response = await fetch('/api/download/history');
+                const data = await response.json();
+
+                if (data.files.length === 0) {
+                    document.getElementById('fileList').innerHTML = 
+                        '<div class="empty-state"><p>No files yet</p></div>';
+                    return;
+                }
+
+                const html = data.files.map(file => `
+                    <div class="file-item">
+                        <div class="file-icon">📄</div>
+                        <div class="file-info">
+                            <div class="file-name">${file.filename}</div>
+                            <div class="file-meta">${(file.size / 1024).toFixed(1)} KB</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('fileList').innerHTML = html;
+                document.getElementById('statsFiles').textContent = data.total;
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        // Load history on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            loadDownloadHistory();
+        });
+
+        // Update date range
+        document.getElementById('startDate').addEventListener('change', updateStats);
+        document.getElementById('endDate').addEventListener('change', updateStats);
+    </script>
+</body>
+</html>

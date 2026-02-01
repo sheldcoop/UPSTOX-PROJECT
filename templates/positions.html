@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Positions - Upstox Trading Terminal{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Open Positions</h2>
+
+<div class="card">
+    <div class="card-title">Net Holdings</div>
+    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); text-transform: uppercase; font-size: 11px; letter-spacing: 0.1em; color: #9ca3af;">
+                <th style="text-align: left; padding: 12px;">Symbol</th>
+                <th style="text-align: left; padding: 12px;">Qty</th>
+                <th style="text-align: left; padding: 12px;">Avg Price</th>
+                <th style="text-align: left; padding: 12px;">LTP</th>
+                <th style="text-align: right; padding: 12px;">P&L</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <td style="padding: 12px; font-weight: 600;">NIFTY 21800 CE (06 FEB)</td>
+                <td style="padding: 12px;">50</td>
+                <td style="padding: 12px;">₹120.50</td>
+                <td style="padding: 12px; font-weight: 600;">₹145.20</td>
+                <td style="padding: 12px; text-align: right; color: #10b981; font-weight: 600;">+₹1,235</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <td style="padding: 12px; font-weight: 600;">RELIANCE</td>
+                <td style="padding: 12px;">25</td>
+                <td style="padding: 12px;">₹2,450.00</td>
+                <td style="padding: 12px; font-weight: 600;">₹2,465.50</td>
+                <td style="padding: 12px; text-align: right; color: #10b981; font-weight: 600;">+₹387.50</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; font-weight: 600;">BANKNIFTY 45600 PE (06 FEB)</td>
+                <td style="padding: 12px;">15</td>
+                <td style="padding: 12px;">₹310.20</td>
+                <td style="padding: 12px; font-weight: 600;">₹285.40</td>
+                <td style="padding: 12px; text-align: right; color: #f43f5e; font-weight: 600;">-₹372</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Upstox Trading Terminal{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">📈</div>
+                    <div>
+                        <h1>Upstox</h1>
+                        <p>Trading Terminal</p>
+                    </div>
+                </div>
+                <div class="latency-card">Portfolio latency <strong>25ms</strong> · Auto-sync enabled</div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="/" class="nav-item {% if request.path == '/' %}active{% endif %}">
+                    <span class="nav-dot"></span>
+                    📊 Dashboard
+                </a>
+                <a href="/positions" class="nav-item {% if request.path == '/positions' %}active{% endif %}">
+                    <span class="nav-dot"></span>
+                    📋 Positions
+                </a>
+                <a href="/options" class="nav-item {% if request.path == '/options' %}active{% endif %}">
+                    <span class="nav-dot"></span>
+                    💵 Options Chain
+                </a>
+                <a href="/downloads" class="nav-item {% if request.path == '/downloads' %}active{% endif %}">
+                    <span class="nav-dot"></span>
+                    ⬇️ Data Downloads
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="paper-trading">
+                    <p class="label">Paper Trading</p>
+                    <div class="status">
+                        <p class="mode">Mode: Active</p>
+                        <span class="pulse"></span>
+                    </div>
+                </div>
+                <button class="btn-logout">🚪 Log Out</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-stats">
+                    <div class="stat">
+                        <span class="stat-label">Portfolio Value</span>
+                        <span class="stat-value">{{ data.portfolio_value }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Today's P&L</span>
+                        <span class="stat-value pnl">{{ data.today_pnl }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Open Positions</span>
+                        <span class="stat-value">{{ data.open_positions }}</span>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <span class="live-pill">🟢 LIVE FEED</span>
+                    <button class="icon-btn">☀️</button>
+                    <button class="icon-btn">🔔</button>
+                    <div class="user-avatar">P</div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

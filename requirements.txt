@@ -1,0 +1,25 @@
+# Core Dependencies
+Flask==3.0.0
+Flask-CORS==4.0.0
+Flask-SocketIO==5.3.6
+python-socketio==5.11.0
+requests==2.31.0
+pandas==2.1.4
+numpy==1.26.2
+
+# Data Science
+scipy==1.11.4
+scikit-learn==1.3.2
+
+# Utilities
+pyyaml==6.0.1
+python-dotenv==1.0.0
+psutil==5.9.6
+cryptography==41.0.7
+
+# API Integration
+upstox-python-sdk  # If available, otherwise use requests
+
+# Development
+pytest==7.4.3
+black==23.12.1

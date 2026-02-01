@@ -1,0 +1,25 @@
+
+> frontend@0.0.0 dev
+> vite
+
+
+  VITE v7.3.1  ready in 198 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+3:32:30 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:32:58 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:33:28 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:33:40 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:34:13 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:34:33 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:34:58 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:35:09 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:35:09 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:36:18 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:36:48 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:37:23 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:45:44 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:47:38 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:48:18 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+3:53:14 AM [vite] (client) hmr update /src/App.tsx, /src/index.css

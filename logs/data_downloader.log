@@ -1,0 +1,277 @@
+2026-01-31 21:49:08,977 - requests_cache.backends - DEBUG - Initializing backend: None cache/yahoo_cache
+2026-01-31 21:49:08,977 - requests_cache.backends.base - DEBUG - Initialized SQLiteDict with serializer: SerializerPipeline(name=pickle, n_stages=2)
+2026-01-31 21:49:08,977 - requests_cache.backends.sqlite - DEBUG - Opening connection to /Users/prince/Desktop/UPSTOX-project/cache/yahoo_cache.sqlite:responses
+2026-01-31 21:49:08,979 - requests_cache.backends.base - DEBUG - Initialized SQLiteDict with serializer: None
+2026-01-31 21:49:08,979 - requests_cache.backends.sqlite - DEBUG - Opening connection to /Users/prince/Desktop/UPSTOX-project/cache/yahoo_cache.sqlite:redirects
+2026-01-31 21:49:08,980 - __main__ - INFO - === Running Stock Downloader Test ===
+2026-01-31 21:49:08,980 - __main__ - INFO - Initialized StockDownloader with db=market_data.db
+2026-01-31 21:49:08,980 - __main__ - INFO - Starting download pipeline for ['INFY', 'TCS']
+2026-01-31 21:49:08,980 - __main__ - INFO - Bulk fetching 2 symbols
+2026-01-31 21:49:08,980 - __main__ - INFO - Fetching INFY from Yahoo Finance: 2025-01-01 to 2025-01-31, interval=1d
+2026-01-31 21:49:08,980 - __main__ - ERROR - Error fetching INFY from Yahoo Finance: request_cache sessions don't work with curl_cffi, which is necessary now for Yahoo API. Solution: stop setting session, let YF handle.
+2026-01-31 21:49:08,980 - __main__ - ERROR - Failed to fetch INFY: request_cache sessions don't work with curl_cffi, which is necessary now for Yahoo API. Solution: stop setting session, let YF handle.
+2026-01-31 21:49:08,980 - __main__ - INFO - Fetching TCS from Yahoo Finance: 2025-01-01 to 2025-01-31, interval=1d
+2026-01-31 21:49:08,980 - __main__ - ERROR - Error fetching TCS from Yahoo Finance: request_cache sessions don't work with curl_cffi, which is necessary now for Yahoo API. Solution: stop setting session, let YF handle.
+2026-01-31 21:49:08,980 - __main__ - ERROR - Failed to fetch TCS: request_cache sessions don't work with curl_cffi, which is necessary now for Yahoo API. Solution: stop setting session, let YF handle.
+2026-01-31 21:49:08,980 - __main__ - WARNING - No data fetched
+2026-01-31 21:49:08,980 - __main__ - INFO - Test Results: 0 rows, 0 gaps, 0 errors
+2026-01-31 21:49:08,980 - __main__ - INFO - File saved to: None
+2026-01-31 21:49:29,009 - __main__ - INFO - === Running Stock Downloader Test ===
+2026-01-31 21:49:29,009 - __main__ - INFO - Initialized StockDownloader with db=market_data.db
+2026-01-31 21:49:29,009 - __main__ - INFO - Starting download pipeline for ['INFY', 'TCS']
+2026-01-31 21:49:29,009 - __main__ - INFO - Bulk fetching 2 symbols
+2026-01-31 21:49:29,009 - __main__ - INFO - Fetching INFY from Yahoo Finance: 2025-01-01 to 2025-01-31, interval=1d
+2026-01-31 21:49:29,009 - yfinance - DEBUG - Entering history()
+2026-01-31 21:49:29,010 - peewee - DEBUG - ('CREATE TABLE IF NOT EXISTS "_tz_kv" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" VARCHAR(255)) WITHOUT ROWID', [])
+2026-01-31 21:49:29,012 - peewee - DEBUG - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['INFY.NS', 1, 0])
+2026-01-31 21:49:29,013 - yfinance - DEBUG -  Entering _fetch_ticker_tz()
+2026-01-31 21:49:29,013 - yfinance - DEBUG -   Entering get()
+2026-01-31 21:49:29,013 - yfinance - DEBUG -    Entering _make_request()
+2026-01-31 21:49:29,013 - yfinance - DEBUG - url=https://query2.finance.yahoo.com/v8/finance/chart/INFY.NS
+2026-01-31 21:49:29,013 - yfinance - DEBUG - params=frozendict.frozendict({'range': '1d', 'interval': '1d'})
+2026-01-31 21:49:29,013 - yfinance - DEBUG -     Entering _get_cookie_and_crumb()
+2026-01-31 21:49:29,013 - yfinance - DEBUG - cookie_mode = 'basic'
+2026-01-31 21:49:29,013 - yfinance - DEBUG -      Entering _get_cookie_and_crumb_basic()
+2026-01-31 21:49:29,013 - yfinance - DEBUG -       Entering _get_cookie_basic()
+2026-01-31 21:49:29,013 - yfinance - DEBUG -        Entering _load_cookie_curlCffi()
+2026-01-31 21:49:29,015 - peewee - DEBUG - ('CREATE TABLE IF NOT EXISTS "_cookieschema" ("strategy" VARCHAR(255) NOT NULL PRIMARY KEY, "fetch_date" DATETIME NOT NULL, "cookie_bytes" BLOB NOT NULL) WITHOUT ROWID', [])
+2026-01-31 21:49:29,016 - peewee - DEBUG - ('SELECT "t1"."strategy", "t1"."fetch_date", "t1"."cookie_bytes" FROM "_cookieschema" AS "t1" WHERE ("t1"."strategy" = ?) LIMIT ? OFFSET ?', ['curlCffi', 1, 0])
+2026-01-31 21:49:29,016 - yfinance - DEBUG -        Exiting _load_cookie_curlCffi()
+2026-01-31 21:49:29,441 - yfinance - DEBUG -        Entering _save_cookie_curlCffi()
+2026-01-31 21:49:29,442 - peewee - DEBUG - ('DELETE FROM "_cookieschema" WHERE ("_cookieschema"."strategy" = ?)', ['curlCffi'])
+2026-01-31 21:49:29,442 - peewee - DEBUG - ('BEGIN', None)
+2026-01-31 21:49:29,443 - peewee - DEBUG - ('INSERT INTO "_cookieschema" ("strategy", "fetch_date", "cookie_bytes") VALUES (?, ?, ?)', ['curlCffi', '2026-01-31T21:49:29.443509', <memory at 0x12d9da500>])
+2026-01-31 21:49:29,443 - yfinance - DEBUG -        Exiting _save_cookie_curlCffi()
+2026-01-31 21:49:29,443 - yfinance - DEBUG -       Exiting _get_cookie_basic()
+2026-01-31 21:49:29,444 - yfinance - DEBUG -       Entering _get_crumb_basic()
+2026-01-31 21:49:29,444 - yfinance - DEBUG -        Entering _get_cookie_basic()
+2026-01-31 21:49:29,444 - yfinance - DEBUG -         Entering _load_cookie_curlCffi()
+2026-01-31 21:49:29,444 - peewee - DEBUG - ('SELECT "t1"."strategy", "t1"."fetch_date", "t1"."cookie_bytes" FROM "_cookieschema" AS "t1" WHERE ("t1"."strategy" = ?) LIMIT ? OFFSET ?', ['curlCffi', 1, 0])
+2026-01-31 21:49:29,444 - yfinance - DEBUG -         Exiting _load_cookie_curlCffi()
+2026-01-31 21:49:29,444 - yfinance - DEBUG - reusing persistent cookie
+2026-01-31 21:49:29,444 - yfinance - DEBUG -        Exiting _get_cookie_basic()
+2026-01-31 21:49:29,944 - yfinance - DEBUG - crumb = 'lwxgkVFgX.F'
+2026-01-31 21:49:29,944 - yfinance - DEBUG -       Exiting _get_crumb_basic()
+2026-01-31 21:49:29,944 - yfinance - DEBUG -      Exiting _get_cookie_and_crumb_basic()
+2026-01-31 21:49:29,945 - yfinance - DEBUG -     Exiting _get_cookie_and_crumb()
+2026-01-31 21:49:30,304 - yfinance - DEBUG - response code=200
+2026-01-31 21:49:30,304 - yfinance - DEBUG -    Exiting _make_request()
+2026-01-31 21:49:30,304 - yfinance - DEBUG -   Exiting get()
+2026-01-31 21:49:30,304 - yfinance - DEBUG -  Exiting _fetch_ticker_tz()
+2026-01-31 21:49:30,333 - peewee - DEBUG - ('BEGIN', None)
+2026-01-31 21:49:30,333 - peewee - DEBUG - ('INSERT INTO "_tz_kv" ("key", "value") VALUES (?, ?)', ['INFY.NS', 'Asia/Kolkata'])
+2026-01-31 21:49:30,334 - yfinance - DEBUG -  Entering history()
+2026-01-31 21:49:30,336 - yfinance - DEBUG - INFY.NS: Yahoo GET parameters: {'period1': '2025-01-01 00:00:00+05:30', 'period2': '2025-01-31 00:00:00+05:30', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2026-01-31 21:49:30,337 - yfinance - DEBUG -   Entering get()
+2026-01-31 21:49:30,337 - yfinance - DEBUG -    Entering _make_request()
+2026-01-31 21:49:30,337 - yfinance - DEBUG - url=https://query2.finance.yahoo.com/v8/finance/chart/INFY.NS
+2026-01-31 21:49:30,337 - yfinance - DEBUG - params=frozendict.frozendict({'period1': 1735669800, 'period2': 1738261800, 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'})
+2026-01-31 21:49:30,337 - yfinance - DEBUG -     Entering _get_cookie_and_crumb()
+2026-01-31 21:49:30,337 - yfinance - DEBUG - cookie_mode = 'basic'
+2026-01-31 21:49:30,337 - yfinance - DEBUG -      Entering _get_cookie_and_crumb_basic()
+2026-01-31 21:49:30,337 - yfinance - DEBUG -       Entering _get_cookie_basic()
+2026-01-31 21:49:30,337 - yfinance - DEBUG - reusing cookie
+2026-01-31 21:49:30,337 - yfinance - DEBUG -       Exiting _get_cookie_basic()
+2026-01-31 21:49:30,337 - yfinance - DEBUG -       Entering _get_crumb_basic()
+2026-01-31 21:49:30,337 - yfinance - DEBUG - reusing crumb
+2026-01-31 21:49:30,337 - yfinance - DEBUG -       Exiting _get_crumb_basic()
+2026-01-31 21:49:30,337 - yfinance - DEBUG -      Exiting _get_cookie_and_crumb_basic()
+2026-01-31 21:49:30,337 - yfinance - DEBUG -     Exiting _get_cookie_and_crumb()
+2026-01-31 21:49:30,452 - yfinance - DEBUG - response code=200
+2026-01-31 21:49:30,452 - yfinance - DEBUG -    Exiting _make_request()
+2026-01-31 21:49:30,452 - yfinance - DEBUG -   Exiting get()
+2026-01-31 21:49:30,471 - yfinance - DEBUG - INFY.NS: yfinance received OHLC data: 2025-01-01 03:45:00 -> 2025-01-30 03:45:00
+2026-01-31 21:49:30,474 - yfinance - DEBUG - INFY.NS: OHLC after cleaning: 2025-01-01 09:15:00+05:30 -> 2025-01-30 09:15:00+05:30
+2026-01-31 21:49:30,482 - yfinance - DEBUG - INFY.NS: OHLC after combining events: 2025-01-01 00:00:00+05:30 -> 2025-01-30 00:00:00+05:30
+2026-01-31 21:49:30,492 - yfinance - DEBUG - INFY.NS: yfinance returning OHLC: 2025-01-01 00:00:00+05:30 -> 2025-01-30 00:00:00+05:30
+2026-01-31 21:49:30,492 - yfinance - DEBUG -  Exiting history()
+2026-01-31 21:49:30,493 - yfinance - DEBUG - Exiting history()
+2026-01-31 21:49:30,495 - __main__ - INFO - Fetched 22 rows for INFY
+2026-01-31 21:49:30,495 - __main__ - INFO - Fetching TCS from Yahoo Finance: 2025-01-01 to 2025-01-31, interval=1d
+2026-01-31 21:49:30,495 - yfinance - DEBUG - Entering history()
+2026-01-31 21:49:30,495 - peewee - DEBUG - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['TCS.NS', 1, 0])
+2026-01-31 21:49:30,495 - yfinance - DEBUG -  Entering _fetch_ticker_tz()
+2026-01-31 21:49:30,495 - yfinance - DEBUG -   Entering get()
+2026-01-31 21:49:30,495 - yfinance - DEBUG -    Entering _make_request()
+2026-01-31 21:49:30,495 - yfinance - DEBUG - url=https://query2.finance.yahoo.com/v8/finance/chart/TCS.NS
+2026-01-31 21:49:30,495 - yfinance - DEBUG - params=frozendict.frozendict({'range': '1d', 'interval': '1d'})
+2026-01-31 21:49:30,495 - yfinance - DEBUG -     Entering _get_cookie_and_crumb()
+2026-01-31 21:49:30,495 - yfinance - DEBUG - cookie_mode = 'basic'
+2026-01-31 21:49:30,495 - yfinance - DEBUG -      Entering _get_cookie_and_crumb_basic()
+2026-01-31 21:49:30,495 - yfinance - DEBUG -       Entering _get_cookie_basic()
+2026-01-31 21:49:30,495 - yfinance - DEBUG - reusing cookie
+2026-01-31 21:49:30,495 - yfinance - DEBUG -       Exiting _get_cookie_basic()
+2026-01-31 21:49:30,495 - yfinance - DEBUG -       Entering _get_crumb_basic()
+2026-01-31 21:49:30,495 - yfinance - DEBUG - reusing crumb
+2026-01-31 21:49:30,495 - yfinance - DEBUG -       Exiting _get_crumb_basic()
+2026-01-31 21:49:30,496 - yfinance - DEBUG -      Exiting _get_cookie_and_crumb_basic()
+2026-01-31 21:49:30,496 - yfinance - DEBUG -     Exiting _get_cookie_and_crumb()
+2026-01-31 21:49:30,593 - yfinance - DEBUG - response code=200
+2026-01-31 21:49:30,594 - yfinance - DEBUG -    Exiting _make_request()
+2026-01-31 21:49:30,594 - yfinance - DEBUG -   Exiting get()
+2026-01-31 21:49:30,594 - yfinance - DEBUG -  Exiting _fetch_ticker_tz()
+2026-01-31 21:49:30,594 - peewee - DEBUG - ('BEGIN', None)
+2026-01-31 21:49:30,594 - peewee - DEBUG - ('INSERT INTO "_tz_kv" ("key", "value") VALUES (?, ?)', ['TCS.NS', 'Asia/Kolkata'])
+2026-01-31 21:49:30,594 - yfinance - DEBUG -  Entering history()
+2026-01-31 21:49:30,595 - yfinance - DEBUG - TCS.NS: Yahoo GET parameters: {'period1': '2025-01-01 00:00:00+05:30', 'period2': '2025-01-31 00:00:00+05:30', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2026-01-31 21:49:30,595 - yfinance - DEBUG -   Entering get()
+2026-01-31 21:49:30,595 - yfinance - DEBUG -    Entering _make_request()
+2026-01-31 21:49:30,595 - yfinance - DEBUG - url=https://query2.finance.yahoo.com/v8/finance/chart/TCS.NS
+2026-01-31 21:49:30,595 - yfinance - DEBUG - params=frozendict.frozendict({'period1': 1735669800, 'period2': 1738261800, 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'})
+2026-01-31 21:49:30,595 - yfinance - DEBUG -     Entering _get_cookie_and_crumb()
+2026-01-31 21:49:30,595 - yfinance - DEBUG - cookie_mode = 'basic'
+2026-01-31 21:49:30,595 - yfinance - DEBUG -      Entering _get_cookie_and_crumb_basic()
+2026-01-31 21:49:30,595 - yfinance - DEBUG -       Entering _get_cookie_basic()
+2026-01-31 21:49:30,595 - yfinance - DEBUG - reusing cookie
+2026-01-31 21:49:30,595 - yfinance - DEBUG -       Exiting _get_cookie_basic()
+2026-01-31 21:49:30,595 - yfinance - DEBUG -       Entering _get_crumb_basic()
+2026-01-31 21:49:30,595 - yfinance - DEBUG - reusing crumb
+2026-01-31 21:49:30,595 - yfinance - DEBUG -       Exiting _get_crumb_basic()
+2026-01-31 21:49:30,595 - yfinance - DEBUG -      Exiting _get_cookie_and_crumb_basic()
+2026-01-31 21:49:30,595 - yfinance - DEBUG -     Exiting _get_cookie_and_crumb()
+2026-01-31 21:49:30,707 - yfinance - DEBUG - response code=200
+2026-01-31 21:49:30,708 - yfinance - DEBUG -    Exiting _make_request()
+2026-01-31 21:49:30,708 - yfinance - DEBUG -   Exiting get()
+2026-01-31 21:49:30,710 - yfinance - DEBUG - TCS.NS: yfinance received OHLC data: 2025-01-01 03:45:00 -> 2025-01-30 03:45:00
+2026-01-31 21:49:30,711 - yfinance - DEBUG - TCS.NS: OHLC after cleaning: 2025-01-01 09:15:00+05:30 -> 2025-01-30 09:15:00+05:30
+2026-01-31 21:49:30,719 - yfinance - DEBUG - TCS.NS: OHLC after combining events: 2025-01-01 00:00:00+05:30 -> 2025-01-30 00:00:00+05:30
+2026-01-31 21:49:30,722 - yfinance - DEBUG - TCS.NS: yfinance returning OHLC: 2025-01-01 00:00:00+05:30 -> 2025-01-30 00:00:00+05:30
+2026-01-31 21:49:30,722 - yfinance - DEBUG -  Exiting history()
+2026-01-31 21:49:30,722 - yfinance - DEBUG - Exiting history()
+2026-01-31 21:49:30,724 - __main__ - INFO - Fetched 22 rows for TCS
+2026-01-31 21:49:30,725 - __main__ - INFO - Bulk fetch complete: 44 total rows
+2026-01-31 21:49:30,725 - __main__ - DEBUG - Validating 44 rows of OHLC data
+2026-01-31 21:49:30,731 - __main__ - INFO - Validated OHLC: 44 → 44 rows (0 removed)
+2026-01-31 21:49:30,731 - __main__ - DEBUG - Detecting gaps with interval=1d
+2026-01-31 21:49:30,734 - __main__ - WARNING - Gap detected: {'start': '2025-01-03T00:00:00', 'end': '2025-01-06T00:00:00', 'missing_periods': 2}
+2026-01-31 21:49:30,735 - __main__ - WARNING - Gap detected: {'start': '2025-01-10T00:00:00', 'end': '2025-01-13T00:00:00', 'missing_periods': 2}
+2026-01-31 21:49:30,735 - __main__ - WARNING - Gap detected: {'start': '2025-01-17T00:00:00', 'end': '2025-01-20T00:00:00', 'missing_periods': 2}
+2026-01-31 21:49:30,735 - __main__ - WARNING - Gap detected: {'start': '2025-01-24T00:00:00', 'end': '2025-01-27T00:00:00', 'missing_periods': 2}
+2026-01-31 21:49:32,008 - __main__ - INFO - Exported 44 rows to downloads/INFY_TCS_1d_20260131_214930.parquet
+2026-01-31 21:49:32,008 - __main__ - INFO - Test Results: 44 rows, 4 gaps, 0 errors
+2026-01-31 21:49:32,008 - __main__ - INFO - File saved to: downloads/INFY_TCS_1d_20260131_214930.parquet
+2026-02-01 01:40:48,646 - scripts.data_downloader - INFO - Initialized StockDownloader with db=market_data.db
+2026-02-01 01:40:48,649 - scripts.data_downloader - INFO - Fetching INFY from Upstox API: 2025-01-15 to 2025-01-31, interval=1d
+2026-02-01 01:40:48,649 - scripts.data_downloader - WARNING - No valid Upstox token - using mock data
+2026-02-01 01:40:48,649 - scripts.data_downloader - WARNING - Generating mock data for INFY
+2026-02-01 01:40:48,662 - scripts.data_downloader - INFO - Generated 13 mock records for INFY
+2026-02-01 01:42:20,962 - scripts.data_downloader - INFO - Initialized StockDownloader with db=market_data.db
+2026-02-01 01:42:20,965 - scripts.data_downloader - INFO - Fetching INFY from Upstox API: 2025-01-28 to 2025-01-31, interval=1d
+2026-02-01 01:42:20,966 - scripts.data_downloader - DEBUG - API URL: https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE009A01021/days/1/2025-01-31/2025-01-28
+2026-02-01 01:42:20,968 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.upstox.com:443
+2026-02-01 01:42:21,683 - urllib3.connectionpool - DEBUG - https://api.upstox.com:443 "GET /v3/historical-candle/NSE_EQ%7CINE009A01021/days/1/2025-01-31/2025-01-28 HTTP/1.1" 200 None
+2026-02-01 01:42:21,702 - scripts.data_downloader - INFO - Fetched 4 rows for INFY from Upstox
+2026-02-01 02:01:00,074 - scripts.data_downloader - INFO - Initialized StockDownloader with db=market_data.db
+2026-02-01 02:01:00,079 - scripts.data_downloader - INFO - Starting download pipeline for ['TCS']
+2026-02-01 02:01:00,079 - scripts.data_downloader - INFO - Fetching TCS from Upstox API: 2025-01-01 to 2025-01-31, interval=15m
+2026-02-01 02:01:00,079 - scripts.data_downloader - DEBUG - API URL: https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/15/2025-01-31/2025-01-01
+2026-02-01 02:01:00,081 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.upstox.com:443
+2026-02-01 02:01:00,904 - urllib3.connectionpool - DEBUG - https://api.upstox.com:443 "GET /v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/15/2025-01-31/2025-01-01 HTTP/1.1" 200 None
+2026-02-01 02:01:00,936 - scripts.data_downloader - INFO - Fetched 575 rows for TCS from Upstox
+2026-02-01 02:01:00,937 - scripts.data_downloader - DEBUG - Validating 575 rows of OHLC data
+2026-02-01 02:01:00,952 - scripts.data_downloader - INFO - Validated OHLC: 575 → 575 rows (0 removed)
+2026-02-01 02:01:00,952 - scripts.data_downloader - DEBUG - Detecting gaps with interval=15m
+2026-02-01 02:01:00,957 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-01T15:15:00', 'end': '2025-01-02T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,958 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-02T15:15:00', 'end': '2025-01-03T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,958 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-03T15:15:00', 'end': '2025-01-06T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:00,959 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-06T15:15:00', 'end': '2025-01-07T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,959 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-07T15:15:00', 'end': '2025-01-08T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,959 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-08T15:15:00', 'end': '2025-01-09T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,960 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-09T15:15:00', 'end': '2025-01-10T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,960 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-10T15:15:00', 'end': '2025-01-13T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:00,961 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-13T15:15:00', 'end': '2025-01-14T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,961 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-14T15:15:00', 'end': '2025-01-15T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,961 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-15T15:15:00', 'end': '2025-01-16T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,962 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-16T15:15:00', 'end': '2025-01-17T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,962 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-17T15:15:00', 'end': '2025-01-20T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:00,962 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-20T15:15:00', 'end': '2025-01-21T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,963 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-21T15:15:00', 'end': '2025-01-22T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,963 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-22T15:15:00', 'end': '2025-01-23T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,964 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-23T15:15:00', 'end': '2025-01-24T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,964 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-24T15:15:00', 'end': '2025-01-27T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:00,965 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-27T15:15:00', 'end': '2025-01-28T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,965 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-28T15:15:00', 'end': '2025-01-29T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,965 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-29T15:15:00', 'end': '2025-01-30T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,966 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-30T15:15:00', 'end': '2025-01-31T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:00,966 - scripts.data_downloader - INFO - Saving 575 rows to ohlc_data
+2026-02-01 02:01:00,987 - scripts.data_downloader - INFO - Saved 575 rows to database
+2026-02-01 02:01:01,026 - scripts.data_downloader - INFO - Exported 575 rows to downloads/TCS_15m_20260201_020100.parquet
+2026-02-01 02:01:01,029 - scripts.data_downloader - INFO - Exported 575 rows to downloads/TCS_15m_20260201_020100.csv
+2026-02-01 02:01:31,397 - scripts.data_downloader - INFO - Initialized StockDownloader with db=market_data.db
+2026-02-01 02:01:31,399 - scripts.data_downloader - INFO - Starting download pipeline for ['TCS']
+2026-02-01 02:01:31,399 - scripts.data_downloader - INFO - Fetching TCS from Upstox API: 2025-01-01 to 2025-01-31, interval=15m
+2026-02-01 02:01:31,400 - scripts.data_downloader - DEBUG - API URL: https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/15/2025-01-31/2025-01-01
+2026-02-01 02:01:31,402 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.upstox.com:443
+2026-02-01 02:01:32,273 - urllib3.connectionpool - DEBUG - https://api.upstox.com:443 "GET /v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/15/2025-01-31/2025-01-01 HTTP/1.1" 200 None
+2026-02-01 02:01:32,290 - scripts.data_downloader - INFO - Fetched 575 rows for TCS from Upstox
+2026-02-01 02:01:32,292 - scripts.data_downloader - DEBUG - Validating 575 rows of OHLC data
+2026-02-01 02:01:32,296 - scripts.data_downloader - INFO - Validated OHLC: 575 → 575 rows (0 removed)
+2026-02-01 02:01:32,296 - scripts.data_downloader - DEBUG - Detecting gaps with interval=15m
+2026-02-01 02:01:32,299 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-01T15:15:00', 'end': '2025-01-02T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,300 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-02T15:15:00', 'end': '2025-01-03T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,300 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-03T15:15:00', 'end': '2025-01-06T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:32,301 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-06T15:15:00', 'end': '2025-01-07T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,301 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-07T15:15:00', 'end': '2025-01-08T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,302 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-08T15:15:00', 'end': '2025-01-09T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,302 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-09T15:15:00', 'end': '2025-01-10T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,303 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-10T15:15:00', 'end': '2025-01-13T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:32,303 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-13T15:15:00', 'end': '2025-01-14T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,304 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-14T15:15:00', 'end': '2025-01-15T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,304 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-15T15:15:00', 'end': '2025-01-16T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,305 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-16T15:15:00', 'end': '2025-01-17T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,305 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-17T15:15:00', 'end': '2025-01-20T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:32,306 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-20T15:15:00', 'end': '2025-01-21T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,306 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-21T15:15:00', 'end': '2025-01-22T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,307 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-22T15:15:00', 'end': '2025-01-23T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,307 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-23T15:15:00', 'end': '2025-01-24T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,308 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-24T15:15:00', 'end': '2025-01-27T09:15:00', 'missing_periods': 263}
+2026-02-01 02:01:32,308 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-27T15:15:00', 'end': '2025-01-28T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,308 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-28T15:15:00', 'end': '2025-01-29T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,309 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-29T15:15:00', 'end': '2025-01-30T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,309 - scripts.data_downloader - WARNING - Gap detected: {'start': '2025-01-30T15:15:00', 'end': '2025-01-31T09:15:00', 'missing_periods': 71}
+2026-02-01 02:01:32,310 - scripts.data_downloader - INFO - Saving 575 rows to ohlc_data
+2026-02-01 02:01:32,333 - scripts.data_downloader - INFO - Saved 575 rows to database
+2026-02-01 02:01:32,350 - scripts.data_downloader - INFO - Exported 575 rows to downloads/TCS_15m_20260201_020132.parquet
+2026-02-01 02:01:32,353 - scripts.data_downloader - INFO - Exported 575 rows to downloads/TCS_15m_20260201_020132.csv
+2026-02-01 02:02:50,461 - scripts.data_downloader - INFO - Initialized StockDownloader with db=market_data.db
+2026-02-01 02:02:50,464 - scripts.data_downloader - INFO - Starting download pipeline for ['TCS']
+2026-02-01 02:02:50,464 - scripts.data_downloader - INFO - Fetching TCS from Upstox API: 2025-01-31 to 2025-01-31, interval=5m
+2026-02-01 02:02:50,467 - scripts.data_downloader - DEBUG - API URL: https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/5/2025-01-31/2025-01-31
+2026-02-01 02:02:50,469 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.upstox.com:443
+2026-02-01 02:02:51,652 - urllib3.connectionpool - DEBUG - https://api.upstox.com:443 "GET /v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/5/2025-01-31/2025-01-31 HTTP/1.1" 200 None
+2026-02-01 02:02:51,658 - scripts.data_downloader - INFO - Fetched 75 rows for TCS from Upstox
+2026-02-01 02:02:51,659 - scripts.data_downloader - DEBUG - Validating 75 rows of OHLC data
+2026-02-01 02:02:51,661 - scripts.data_downloader - INFO - Validated OHLC: 75 → 75 rows (0 removed)
+2026-02-01 02:02:51,661 - scripts.data_downloader - DEBUG - Detecting gaps with interval=5m
+2026-02-01 02:02:51,663 - scripts.data_downloader - INFO - Saving 75 rows to ohlc_data
+2026-02-01 02:02:51,672 - scripts.data_downloader - INFO - Saved 75 rows to database
+2026-02-01 02:02:51,693 - scripts.data_downloader - INFO - Exported 75 rows to downloads/TCS_5m_20260201_020251.parquet
+2026-02-01 02:02:51,695 - scripts.data_downloader - INFO - Exported 75 rows to downloads/TCS_5m_20260201_020251.csv
+2026-02-01 02:02:59,031 - scripts.data_downloader - INFO - Initialized StockDownloader with db=market_data.db
+2026-02-01 02:02:59,034 - scripts.data_downloader - INFO - Starting download pipeline for ['TCS']
+2026-02-01 02:02:59,034 - scripts.data_downloader - INFO - Fetching TCS from Upstox API: 2025-01-31 to 2025-01-31, interval=5m
+2026-02-01 02:02:59,035 - scripts.data_downloader - DEBUG - API URL: https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/5/2025-01-31/2025-01-31
+2026-02-01 02:02:59,038 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.upstox.com:443
+2026-02-01 02:02:59,676 - urllib3.connectionpool - DEBUG - https://api.upstox.com:443 "GET /v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/5/2025-01-31/2025-01-31 HTTP/1.1" 200 None
+2026-02-01 02:02:59,688 - scripts.data_downloader - INFO - Fetched 75 rows for TCS from Upstox
+2026-02-01 02:02:59,689 - scripts.data_downloader - DEBUG - Validating 75 rows of OHLC data
+2026-02-01 02:02:59,692 - scripts.data_downloader - INFO - Validated OHLC: 75 → 75 rows (0 removed)
+2026-02-01 02:02:59,693 - scripts.data_downloader - DEBUG - Detecting gaps with interval=5m
+2026-02-01 02:02:59,696 - scripts.data_downloader - INFO - Saving 75 rows to ohlc_data
+2026-02-01 02:02:59,704 - scripts.data_downloader - INFO - Saved 75 rows to database
+2026-02-01 02:02:59,721 - scripts.data_downloader - INFO - Exported 75 rows to downloads/TCS_5m_20260201_020259.parquet
+2026-02-01 02:02:59,723 - scripts.data_downloader - INFO - Exported 75 rows to downloads/TCS_5m_20260201_020259.csv
+2026-02-01 02:03:08,893 - scripts.data_downloader - INFO - Initialized StockDownloader with db=market_data.db
+2026-02-01 02:03:08,896 - scripts.data_downloader - INFO - Starting download pipeline for ['TCS']
+2026-02-01 02:03:08,896 - scripts.data_downloader - INFO - Fetching TCS from Upstox API: 2025-01-31 to 2025-01-31, interval=5m
+2026-02-01 02:03:08,896 - scripts.data_downloader - DEBUG - API URL: https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/5/2025-01-31/2025-01-31
+2026-02-01 02:03:08,898 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.upstox.com:443
+2026-02-01 02:03:09,138 - urllib3.connectionpool - DEBUG - https://api.upstox.com:443 "GET /v3/historical-candle/NSE_EQ%7CINE467B01029/minutes/5/2025-01-31/2025-01-31 HTTP/1.1" 200 None
+2026-02-01 02:03:09,143 - scripts.data_downloader - INFO - Fetched 75 rows for TCS from Upstox
+2026-02-01 02:03:09,143 - scripts.data_downloader - DEBUG - Validating 75 rows of OHLC data
+2026-02-01 02:03:09,145 - scripts.data_downloader - INFO - Validated OHLC: 75 → 75 rows (0 removed)
+2026-02-01 02:03:09,146 - scripts.data_downloader - DEBUG - Detecting gaps with interval=5m
+2026-02-01 02:03:09,148 - scripts.data_downloader - INFO - Saving 75 rows to ohlc_data
+2026-02-01 02:03:09,155 - scripts.data_downloader - INFO - Saved 75 rows to database
+2026-02-01 02:03:09,177 - scripts.data_downloader - INFO - Exported 75 rows to downloads/TCS_5m_20260201_020309.parquet
+2026-02-01 02:03:09,180 - scripts.data_downloader - INFO - Exported 75 rows to downloads/TCS_5m_20260201_020309.csv

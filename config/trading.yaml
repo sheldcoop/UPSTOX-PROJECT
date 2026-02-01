@@ -1,0 +1,285 @@
+# Trading System Configuration File
+# All settings for Upstox Trading System
+
+# API Configuration
+api:
+  base_url: "https://api.upstox.com/v2"
+  client_id: "YOUR_CLIENT_ID"
+  client_secret: "YOUR_CLIENT_SECRET"
+  redirect_uri: "http://localhost:5050/auth/callback"
+  timeout: 30  # seconds
+
+# Database Configuration
+database:
+  path: "market_data.db"
+  backup_enabled: true
+  backup_interval_hours: 24
+  retention_days: 90
+
+# Risk Management
+risk:
+  max_position_size: 100000  # INR
+  max_daily_loss: 5000  # INR
+  max_risk_per_trade: 0.02  # 2% of capital
+  max_open_positions: 10
+  max_sector_exposure: 0.30  # 30% max in one sector
+  circuit_breaker_enabled: true
+
+# Position Sizing
+position_sizing:
+  default_risk_percentage: 0.01  # 1% risk per trade
+  min_position_size: 1000  # INR
+  max_position_size: 50000  # INR
+  use_kelly_criterion: false
+
+# Trading Hours
+trading_hours:
+  market_open: "09:15"
+  market_close: "15:30"
+  pre_market_start: "09:00"
+  post_market_end: "16:00"
+  timezone: "Asia/Kolkata"
+
+# Strategies Configuration
+strategies:
+  rsi_mean_reversion:
+    enabled: true
+    period: 14
+    oversold: 30
+    overbought: 70
+    max_positions: 3
+    symbols:
+      - INFY
+      - TCS
+      - RELIANCE
+      - HDFCBANK
+  
+  macd_crossover:
+    enabled: true
+    fast_period: 12
+    slow_period: 26
+    signal_period: 9
+    max_positions: 3
+    symbols:
+      - WIPRO
+      - TECHM
+      - BHARTIARTL
+  
+  volume_breakout:
+    enabled: false
+    volume_multiplier: 2.0
+    price_change_threshold: 0.02  # 2%
+    max_positions: 2
+
+# Alerts Configuration
+alerts:
+  enabled: true
+  channels:
+    console: true
+    email: false
+    telegram: false
+  
+  price_alerts:
+    enabled: true
+    default_priority: "MEDIUM"
+  
+  volume_alerts:
+    enabled: true
+    multiplier: 2.0
+    default_priority: "HIGH"
+  
+  percentage_change_alerts:
+    enabled: true
+    threshold: 3.0  # 3%
+    default_priority: "MEDIUM"
+
+# Data Sync Configuration
+data_sync:
+  enabled: true
+  
+  market_data:
+    interval: "5minute"
+    symbols:
+      - INFY
+      - TCS
+      - RELIANCE
+      - HDFCBANK
+      - WIPRO
+    schedule: "*/5 * * * *"  # Every 5 minutes
+    gap_detection: true
+    auto_fill_gaps: true
+  
+  news_data:
+    enabled: true
+    schedule: "0 * * * *"  # Every hour
+    sources:
+      - newsapi
+      - nse
+    max_age_hours: 24
+  
+  corporate_announcements:
+    enabled: true
+    schedule: "0 9,12,15 * * *"  # 9 AM, 12 PM, 3 PM
+    sources:
+      - nse
+      - bse
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  console_level: "INFO"
+  file_level: "DEBUG"
+  db_level: "WARNING"
+  
+  log_directory: "logs"
+  max_file_size_mb: 10
+  backup_count: 5
+  
+  metrics_enabled: true
+  metrics_interval_seconds: 60
+  
+  retention_days: 30
+
+# Error Handling
+error_handling:
+  retry_enabled: true
+  max_retry_attempts: 3
+  retry_min_wait: 1  # seconds
+  retry_max_wait: 10  # seconds
+  use_exponential_backoff: true
+  
+  cache_enabled: true
+  cache_ttl_seconds: 3600  # 1 hour
+  
+  rate_limit_wait_seconds: 60
+
+# Performance Analytics
+analytics:
+  enabled: true
+  calculation_interval_hours: 24
+  
+  metrics:
+    - win_rate
+    - profit_factor
+    - sharpe_ratio
+    - sortino_ratio
+    - max_drawdown
+  
+  reporting:
+    daily_report: true
+    weekly_report: true
+    monthly_report: true
+    report_time: "18:00"
+
+# Paper Trading
+paper_trading:
+  enabled: false  # Set to true for paper trading mode
+  starting_capital: 100000  # INR
+  commission_per_trade: 20  # INR
+  commission_percentage: 0.0003  # 0.03%
+  slippage: 0.0005  # 0.05%
+  
+  order_matching:
+    instant_fill: false  # Use realistic order matching
+    partial_fills_enabled: true
+    max_slippage_percent: 0.5  # 0.5%
+
+# Backtesting
+backtesting:
+  default_start_date: "2023-01-01"
+  default_end_date: "2023-12-31"
+  starting_capital: 100000
+  commission_per_trade: 20
+  
+  optimization:
+    enabled: false
+    parameter_ranges:
+      rsi_period: [10, 14, 20]
+      rsi_oversold: [20, 30, 35]
+      rsi_overbought: [65, 70, 80]
+
+# News & Sentiment Analysis
+news:
+  newsapi:
+    enabled: true
+    api_key: "YOUR_NEWSAPI_KEY"
+    max_articles: 100
+    sources: "bloomberg,reuters,economic-times"
+  
+  sentiment_analysis:
+    enabled: true
+    model: "finbert"
+    confidence_threshold: 0.7
+
+# Database Validation
+database_validation:
+  enabled: true
+  auto_fix_enabled: false
+  quality_checks_enabled: true
+  
+  constraints:
+    validate_ohlc: true
+    validate_orders: true
+    validate_holdings: true
+  
+  indexes:
+    create_on_startup: true
+  
+  cleanup:
+    enabled: true
+    schedule: "0 2 * * *"  # 2 AM daily
+    retention_days: 90
+
+# Authentication
+authentication:
+  token_refresh_enabled: true
+  token_expiry_buffer_minutes: 5
+  encryption_enabled: true
+  multi_user_support: false
+  session_tracking_enabled: true
+
+# Monitoring
+monitoring:
+  system_metrics_enabled: true
+  health_check_enabled: true
+  health_check_interval_seconds: 300  # 5 minutes
+  
+  thresholds:
+    cpu_warning_percent: 80
+    memory_warning_percent: 85
+    disk_warning_percent: 90
+    error_rate_warning_percent: 10
+
+# Notification Channels
+notifications:
+  email:
+    enabled: false
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    from_address: "your-email@gmail.com"
+    password: "YOUR_APP_PASSWORD"
+    to_addresses:
+      - "alerts@example.com"
+  
+  telegram:
+    enabled: false
+    bot_token: "YOUR_BOT_TOKEN"
+    chat_id: "YOUR_CHAT_ID"
+  
+  webhook:
+    enabled: false
+    url: "https://your-webhook-url.com/alerts"
+
+# Development Settings
+development:
+  debug_mode: false
+  mock_api_responses: false
+  simulate_delays: false
+  verbose_logging: false
+
+# Production Settings
+production:
+  auto_start: false
+  run_on_startup: false
+  daemon_mode: false
+  pid_file: "trading_system.pid"

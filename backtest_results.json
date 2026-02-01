@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-01-31T16:24:34.035768",
+  "backtest_params": {
+    "init_cash": 100000.0,
+    "commission": 0.0005,
+    "slippage": 0.001,
+    "use_log_returns": false,
+    "freq": "D"
+  },
+  "results": [
+    {
+      "strategy": "SMA Crossover",
+      "symbol": "INFY",
+      "period": "2024-01-01 to 2025-01-30",
+      "init_cash": 100000.0,
+      "final_value": 116485.98,
+      "total_return_pct": 16.49,
+      "cagr_pct": 15.15,
+      "sharpe_ratio": 0.94,
+      "sortino_ratio": 1.364,
+      "calmar_ratio": 1.453,
+      "max_drawdown_pct": -15.7,
+      "win_rate_pct": 0,
+      "trades": 1,
+      "duration_days": 395
+    },
+    {
+      "strategy": "SMA Crossover",
+      "symbol": "TCS",
+      "period": "2024-01-01 to 2025-01-30",
+      "init_cash": 100000.0,
+      "final_value": 98046.27,
+      "total_return_pct": -1.95,
+      "cagr_pct": -1.81,
+      "sharpe_ratio": 0.003,
+      "sortino_ratio": 0.004,
+      "calmar_ratio": -0.202,
+      "max_drawdown_pct": -13.0,
+      "win_rate_pct": 0,
+      "trades": 1,
+      "duration_days": 395
+    }
+  ]
+}

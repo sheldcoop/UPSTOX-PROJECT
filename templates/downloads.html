@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+
+{% block title %}Data Download Center - Upstox{% endblock %}
+
+{% block extra_css %}
+<style>
+    .download-header {
+        background: linear-gradient(135deg, #7c3aed 0%, #ec4899 50%, #f43f5e 100%);
+        border-radius: 20px;
+        padding: 40px;
+        margin-bottom: 32px;
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    .download-header-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+    }
+
+    .download-header h1 {
+        font-size: 32px;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 8px;
+    }
+
+    .download-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+
+    .header-stats {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+    }
+
+    .header-stat {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 8px 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .header-stat strong {
+        color: white;
+        font-weight: 700;
+    }
+
+    .white-section {
+        background: #f5f5f5;
+        border-radius: 20px;
+        padding: 32px;
+        min-height: 80vh;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 32px;
+    }
+
+    .tab-btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tab-btn.active {
+        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        color: white;
+        box-shadow: 0 8px 16px rgba(124, 58, 237, 0.3);
+    }
+
+    .tab-btn.inactive {
+        background: white;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+    }
+
+    .tab-btn.inactive:hover {
+        border-color: #a855f7;
+    }
+
+    .section {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .section-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .section-icon.purple {
+        background: linear-gradient(135deg, #7c3aed, #a855f7);
+    }
+
+    .section-icon.cyan {
+        background: linear-gradient(135deg, #06b6d4, #0ea5e9);
+    }
+
+    .section-icon.orange {
+        background: linear-gradient(135deg, #f97316, #fb923c);
+    }
+
+    .section-icon.violet {
+        background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+    }
+
+    .section-title {
+        flex: 1;
+    }
+
+    .section-title h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 4px;
+    }
+
+    .section-title p {
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6b7280;
+        margin-bottom: 8px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 14px;
+        color: #1f2937;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .input-group {
+        display: flex;
+        gap: 12px;
+    }
+
+    .input-group input {
+        flex: 1;
+    }
+
+    .date-picker {
+        position: relative;
+    }
+
+    .date-picker input {
+        padding-left: 40px;
+    }
+
+    .date-picker::before {
+        content: '📅';
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        pointer-events: none;
+    }
+
+    .pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .pill {
+        padding: 12px 16px;
+        border: none;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s;
+        color: white;
+    }
+
+    .pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .pill.rose { background: linear-gradient(135deg, #f43f5e, #ec4899); }
+    .pill.orange { background: linear-gradient(135deg, #f97316, #fb923c); }
+    .pill.amber { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .pill.teal { background: linear-gradient(135deg, #14b8a6, #06b6d4); }
+    .pill.blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .pill.pink { background: linear-gradient(135deg, #f472b6, #ec4899); }
+
+    .pill.inactive {
+        background: #f3f4f6;
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .time-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 12px;
+    }
+
+    .time-btn {
+        padding: 16px;
+        border: none;
+        border-radius: 16px;
+        background: #f3f4f6;
+        color: #374151;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+    }
+
+    .time-btn:hover {
+        background: #e5e7eb;
+    }
+
+    .time-btn.active {
+        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        color: white;
+    }
+
+    .time-btn .label {
+        font-size: 18px;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .time-btn .sublabel {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.8;
+    }
+
+    .format-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .format-card {
+        padding: 20px;
+        border-radius: 16px;
+        text-align: center;
+        background: #f3f4f6;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .format-card:hover {
+        border-color: #d1d5db;
+    }
+
+    .format-card.active {
+        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        color: white;
+        box-shadow: 0 8px 16px rgba(124, 58, 237, 0.3);
+    }
+
+    .format-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .format-title {
+        font-weight: 700;
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
+
+    .format-desc {
+        font-size: 11px;
+        opacity: 0.7;
+        line-height: 1.4;
+    }
+
+    .checkmark {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #7c3aed;
+    }
+
+    .toggle-section {
+        background: #1f2937;
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .toggle-label h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .toggle-label p {
+        font-size: 12px;
+        color: #9ca3af;
+    }
+
+    .toggle-switch {
+        width: 60px;
+        height: 32px;
+        background: #4b5563;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s;
+    }
+
+    .toggle-switch.active {
+        background: #10b981;
+    }
+
+    .toggle-switch::after {
+        content: '';
+        position: absolute;
+        width: 28px;
+        height: 28px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: left 0.3s;
+    }
+
+    .toggle-switch.active::after {
+        left: 30px;
+    }
+
+    .download-btn {
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(135deg, #7c3aed, #ec4899, #f43f5e);
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        margin-top: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        box-shadow: 0 12px 24px rgba(124, 58, 237, 0.3);
+        transition: all 0.3s;
+    }
+
+    .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 32px rgba(124, 58, 237, 0.4);
+    }
+
+    .download-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Gradient Header -->
+<div class="download-header">
+    <div class="download-header-icon">✨</div>
+    <div style="flex: 1;">
+        <h1>Data Download Center</h1>
+        <p>Download ML-ready market data from Yahoo Finance • Parquet format optimized for backtesting</p>
+        <div class="header-stats">
+            <div class="header-stat">Portfolio Value <strong>$247,891</strong></div>
+            <div class="header-stat">Today's P&L <strong>+$4,231</strong></div>
+            <div class="header-stat">Open Positions <strong>12</strong></div>
+        </div>
+    </div>
+</div>
+
+<!-- White Section -->
+<div class="white-section">
+    <!-- Asset Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active">📈 Stocks</button>
+        <button class="tab-btn inactive">💵 Options</button>
+        <button class="tab-btn inactive">📊 Futures</button>
+    </div>
+
+    <!-- Symbol Search Section -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-icon purple">🔍</div>
+            <div class="section-title">
+                <h3>Select Stock Symbols</h3>
+                <p>Search from 8,700+ NSE equity stocks</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div style="position: relative;">
+                <input type="text" placeholder="Type to search... e.g., INFY, TCS, RELIANCE (press Enter)" class="form-input" style="padding-left: 40px;">
+                <span style="position: absolute; left: 12px; top: 12px; font-size: 18px; pointer-events: none;">🔍</span>
+            </div>
+        </div>
+        <div class="pill-group">
+            <span style="padding: 8px 16px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; border-radius: 20px; font-size: 12px; font-weight: 600;">INFY</span>
+            <span style="padding: 8px 16px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; border-radius: 20px; font-size: 12px; font-weight: 600;">TCS</span>
+            <span style="padding: 8px 16px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; border-radius: 20px; font-size: 12px; font-weight: 600;">RELIANCE</span>
+        </div>
+    </div>
+
+    <!-- Date Range Section -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-icon cyan">📅</div>
+            <div class="section-title">
+                <h3>Date Range</h3>
+                <p>Select your data period</p>
+            </div>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <div class="pill-group">
+                <button class="pill rose">Last Week</button>
+                <button class="pill orange">Last Month</button>
+                <button class="pill amber">Last 3 Months</button>
+                <button class="pill teal">YTD</button>
+                <button class="pill blue">Last Year</button>
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="form-group date-picker" style="flex: 1;">
+                <label class="form-label">From Date</label>
+                <input type="date" value="2025-01-01" class="form-input">
+            </div>
+            <div class="form-group date-picker" style="flex: 1;">
+                <label class="form-label">To Date</label>
+                <input type="date" value="2025-01-31" class="form-input">
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeframe Section -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-icon orange">⏱️</div>
+            <div class="section-title">
+                <h3>Timeframe</h3>
+                <p>Choose your data resolution</p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <p class="form-label" style="margin-bottom: 12px;">📊 Intraday Resolution</p>
+            <div class="time-grid">
+                <button class="time-btn">
+                    <span class="label">1m</span>
+                    <span class="sublabel">Intraday</span>
+                </button>
+                <button class="time-btn">
+                    <span class="label">5m</span>
+                    <span class="sublabel">Intraday</span>
+                </button>
+                <button class="time-btn active">
+                    <span class="label">15m</span>
+                    <span class="sublabel">Intraday</span>
+                </button>
+                <button class="time-btn">
+                    <span class="label">30m</span>
+                    <span class="sublabel">Intraday</span>
+                </button>
+                <button class="time-btn">
+                    <span class="label">1h</span>
+                    <span class="sublabel">Hourly</span>
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <p class="form-label" style="margin-bottom: 12px;">📈 Daily & Long-Term</p>
+            <div class="time-grid">
+                <button class="time-btn">
+                    <span class="label">1D</span>
+                    <span class="sublabel">Daily</span>
+                </button>
+                <button class="time-btn">
+                    <span class="label">1W</span>
+                    <span class="sublabel">Weekly</span>
+                </button>
+                <button class="time-btn">
+                    <span class="label">1M</span>
+                    <span class="sublabel">Monthly</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Format Section -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-icon violet">💾</div>
+            <div class="section-title">
+                <h3>Export Format</h3>
+                <p>Choose your preferred file format</p>
+            </div>
+        </div>
+        <div class="format-grid">
+            <div class="format-card active">
+                <span class="checkmark">✓</span>
+                <div style="font-size: 32px; margin-bottom: 12px;">📦</div>
+                <div class="format-title">Parquet</div>
+                <div class="format-desc">ML-Ready format optimized for backtesting</div>
+            </div>
+            <div class="format-card">
+                <div style="font-size: 32px; margin-bottom: 12px;">📄</div>
+                <div class="format-title">CSV/Excel</div>
+                <div class="format-desc">Universal spreadsheet format</div>
+            </div>
+            <div class="format-card">
+                <div style="font-size: 32px; margin-bottom: 12px;">📂</div>
+                <div class="format-title">Both Formats</div>
+                <div class="format-desc">Get all formats in one download</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save to Database Toggle -->
+    <div class="toggle-section">
+        <div class="toggle-label">
+            <h3>💾 Save to Database</h3>
+            <p>Store data in SQLite for faster backtesting and strategy development</p>
+        </div>
+        <button class="toggle-switch"></button>
+    </div>
+
+    <!-- Download Button -->
+    <button class="download-btn">
+        ⬇️ START DOWNLOAD ✨
+    </button>
+</div>
+{% endblock %}

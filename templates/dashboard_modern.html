@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upstox Trading Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0f1419;
+            color: #e0e0e0;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #1a1f2e 0%, #0f1419 100%);
+            border-right: 1px solid #2a3142;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #2a3142;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .nav-section {
+            padding: 20px 0;
+        }
+
+        .nav-section-title {
+            padding: 0 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #e0e0e0;
+            border-left-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            min-width: 24px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid #2a3142;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Header Bar */
+        .header-bar {
+            background: linear-gradient(180deg, #1a1f2e 0%, #0f1419 100%);
+            border-bottom: 1px solid #2a3142;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-header {
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid #667eea;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-header:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Dashboard Page */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #1a1f2e 0%, #14191f 100%);
+            border: 1px solid #2a3142;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.1);
+        }
+
+        .card-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .card-subtext {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .card-subtext.positive {
+            color: #4ade80;
+        }
+
+        .card-subtext.negative {
+            color: #f87171;
+        }
+
+        /* Charts / Info Sections */
+        .info-section {
+            background: linear-gradient(135deg, #1a1f2e 0%, #14191f 100%);
+            border: 1px solid #2a3142;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .info-section h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .info-item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .info-item-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .info-item-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #e0e0e0;
+        }
+
+        /* Status Indicator */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.offline {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error-message {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+            }
+
+            .header-bar {
+                padding: 16px 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .sidebar {
+                width: 60px;
+                padding: 10px 0;
+            }
+
+            .nav-item {
+                padding: 12px 8px;
+                justify-content: center;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .nav-icon {
+                min-width: auto;
+            }
+
+            .sidebar-header,
+            .sidebar-footer,
+            .nav-section-title {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 60px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>📈 Upstox</h1>
+            <p>Trading Platform</p>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Main</div>
+            <a href="#" class="nav-item active" onclick="showPage('dashboard', event)">
+                <span class="nav-icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('downloads', event)">
+                <span class="nav-icon">📥</span>
+                <span>Downloads</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('positions', event)">
+                <span class="nav-icon">📊</span>
+                <span>Positions</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('options', event)">
+                <span class="nav-icon">💱</span>
+                <span>Options</span>
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Tools</div>
+            <a href="#" class="nav-item" onclick="showPage('backtest', event)">
+                <span class="nav-icon">🧪</span>
+                <span>Backtest</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('strategies', event)">
+                <span class="nav-icon">🎯</span>
+                <span>Strategies</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('alerts', event)">
+                <span class="nav-icon">🔔</span>
+                <span>Alerts</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <p>v1.0</p>
+            <p>Production</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header-bar">
+            <div class="header-title">📊 Dashboard</div>
+            <div class="header-actions">
+                <span class="status-badge">
+                    <span class="status-dot"></span>
+                    Market Closed
+                </span>
+                <button class="btn-header" onclick="refreshData()">⟳ Refresh</button>
+            </div>
+        </div>
+
+        <!-- Content Pages -->
+        <div class="content">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-label">Portfolio Value</div>
+                        <div class="card-value" id="portfolioValue">₹ 0</div>
+                        <div class="card-subtext" id="portfolioChange">Loading...</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Cash Available</div>
+                        <div class="card-value" id="cashValue">₹ 0</div>
+                        <div class="card-subtext">Ready to invest</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Today's P&L</div>
+                        <div class="card-value" id="todayPnL">₹ 0</div>
+                        <div class="card-subtext" id="todayPnLPercent">0%</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Total Invested</div>
+                        <div class="card-value" id="investedValue">₹ 0</div>
+                        <div class="card-subtext">Across all positions</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h2>📈 Market Status</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-item-label">NIFTY 50</div>
+                            <div class="info-item-value">19,250.15</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Sensex</div>
+                            <div class="info-item-value">63,412.05</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Bank Nifty</div>
+                            <div class="info-item-value">48,620.30</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">VIX</div>
+                            <div class="info-item-value">16.45</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h2>📝 Recent Activity</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-item-label">Last Trade</div>
+                            <div class="info-item-value" id="lastTrade">—</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Open Positions</div>
+                            <div class="info-item-value" id="openPositions">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Win Rate</div>
+                            <div class="info-item-value">—</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Alerts</div>
+                            <div class="info-item-value">3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Downloads Page -->
+            <div id="downloads" class="page">
+                <iframe src="/api/page/downloads" style="width: 100%; height: 100%; border: none; border-radius: 12px;"></iframe>
+            </div>
+
+            <!-- Positions Page -->
+            <div id="positions" class="page">
+                <div class="info-section">
+                    <h2>📊 Open Positions</h2>
+                    <p style="text-align: center; padding: 40px; color: #999;">
+                        No open positions yet. Start trading or backtesting!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Options Page -->
+            <div id="options" class="page">
+                <div class="info-section">
+                    <h2>💱 Options Chain</h2>
+                    <p style="text-align: center; padding: 40px; color: #999;">
+                        Options chain viewer coming soon...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Backtest Page -->
+            <div id="backtest" class="page">
+                <div class="info-section">
+                    <h2>🧪 Backtesting Engine</h2>
+                    <p style="text-align: center; padding: 40px; color: #999;">
+                        Backtest strategies with historical data...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Strategies Page -->
+            <div id="strategies" class="page">
+                <div class="info-section">
+                    <h2>🎯 Trading Strategies</h2>
+                    <p style="text-align: center; padding: 40px; color: #999;">
+                        Manage and deploy your strategies...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Alerts Page -->
+            <div id="alerts" class="page">
+                <div class="info-section">
+                    <h2>🔔 Alert Rules</h2>
+                    <p style="text-align: center; padding: 40px; color: #999;">
+                        Set up price and technical alerts...
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId, event) {
+            if (event) event.preventDefault();
+
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // Show selected page
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.add('active');
+
+                // Update header
+                const icons = {
+                    dashboard: '📊 Dashboard',
+                    downloads: '📥 Downloads',
+                    positions: '📊 Positions',
+                    options: '💱 Options',
+                    backtest: '🧪 Backtest',
+                    strategies: '🎯 Strategies',
+                    alerts: '🔔 Alerts'
+                };
+                document.querySelector('.header-title').textContent = icons[pageId] || 'Dashboard';
+
+                // Update nav items
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('onclick')?.includes(pageId)) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function refreshData() {
+            // Fetch portfolio data
+            fetch('/api/portfolio')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('portfolioValue').textContent = `₹ ${(data.total_value || 0).toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+                    document.getElementById('cashValue').textContent = `₹ ${(data.cash || 0).toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+                    document.getElementById('investedValue').textContent = `₹ ${((data.total_value - data.cash) || 0).toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+                    
+                    const pnl = (data.total_pnl || 0);
+                    document.getElementById('todayPnL').textContent = `₹ ${pnl.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+                    
+                    const pnlPercent = data.total_value > 0 ? ((pnl / data.total_value) * 100).toFixed(2) : 0;
+                    const pnlElem = document.getElementById('todayPnLPercent');
+                    pnlElem.textContent = `${pnlPercent > 0 ? '+' : ''}${pnlPercent}%`;
+                    pnlElem.className = `card-subtext ${pnlPercent >= 0 ? 'positive' : 'negative'}`;
+                    
+                    const changeElem = document.getElementById('portfolioChange');
+                    changeElem.textContent = `${pnlPercent >= 0 ? '↑' : '↓'} ${Math.abs(pnlPercent)}% ${pnlPercent >= 0 ? 'up' : 'down'} today`;
+                    changeElem.className = `card-subtext ${pnlPercent >= 0 ? 'positive' : 'negative'}`;
+                })
+                .catch(e => console.error('Error loading portfolio:', e));
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshData();
+            // Refresh every 30 seconds
+            setInterval(refreshData, 30000);
+        });
+    </script>
+</body>
+</html>

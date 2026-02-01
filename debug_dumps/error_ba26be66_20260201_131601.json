@@ -1,0 +1,8 @@
+{
+  "trace_id": "ba26be66",
+  "error": "Encountered unknown tag 'endblock'.",
+  "type": "TemplateSyntaxError",
+  "path": "/",
+  "method": "GET",
+  "timestamp": "2026-02-01T13:16:01.127147"
+}
