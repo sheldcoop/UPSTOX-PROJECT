@@ -177,8 +177,12 @@ def render_page(state):
                 .classes("w-full mb-4")
             )
 
-            with ui.row().classes("w-full gap-6 mt-2").bind_visibility_from(
-                mode_select, "value", lambda v: v == "Historical OHLC"
+            with (
+                ui.row()
+                .classes("w-full gap-6 mt-2")
+                .bind_visibility_from(
+                    mode_select, "value", lambda v: v == "Historical OHLC"
+                )
             ):
                 # Date Selection
                 with ui.column().classes("flex-1"):

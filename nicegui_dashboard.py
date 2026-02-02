@@ -69,8 +69,11 @@ def main_dashboard(page: str = None):
         state.current_page = page
 
     # --- Debug Console ---
-    with ui.dialog() as debug_dialog, ui.card().classes(
-        "w-full max-w-4xl h-[80vh] bg-slate-900 border border-slate-700"
+    with (
+        ui.dialog() as debug_dialog,
+        ui.card().classes(
+            "w-full max-w-4xl h-[80vh] bg-slate-900 border border-slate-700"
+        ),
     ):
         with ui.row().classes(
             "w-full justify-between items-center border-b border-slate-700 pb-2"

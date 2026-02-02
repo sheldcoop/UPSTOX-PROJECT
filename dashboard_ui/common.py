@@ -107,9 +107,11 @@ class Components:
     @staticmethod
     def date_input(label: str, value: str = None) -> ui.input:
         """Input field with popup calendar"""
-        with ui.input(label=label, value=value).props(
-            "outlined dense dark readonly"
-        ).classes("flex-1") as input_field:
+        with (
+            ui.input(label=label, value=value)
+            .props("outlined dense dark readonly")
+            .classes("flex-1") as input_field
+        ):
             with ui.menu().props("no-parent-event") as menu:
                 with ui.date().bind_value(input_field).props("dark square"):
                     with ui.row().classes("justify-end p-2"):
