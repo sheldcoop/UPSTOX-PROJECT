@@ -12,7 +12,7 @@ def test_movers():
     try:
         service = MarketMoversService.get_instance()
         
-        categories = ['NSE_MAIN', 'NSE_SME', 'NSE_FUT', 'NSE_FO_EQ']
+        categories = ['NSE_MAIN', 'NSE_SME', 'NSE_FUT', 'NSE_FO_EQ', 'NIFTY_50', 'NIFTY_500', 'NIFTY_BANK']
         
         for cat in categories:
             print(f"\n📊 Fetching movers for category: {cat}")

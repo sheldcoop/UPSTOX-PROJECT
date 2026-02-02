@@ -75,25 +75,25 @@ class MarketMoversService:
             elif category == 'NIFTY_50':
                 query = """
                 SELECT i.instrument_key, i.symbol, i.trading_symbol 
-                FROM instruments i
+                FROM exchange_listings i
                 JOIN stock_metadata m ON i.symbol = m.symbol
-                WHERE i.segment_id='NSE_EQ' AND m.is_nifty50 = 1
+                WHERE i.segment='NSE_EQ' AND m.is_nifty50 = 1
                 """
                 
             elif category == 'NIFTY_500':
                 query = """
                 SELECT i.instrument_key, i.symbol, i.trading_symbol 
-                FROM instruments i
+                FROM exchange_listings i
                 JOIN stock_metadata m ON i.symbol = m.symbol
-                WHERE i.segment_id='NSE_EQ' AND m.is_nifty500 = 1
+                WHERE i.segment='NSE_EQ' AND m.is_nifty500 = 1
                 """
 
             elif category == 'NIFTY_BANK':
                 query = """
                 SELECT i.instrument_key, i.symbol, i.trading_symbol 
-                FROM instruments i
+                FROM exchange_listings i
                 JOIN stock_metadata m ON i.symbol = m.symbol
-                WHERE i.segment_id='NSE_EQ' AND m.is_nifty_bank = 1
+                WHERE i.segment='NSE_EQ' AND m.is_nifty_bank = 1
                 """
 
             else:
