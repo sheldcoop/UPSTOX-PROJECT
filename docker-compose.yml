@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # Backend API Server
+  api:
+    build: .
+    container_name: upstox-api
+    environment:
+      - APP_MODE=api
+      - FLASK_PORT=8000
+      - FLASK_DEBUG=False
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://upstox:upstox_password@postgres:5432/upstox_trading
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - ./market_data.db:/app/market_data.db
+      - ./upstox.db:/app/upstox.db
+      - ./.env:/app/.env
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+    command: ["gunicorn", "--config", "gunicorn_config.py", "wsgi:application"]
+
+  # Frontend Server
+  frontend:
+    build: .
+    container_name: upstox-frontend
+    environment:
+      - APP_MODE=frontend
+      - FLASK_PORT=5001
+      - BACKEND_API_URL=http://api:8000/api
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./logs:/app/logs
+      - ./.env:/app/.env
+    depends_on:
+      - api
+    restart: unless-stopped
+    command: ["gunicorn", "--config", "gunicorn_config.py", "--bind", "0.0.0.0:5001", "app:app"]
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: upstox-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: upstox-postgres
+    environment:
+      - POSTGRES_USER=upstox
+      - POSTGRES_PASSWORD=upstox_password
+      - POSTGRES_DB=upstox_trading
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: upstox-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: upstox-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./deploy/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  postgres_data:
+  prometheus_data:
+  grafana_data:
