@@ -347,13 +347,12 @@ def render_broad_market_tab(indices: List[Dict]):
                             placeholder="Type symbol or company name..."
                         ).props("outlined dense clearable").classes("w-full mb-4")
                         
-                        # Table columns
+                        # Table columns (showing industry as main category since sector is often null)
                         columns = [
                             {'name': 'symbol', 'label': 'Symbol', 'field': 'symbol', 'align': 'left', 'sortable': True},
                             {'name': 'company_name', 'label': 'Company Name', 'field': 'company_name', 'align': 'left', 'sortable': True},
                             {'name': 'weight', 'label': 'Weight %', 'field': 'weight', 'align': 'center', 'sortable': True},
-                            {'name': 'sector', 'label': 'Sector', 'field': 'sector', 'align': 'left', 'sortable': True},
-                            {'name': 'industry', 'label': 'Industry', 'field': 'industry', 'align': 'left', 'sortable': True}
+                            {'name': 'industry', 'label': 'Category', 'field': 'industry', 'align': 'left', 'sortable': True}
                         ]
                         
                         table = ui.table(
