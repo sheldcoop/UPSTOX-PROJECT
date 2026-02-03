@@ -172,7 +172,9 @@ class AccountFetcher:
                 buying_power = available_margin * 5  # Typical leverage
 
                 account_data["calculated_buying_power"] = buying_power
-                account_data["margin_utilization"] = self._calculate_margin_utilization(margin)
+                account_data["margin_utilization"] = self._calculate_margin_utilization(
+                    margin
+                )
 
                 return account_data
             else:
@@ -323,13 +325,17 @@ class AccountFetcher:
         print(f"  Equity:          {available.get('equity_margin', 0):15,.2f}")
         print(f"  Commodity:       {available.get('commodity_margin', 0):15,.2f}")
         print(f"  MTF:             {available.get('mtf_margin', 0):15,.2f}")
-        print(f"  Total:           {available.get('equity_margin', 0) + available.get('commodity_margin', 0) + available.get('mtf_margin', 0):15,.2f}")
+        print(
+            f"  Total:           {available.get('equity_margin', 0) + available.get('commodity_margin', 0) + available.get('mtf_margin', 0):15,.2f}"
+        )
 
         print("\n📊 UTILISED MARGIN:")
         print(f"  Equity:          {utilised.get('equity_margin', 0):15,.2f}")
         print(f"  Commodity:       {utilised.get('commodity_margin', 0):15,.2f}")
         print(f"  MTF:             {utilised.get('mtf_margin', 0):15,.2f}")
-        print(f"  Total:           {utilised.get('equity_margin', 0) + utilised.get('commodity_margin', 0) + utilised.get('mtf_margin', 0):15,.2f}")
+        print(
+            f"  Total:           {utilised.get('equity_margin', 0) + utilised.get('commodity_margin', 0) + utilised.get('mtf_margin', 0):15,.2f}"
+        )
 
         util_pct = self._calculate_margin_utilization(margin)
         print(f"\n📈 Margin Utilization: {util_pct:6.2f}%")
@@ -353,7 +359,9 @@ class AccountFetcher:
 
         print("\n💰 COMMODITY SEGMENT (MCX):")
         print(f"  Available Margin:  {buying_power['commodity']['available']:15,.2f}")
-        print(f"  Buying Power (5x): {buying_power['commodity']['buying_power']:15,.2f}")
+        print(
+            f"  Buying Power (5x): {buying_power['commodity']['buying_power']:15,.2f}"
+        )
 
         print("\n💰 MARGIN TRADING (MTF):")
         print(f"  Available Margin:  {buying_power['mtf']['available']:15,.2f}")
@@ -381,13 +389,17 @@ class AccountFetcher:
 
     def monitor_account(self, interval: int = 30, duration: int = 3600):
         """Monitor account in real-time."""
-        print(f"📡 Starting account monitoring (interval: {interval}s, duration: {duration}s)...")
+        print(
+            f"📡 Starting account monitoring (interval: {interval}s, duration: {duration}s)..."
+        )
 
         start_time = time.time()
 
         while time.time() - start_time < duration:
             try:
-                print(f"\n📊 Account update at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                print(
+                    f"\n📊 Account update at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                )
 
                 margin = self.get_margin()
                 if margin:
@@ -419,12 +431,27 @@ def main():
     )
 
     parser.add_argument("--token", type=str, help="Upstox access token")
-    parser.add_argument("--action", type=str, required=True,
-                        choices=["profile", "margin", "buying-power", "summary", "holdings", 
-                                 "history", "monitor"],
-                        help="Action to perform")
-    parser.add_argument("--interval", type=int, default=30, help="Monitor interval in seconds")
-    parser.add_argument("--duration", type=int, default=3600, help="Monitor duration in seconds")
+    parser.add_argument(
+        "--action",
+        type=str,
+        required=True,
+        choices=[
+            "profile",
+            "margin",
+            "buying-power",
+            "summary",
+            "holdings",
+            "history",
+            "monitor",
+        ],
+        help="Action to perform",
+    )
+    parser.add_argument(
+        "--interval", type=int, default=30, help="Monitor interval in seconds"
+    )
+    parser.add_argument(
+        "--duration", type=int, default=3600, help="Monitor duration in seconds"
+    )
     parser.add_argument("--limit", type=int, default=100, help="History limit")
 
     args = parser.parse_args()
@@ -456,7 +483,9 @@ def main():
         if account:
             fetcher.display_profile(account["profile"])
             fetcher.display_margin_details(account["margin"])
-            print(f"\nCalculated Buying Power: ₹{account.get('calculated_buying_power', 0):,.0f}")
+            print(
+                f"\nCalculated Buying Power: ₹{account.get('calculated_buying_power', 0):,.0f}"
+            )
 
     elif args.action == "holdings":
         holdings = fetcher.get_holdings()
@@ -468,7 +497,9 @@ def main():
         if history:
             print(f"\n📊 MARGIN HISTORY ({len(history)} records)")
             print("=" * 80)
-            print(f"{'Timestamp':19} | {'Available':15} | {'Used':15} | {'Util %':8} | {'Buying Power':15}")
+            print(
+                f"{'Timestamp':19} | {'Available':15} | {'Used':15} | {'Util %':8} | {'Buying Power':15}"
+            )
             print("=" * 80)
             for h in history:
                 print(

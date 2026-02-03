@@ -67,7 +67,8 @@ sleep 2
 start_service "api" "$API_PORT" "api"
 
 # Start Frontend Server
-start_service "frontend" "$FRONTEND_PORT" "frontend"
+# Frontend Server (app.py) removed - using NiceGUI exclusively
+# start_service "frontend" "$FRONTEND_PORT" "frontend"
 
 # Wait for services to start
 echo "⏳ Waiting for services to start..."
@@ -81,23 +82,23 @@ else
     echo "❌ API Server health check failed"
 fi
 
-if curl -f http://localhost:$FRONTEND_PORT/api/health > /dev/null 2>&1; then
-    echo "✅ Frontend Server is healthy"
-else
-    echo "⚠️  Frontend Server health check failed (may not have /api/health endpoint)"
-fi
+# if curl -f http://localhost:$FRONTEND_PORT/api/health > /dev/null 2>&1; then
+#     echo "✅ Frontend Server is healthy"
+# else
+#     echo "⚠️  Frontend Server health check failed (may not have /api/health endpoint)"
+# fi
 
 echo ""
 echo "=================================================="
 echo "✅ Platform Started Successfully"
 echo "=================================================="
 echo "📡 API Server:      http://localhost:$API_PORT"
-echo "🌐 Frontend:        http://localhost:$FRONTEND_PORT"
+echo "🌐 Frontend:        Use start_nicegui.sh for Dashboard (Port 8080)"
 echo "📊 Health Check:    http://localhost:$API_PORT/api/health"
 echo ""
 echo "📝 Logs:"
 echo "   API:       tail -f logs/api_error.log"
-echo "   Frontend:  tail -f logs/frontend_error.log"
+# echo "   Frontend:  tail -f logs/frontend_error.log"
 echo ""
 echo "🛑 To stop:"
 echo "   ./stop_production.sh"

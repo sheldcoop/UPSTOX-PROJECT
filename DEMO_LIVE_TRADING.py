@@ -39,7 +39,8 @@ def demo_websocket_streaming():
     """Demo: Real-time Quote Streaming."""
     print_section("FEATURE 1: WEBSOCKET REAL-TIME QUOTE STREAMING", 1)
 
-    print(f"""
+    print(
+        f"""
 {GREEN}✨ OVERVIEW{END}
 Real-time tick-by-tick market data directly from Upstox websocket.
 Ideal for live price monitoring, algorithmic trading, and decision-making.
@@ -60,27 +61,34 @@ Ideal for live price monitoring, algorithmic trading, and decision-making.
   5. Market microstructure analysis
 
 {BOLD}COMMAND EXAMPLES:{END}
-""")
+"""
+    )
 
     examples = [
-        ("Start streaming for NIFTY", 
-         "python scripts/websocket_quote_streamer.py --symbols NIFTY --duration 300"),
-
-        ("Stream multiple symbols live display",
-         "python scripts/websocket_quote_streamer.py --symbols NIFTY,BANKNIFTY,INFY --live-display --duration 120"),
-
-        ("Query tick history",
-         "python scripts/websocket_quote_streamer.py --query-ticks NIFTY --limit 100"),
-
-        ("View streaming statistics",
-         "python scripts/websocket_quote_streamer.py --stats"),
+        (
+            "Start streaming for NIFTY",
+            "python scripts/websocket_quote_streamer.py --symbols NIFTY --duration 300",
+        ),
+        (
+            "Stream multiple symbols live display",
+            "python scripts/websocket_quote_streamer.py --symbols NIFTY,BANKNIFTY,INFY --live-display --duration 120",
+        ),
+        (
+            "Query tick history",
+            "python scripts/websocket_quote_streamer.py --query-ticks NIFTY --limit 100",
+        ),
+        (
+            "View streaming statistics",
+            "python scripts/websocket_quote_streamer.py --stats",
+        ),
     ]
 
     for desc, cmd in examples:
         print(f"  📌 {desc}")
         print(f"     {cmd}\n")
 
-    print(f"""
+    print(
+        f"""
 {BOLD}DATABASE STORAGE:{END}
 All ticks automatically stored in `quote_ticks` table:
   • Timestamp, symbol, LTP, bid/ask prices and quantities
@@ -93,14 +101,16 @@ All ticks automatically stored in `quote_ticks` table:
 ➜ Query bid-ask spread analysis
 ➜ Monitor for entry conditions
 ➜ Trigger orders when conditions met (see Feature 2)
-""")
+"""
+    )
 
 
 def demo_order_placement():
     """Demo: Order Placement & Management."""
     print_section("FEATURE 2: ORDER PLACEMENT & MANAGEMENT", 1)
 
-    print(f"""
+    print(
+        f"""
 {GREEN}✨ OVERVIEW{END}
 Complete order lifecycle management - place, modify, cancel, and track orders.
 Supports market, limit, and stop-loss orders with full API integration.
@@ -122,39 +132,50 @@ Supports market, limit, and stop-loss orders with full API integration.
   5. Portfolio rebalancing
 
 {BOLD}COMMAND EXAMPLES:{END}
-""")
+"""
+    )
 
     examples = [
-        ("Place market order to BUY",
-         "python scripts/order_manager.py --action place --symbol INFY --side BUY --qty 1 --type MARKET"),
-
-        ("Place limit order to SELL",
-         "python scripts/order_manager.py --action place --symbol NIFTY --side SELL --qty 25 --type LIMIT --price 23500"),
-
-        ("Modify order price",
-         "python scripts/order_manager.py --action modify --order-id ORD123 --new-price 1750"),
-
-        ("Cancel pending order",
-         "python scripts/order_manager.py --action cancel --order-id ORD123"),
-
-        ("Get order status",
-         "python scripts/order_manager.py --action status --order-id ORD123"),
-
-        ("Place bracket order",
-         "python scripts/order_manager.py --action place-bracket --symbol INFY --qty 1 --entry-price 1800 --stop-loss 1750 --target 1850"),
-
-        ("List all active orders",
-         "python scripts/order_manager.py --action list-active"),
-
-        ("Get order history",
-         "python scripts/order_manager.py --action history --limit 50"),
+        (
+            "Place market order to BUY",
+            "python scripts/order_manager.py --action place --symbol INFY --side BUY --qty 1 --type MARKET",
+        ),
+        (
+            "Place limit order to SELL",
+            "python scripts/order_manager.py --action place --symbol NIFTY --side SELL --qty 25 --type LIMIT --price 23500",
+        ),
+        (
+            "Modify order price",
+            "python scripts/order_manager.py --action modify --order-id ORD123 --new-price 1750",
+        ),
+        (
+            "Cancel pending order",
+            "python scripts/order_manager.py --action cancel --order-id ORD123",
+        ),
+        (
+            "Get order status",
+            "python scripts/order_manager.py --action status --order-id ORD123",
+        ),
+        (
+            "Place bracket order",
+            "python scripts/order_manager.py --action place-bracket --symbol INFY --qty 1 --entry-price 1800 --stop-loss 1750 --target 1850",
+        ),
+        (
+            "List all active orders",
+            "python scripts/order_manager.py --action list-active",
+        ),
+        (
+            "Get order history",
+            "python scripts/order_manager.py --action history --limit 50",
+        ),
     ]
 
     for desc, cmd in examples:
         print(f"  📌 {desc}")
         print(f"     {cmd}\n")
 
-    print(f"""
+    print(
+        f"""
 {BOLD}DATABASE STORAGE:{END}
 All orders stored in `orders` and `bracket_orders` tables:
   • Order ID, symbol, side, quantity, price
@@ -170,14 +191,16 @@ All orders stored in `orders` and `bracket_orders` tables:
 ➜ Set target for profit-taking
 ➜ Monitor order status in real-time
 ➜ Modify if needed (price/quantity)
-""")
+"""
+    )
 
 
 def demo_gtt_orders():
     """Demo: GTT Orders (Good-Till-Triggered)."""
     print_section("FEATURE 3: GTT ORDERS (GOOD-TILL-TRIGGERED)", 1)
 
-    print(f"""
+    print(
+        f"""
 {GREEN}✨ OVERVIEW{END}
 Conditional orders that automatically trigger when price reaches specified levels.
 Perfect for 'set and forget' trading strategies - no manual monitoring needed.
@@ -199,39 +222,47 @@ Perfect for 'set and forget' trading strategies - no manual monitoring needed.
   5. Multi-level entry strategies
 
 {BOLD}COMMAND EXAMPLES:{END}
-""")
+"""
+    )
 
     examples = [
-        ("Create GTT: Buy when price falls",
-         "python scripts/gtt_orders_manager.py --action create --symbol INFY --quantity 1 --trigger-price 1750 --condition LTE --order-type LIMIT --order-price 1750"),
-
-        ("Create GTT: Sell at target",
-         "python scripts/gtt_orders_manager.py --action create --symbol NIFTY --quantity 25 --trigger-price 23500 --condition GTE --order-type MARKET"),
-
-        ("Modify GTT trigger price",
-         "python scripts/gtt_orders_manager.py --action modify --gtt-id GTT_ABC --new-trigger-price 1800"),
-
-        ("Cancel GTT order",
-         "python scripts/gtt_orders_manager.py --action cancel --gtt-id GTT_ABC"),
-
-        ("List all GTT orders",
-         "python scripts/gtt_orders_manager.py --action list"),
-
-        ("Get GTT details",
-         "python scripts/gtt_orders_manager.py --action details --gtt-id GTT_ABC"),
-
-        ("Monitor GTT orders (auto-trigger checking)",
-         "python scripts/gtt_orders_manager.py --action monitor --check-interval 5 --duration 3600"),
-
-        ("Get GTT history",
-         "python scripts/gtt_orders_manager.py --action history --limit 50"),
+        (
+            "Create GTT: Buy when price falls",
+            "python scripts/gtt_orders_manager.py --action create --symbol INFY --quantity 1 --trigger-price 1750 --condition LTE --order-type LIMIT --order-price 1750",
+        ),
+        (
+            "Create GTT: Sell at target",
+            "python scripts/gtt_orders_manager.py --action create --symbol NIFTY --quantity 25 --trigger-price 23500 --condition GTE --order-type MARKET",
+        ),
+        (
+            "Modify GTT trigger price",
+            "python scripts/gtt_orders_manager.py --action modify --gtt-id GTT_ABC --new-trigger-price 1800",
+        ),
+        (
+            "Cancel GTT order",
+            "python scripts/gtt_orders_manager.py --action cancel --gtt-id GTT_ABC",
+        ),
+        ("List all GTT orders", "python scripts/gtt_orders_manager.py --action list"),
+        (
+            "Get GTT details",
+            "python scripts/gtt_orders_manager.py --action details --gtt-id GTT_ABC",
+        ),
+        (
+            "Monitor GTT orders (auto-trigger checking)",
+            "python scripts/gtt_orders_manager.py --action monitor --check-interval 5 --duration 3600",
+        ),
+        (
+            "Get GTT history",
+            "python scripts/gtt_orders_manager.py --action history --limit 50",
+        ),
     ]
 
     for desc, cmd in examples:
         print(f"  📌 {desc}")
         print(f"     {cmd}\n")
 
-    print(f"""
+    print(
+        f"""
 {BOLD}DATABASE STORAGE:{END}
 All GTT orders stored in `gtt_orders` and `gtt_triggers` tables:
   • GTT ID, symbol, quantity, trigger price
@@ -246,14 +277,16 @@ All GTT orders stored in `gtt_orders` and `gtt_triggers` tables:
 ➜ Orders trigger automatically
 ➜ Modify triggers as market evolves
 ➜ Cancel if conditions no longer apply
-""")
+"""
+    )
 
 
 def demo_account_margin():
     """Demo: Account & Margin Monitoring."""
     print_section("FEATURE 4: ACCOUNT & MARGIN MONITORING", 1)
 
-    print(f"""
+    print(
+        f"""
 {GREEN}✨ OVERVIEW{END}
 Real-time account information including margin, buying power, and balance.
 Critical for risk management and position sizing in live trading.
@@ -275,36 +308,40 @@ Critical for risk management and position sizing in live trading.
   5. Portfolio risk assessment
 
 {BOLD}COMMAND EXAMPLES:{END}
-""")
+"""
+    )
 
     examples = [
-        ("Get account profile",
-         "python scripts/account_fetcher.py --action profile"),
-
-        ("Get current margin info",
-         "python scripts/account_fetcher.py --action margin"),
-
-        ("Get buying power for all segments",
-         "python scripts/account_fetcher.py --action buying-power"),
-
-        ("Get full account summary",
-         "python scripts/account_fetcher.py --action summary"),
-
-        ("Get account holdings",
-         "python scripts/account_fetcher.py --action holdings"),
-
-        ("View margin history",
-         "python scripts/account_fetcher.py --action history --limit 100"),
-
-        ("Monitor account real-time",
-         "python scripts/account_fetcher.py --action monitor --interval 30 --duration 3600"),
+        ("Get account profile", "python scripts/account_fetcher.py --action profile"),
+        (
+            "Get current margin info",
+            "python scripts/account_fetcher.py --action margin",
+        ),
+        (
+            "Get buying power for all segments",
+            "python scripts/account_fetcher.py --action buying-power",
+        ),
+        (
+            "Get full account summary",
+            "python scripts/account_fetcher.py --action summary",
+        ),
+        ("Get account holdings", "python scripts/account_fetcher.py --action holdings"),
+        (
+            "View margin history",
+            "python scripts/account_fetcher.py --action history --limit 100",
+        ),
+        (
+            "Monitor account real-time",
+            "python scripts/account_fetcher.py --action monitor --interval 30 --duration 3600",
+        ),
     ]
 
     for desc, cmd in examples:
         print(f"  📌 {desc}")
         print(f"     {cmd}\n")
 
-    print(f"""
+    print(
+        f"""
 {BOLD}KEY METRICS EXPLAINED:{END}
 
 Available Margin:
@@ -329,14 +366,16 @@ Buying Power:
 ➜ Alert if margin usage > 80%
 ➜ Cancel or reduce positions if needed
 ➜ Track margin history for analysis
-""")
+"""
+    )
 
 
 def demo_market_depth():
     """Demo: Market Depth Analysis."""
     print_section("FEATURE 5: MARKET DEPTH & ORDER BOOK ANALYSIS", 1)
 
-    print(f"""
+    print(
+        f"""
 {GREEN}✨ OVERVIEW{END}
 Real-time order book data including bid-ask spread, depth levels, and liquidity.
 Essential for analyzing market microstructure and finding optimal entry/exit prices.
@@ -358,36 +397,46 @@ Essential for analyzing market microstructure and finding optimal entry/exit pri
   5. Liquidity-based strategy triggers
 
 {BOLD}COMMAND EXAMPLES:{END}
-""")
+"""
+    )
 
     examples = [
-        ("Get Level 1 market depth",
-         "python scripts/market_depth_fetcher.py --symbol INFY --action depth --level 1"),
-
-        ("Get Level 2 market depth",
-         "python scripts/market_depth_fetcher.py --symbol NIFTY --action depth --level 2"),
-
-        ("Get bid-ask spread",
-         "python scripts/market_depth_fetcher.py --symbol BANKNIFTY --action spread"),
-
-        ("Analyze liquidity",
-         "python scripts/market_depth_fetcher.py --symbol INFY --action liquidity"),
-
-        ("Compare spreads across symbols",
-         "python scripts/market_depth_fetcher.py --symbols NIFTY,BANKNIFTY,FINNIFTY --action compare"),
-
-        ("View spread history",
-         "python scripts/market_depth_fetcher.py --symbol NIFTY --action history --limit 100"),
-
-        ("Monitor market depth changes",
-         "python scripts/market_depth_fetcher.py --symbol INFY --action monitor --interval 5 --duration 300"),
+        (
+            "Get Level 1 market depth",
+            "python scripts/market_depth_fetcher.py --symbol INFY --action depth --level 1",
+        ),
+        (
+            "Get Level 2 market depth",
+            "python scripts/market_depth_fetcher.py --symbol NIFTY --action depth --level 2",
+        ),
+        (
+            "Get bid-ask spread",
+            "python scripts/market_depth_fetcher.py --symbol BANKNIFTY --action spread",
+        ),
+        (
+            "Analyze liquidity",
+            "python scripts/market_depth_fetcher.py --symbol INFY --action liquidity",
+        ),
+        (
+            "Compare spreads across symbols",
+            "python scripts/market_depth_fetcher.py --symbols NIFTY,BANKNIFTY,FINNIFTY --action compare",
+        ),
+        (
+            "View spread history",
+            "python scripts/market_depth_fetcher.py --symbol NIFTY --action history --limit 100",
+        ),
+        (
+            "Monitor market depth changes",
+            "python scripts/market_depth_fetcher.py --symbol INFY --action monitor --interval 5 --duration 300",
+        ),
     ]
 
     for desc, cmd in examples:
         print(f"  📌 {desc}")
         print(f"     {cmd}\n")
 
-    print(f"""
+    print(
+        f"""
 {BOLD}DEPTH METRICS EXPLAINED:{END}
 
 Bid-Ask Spread:
@@ -415,14 +464,16 @@ Liquidity Score (0-100):
 ➜ Place order at favorable price
 ➜ Monitor spread as price moves
 ➜ Avoid slippage on large orders
-""")
+"""
+    )
 
 
 def demo_integrated_workflow():
     """Demo: Complete integrated trading workflow."""
     print_section("INTEGRATED LIVE TRADING WORKFLOW", 1)
 
-    print(f"""
+    print(
+        f"""
 {GREEN}✨ REAL-WORLD EXAMPLE: Intraday Trading Setup{END}
 
 This example shows how all 5 features work together for a complete trading system.
@@ -530,7 +581,8 @@ Goal: Trade NIFTY's resistance breakout at 23,500 with proper risk management
   ✓ Margin Used: ₹1,17,500
   ✓ Margin Utilization: 23.5%
   ✓ Trade Duration: 2 hours 15 minutes
-""")
+"""
+    )
 
 
 def main():
@@ -553,11 +605,31 @@ def main():
     summary = [
         ["FEATURE", "PURPOSE", "KEY COMMAND", "DATABASE TABLE"],
         ["-" * 30, "-" * 50, "-" * 50, "-" * 30],
-        ["Websocket Streaming", "Real-time quotes", "websocket_quote_streamer.py", "quote_ticks"],
-        ["Order Management", "Place/modify/cancel orders", "order_manager.py", "orders"],
-        ["GTT Orders", "Conditional auto-triggers", "gtt_orders_manager.py", "gtt_orders"],
+        [
+            "Websocket Streaming",
+            "Real-time quotes",
+            "websocket_quote_streamer.py",
+            "quote_ticks",
+        ],
+        [
+            "Order Management",
+            "Place/modify/cancel orders",
+            "order_manager.py",
+            "orders",
+        ],
+        [
+            "GTT Orders",
+            "Conditional auto-triggers",
+            "gtt_orders_manager.py",
+            "gtt_orders",
+        ],
         ["Account & Margin", "Risk management", "account_fetcher.py", "margin_history"],
-        ["Market Depth", "Order book analysis", "market_depth_fetcher.py", "market_depth"],
+        [
+            "Market Depth",
+            "Order book analysis",
+            "market_depth_fetcher.py",
+            "market_depth",
+        ],
     ]
 
     print()
@@ -566,7 +638,8 @@ def main():
 
     print(f"\n{BOLD}{'=' * 100}{END}")
     print(f"{BOLD}NEXT STEPS:{END}")
-    print(f"""
+    print(
+        f"""
 1. Set UPSTOX_ACCESS_TOKEN environment variable:
    export UPSTOX_ACCESS_TOKEN="your_token_here"
 
@@ -606,7 +679,8 @@ def main():
 
 {BOLD}Good luck with your live trading! 🚀{END}
 {BOLD}{'=' * 100}{END}
-""")
+"""
+    )
 
 
 if __name__ == "__main__":

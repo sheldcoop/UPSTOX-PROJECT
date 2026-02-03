@@ -1,36 +1,27 @@
-import sqlite3
+import os
+import sys
+from scripts.auth_manager import AuthManager
 
+# Current token details
 token = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiIyWkNEUTkiLCJqdGkiOiI2OTdlOTViYzFhY2FiMjBhNzE3ZTQ4NTAiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6ZmFsc2UsImlhdCI6MTc2OTkwMzU0OCwiaXNzIjoidWRhcGktZ2F0ZXdheS1zZXJ2aWNlIiwiZXhwIjoxNzY5OTgzMjAwfQ.y5xey_vjMP7kjTScnGSRdQcF1VZmod7M0DTrS17JhO0"
-expires_at = 1769983200
+expires_in = 86400  # Default 24 hours
 
-conn = sqlite3.connect('market_data.db')
-cursor = conn.cursor()
+# Add scripts to path if needed
+sys.path.append(os.path.join(os.getcwd(), "scripts"))
 
-# Insert into auth_tokens table
-cursor.execute("DELETE FROM auth_tokens")
-cursor.execute("""
-    INSERT INTO auth_tokens (token_type, access_token, expires_at, user_id)
-    VALUES ('bearer', ?, ?, '2ZCDQ9')
-""", (token, expires_at))
+try:
+    auth = AuthManager()
+    token_data = {"access_token": token, "refresh_token": "", "expires_in": expires_in}
 
-# Also insert into oauth_tokens if it exists
-cursor.execute("DELETE FROM oauth_tokens")
-cursor.execute("""
-    INSERT INTO oauth_tokens (client_id, access_token, refresh_token, expires_at)
-    VALUES ('upstox', ?, '', ?)
-""", (token, expires_at))
+    auth.save_token("default", token_data)
+    print("✅ Token stored successfully using AuthManager!")
 
-conn.commit()
+    # Verify
+    saved_token = auth.get_valid_token("default")
+    if saved_token == token:
+        print("✅ Verification successful: Retreived token matches.")
+    else:
+        print("❌ Verification failed: Retrieved token differs.")
 
-print("Token stored successfully!")
-print("\nauth_tokens:")
-cursor.execute("SELECT token_type, substr(access_token, 1, 50), expires_at FROM auth_tokens")
-for row in cursor.fetchall():
-    print(f"  {row}")
-
-print("\noauth_tokens:")
-cursor.execute("SELECT client_id, substr(access_token, 1, 50), expires_at FROM oauth_tokens")
-for row in cursor.fetchall():
-    print(f"  {row}")
-
-conn.close()
+except Exception as e:
+    print(f"❌ Error: {e}")

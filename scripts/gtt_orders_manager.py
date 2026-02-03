@@ -175,7 +175,9 @@ class GTTOrdersManager:
 
             # Call API
             url = f"{self.base_url}/orders/gtt/create"
-            response = requests.post(url, json=gtt_data, headers=self.headers, timeout=10)
+            response = requests.post(
+                url, json=gtt_data, headers=self.headers, timeout=10
+            )
 
             if response.status_code == 200:
                 data = response.json()
@@ -244,7 +246,9 @@ class GTTOrdersManager:
                 return False
 
             url = f"{self.base_url}/orders/gtt/modify"
-            response = requests.put(url, json=modify_data, headers=self.headers, timeout=10)
+            response = requests.put(
+                url, json=modify_data, headers=self.headers, timeout=10
+            )
 
             if response.status_code == 200:
                 print(f"✅ GTT Order {gtt_id} modified successfully")
@@ -293,7 +297,9 @@ class GTTOrdersManager:
         """
         try:
             url = f"{self.base_url}/orders/gtt/cancel"
-            response = requests.delete(url, json={"id": gtt_id}, headers=self.headers, timeout=10)
+            response = requests.delete(
+                url, json={"id": gtt_id}, headers=self.headers, timeout=10
+            )
 
             if response.status_code == 200:
                 print(f"✅ GTT Order {gtt_id} cancelled successfully")
@@ -356,7 +362,9 @@ class GTTOrdersManager:
             print(f"❌ Error getting GTT details: {e}")
             return None
 
-    def get_gtt_history(self, symbol: Optional[str] = None, limit: int = 50) -> List[Dict]:
+    def get_gtt_history(
+        self, symbol: Optional[str] = None, limit: int = 50
+    ) -> List[Dict]:
         """Get GTT order history."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -399,7 +407,9 @@ class GTTOrdersManager:
             check_interval: Check interval in seconds
             duration: Total monitoring duration in seconds
         """
-        print(f"📡 Starting GTT monitoring (interval: {check_interval}s, duration: {duration}s)...")
+        print(
+            f"📡 Starting GTT monitoring (interval: {check_interval}s, duration: {duration}s)..."
+        )
         print("=" * 80)
 
         start_time = time.time()
@@ -486,8 +496,10 @@ class GTTOrdersManager:
             return
 
         print("\n" + "=" * 130)
-        print(f"{'GTT ID':15} | {'Symbol':8} | {'Qty':5} | {'Trigger':10} | {'Condition':3} | {'Price':10} | "
-              f"{'Type':7} | {'Side':4} | {'Status':8} | {'Created':19}")
+        print(
+            f"{'GTT ID':15} | {'Symbol':8} | {'Qty':5} | {'Trigger':10} | {'Condition':3} | {'Price':10} | "
+            f"{'Type':7} | {'Side':4} | {'Status':8} | {'Created':19}"
+        )
         print("=" * 130)
 
         for order in orders:
@@ -515,22 +527,36 @@ def main():
     )
 
     parser.add_argument("--token", type=str, help="Upstox access token")
-    parser.add_argument("--action", type=str, required=True,
-                        choices=["create", "modify", "cancel", "list", "details", "history", "monitor"],
-                        help="Action to perform")
+    parser.add_argument(
+        "--action",
+        type=str,
+        required=True,
+        choices=["create", "modify", "cancel", "list", "details", "history", "monitor"],
+        help="Action to perform",
+    )
 
     # Create GTT arguments
     parser.add_argument("--symbol", type=str, help="Trading symbol")
     parser.add_argument("--quantity", type=int, help="Order quantity")
     parser.add_argument("--trigger-price", type=float, help="Trigger price")
     parser.add_argument("--trigger-type", type=str, default="LTP", help="Trigger type")
-    parser.add_argument("--condition", type=str, choices=["GTE", "LTE", "GT", "LT"],
-                        help="Condition (GTE=>=, LTE=<=, GT=>, LT=<)")
-    parser.add_argument("--order-type", type=str, choices=["MARKET", "LIMIT"],
-                        default="MARKET", help="Order type")
+    parser.add_argument(
+        "--condition",
+        type=str,
+        choices=["GTE", "LTE", "GT", "LT"],
+        help="Condition (GTE=>=, LTE=<=, GT=>, LT=<)",
+    )
+    parser.add_argument(
+        "--order-type",
+        type=str,
+        choices=["MARKET", "LIMIT"],
+        default="MARKET",
+        help="Order type",
+    )
     parser.add_argument("--order-price", type=float, help="Order execution price")
-    parser.add_argument("--side", type=str, choices=["BUY", "SELL"],
-                        default="BUY", help="Buy or Sell")
+    parser.add_argument(
+        "--side", type=str, choices=["BUY", "SELL"], default="BUY", help="Buy or Sell"
+    )
 
     # Modify/Cancel/Details arguments
     parser.add_argument("--gtt-id", type=str, help="GTT Order ID")
@@ -540,8 +566,12 @@ def main():
 
     # History/Monitor arguments
     parser.add_argument("--limit", type=int, default=50, help="Limit for history")
-    parser.add_argument("--check-interval", type=int, default=5, help="Check interval in seconds")
-    parser.add_argument("--duration", type=int, default=3600, help="Monitor duration in seconds")
+    parser.add_argument(
+        "--check-interval", type=int, default=5, help="Check interval in seconds"
+    )
+    parser.add_argument(
+        "--duration", type=int, default=3600, help="Monitor duration in seconds"
+    )
 
     args = parser.parse_args()
 
@@ -553,8 +583,18 @@ def main():
     manager = GTTOrdersManager(token)
 
     if args.action == "create":
-        if not all([args.symbol, args.quantity, args.trigger_price, args.condition, args.order_type]):
-            print("❌ --symbol, --quantity, --trigger-price, --condition, --order-type required")
+        if not all(
+            [
+                args.symbol,
+                args.quantity,
+                args.trigger_price,
+                args.condition,
+                args.order_type,
+            ]
+        ):
+            print(
+                "❌ --symbol, --quantity, --trigger-price, --condition, --order-type required"
+            )
             sys.exit(1)
 
         manager.create_gtt_order(

@@ -26,41 +26,43 @@ project_root = os.path.dirname(script_dir)
 sys.path.append(project_root)
 
 # Configure Flask app with correct template/static folders
-app = Flask(__name__, 
-    template_folder=os.path.join(project_root, 'templates'),
-    static_folder=os.path.join(project_root, 'static'))
+app = Flask(
+    __name__,
+    template_folder=os.path.join(project_root, "templates"),
+    static_folder=os.path.join(project_root, "static"),
+)
 
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/api_server.log'),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler("logs/api_server.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
 # Create logs directory
-Path('logs').mkdir(exist_ok=True)
+Path("logs").mkdir(exist_ok=True)
 
 # Enable CORS for frontend
 CORS(app)
 
 # Database path
-DB_PATH = 'market_data.db'
+DB_PATH = "market_data.db"
 
 
 # ============================================================================
 # REQUEST TRACING MIDDLEWARE (God-Mode Debugging)
 # ============================================================================
 
+
 @app.before_request
 def inject_trace_id():
     """Inject unique trace ID for request tracking"""
-    g.trace_id = request.headers.get('X-Trace-ID', str(uuid.uuid4())[:8])
-    logger.info(f"[TraceID: {g.trace_id}] {request.method} {request.path} - Client: {request.remote_addr}")
-    if request.method in ['POST', 'PUT', 'PATCH']:
+    g.trace_id = request.headers.get("X-Trace-ID", str(uuid.uuid4())[:8])
+    logger.info(
+        f"[TraceID: {g.trace_id}] {request.method} {request.path} - Client: {request.remote_addr}"
+    )
+    if request.method in ["POST", "PUT", "PATCH"]:
         logger.debug(f"[TraceID: {g.trace_id}] Request body: {request.get_json()}")
 
 
@@ -68,50 +70,59 @@ def inject_trace_id():
 def log_response(response):
     """Log response and attach trace ID header"""
     logger.info(f"[TraceID: {g.trace_id}] Response: {response.status_code}")
-    response.headers['X-Trace-ID'] = g.trace_id
+    response.headers["X-Trace-ID"] = g.trace_id
     return response
 
 
 @app.errorhandler(Exception)
 def handle_exception(e):
     """Global exception handler with state dump"""
-    logger.error(f"[TraceID: {g.trace_id}] Unhandled exception: {str(e)}", exc_info=True)
-    
+    logger.error(
+        f"[TraceID: {g.trace_id}] Unhandled exception: {str(e)}", exc_info=True
+    )
+
     # Dump state for debugging
     error_dump = {
-        'trace_id': g.trace_id,
-        'error': str(e),
-        'type': type(e).__name__,
-        'path': request.path,
-        'method': request.method,
-        'timestamp': datetime.now().isoformat()
+        "trace_id": g.trace_id,
+        "error": str(e),
+        "type": type(e).__name__,
+        "path": request.path,
+        "method": request.method,
+        "timestamp": datetime.now().isoformat(),
     }
-    
-    dump_dir = Path('debug_dumps')
+
+    dump_dir = Path("debug_dumps")
     dump_dir.mkdir(exist_ok=True)
-    dump_file = dump_dir / f"error_{g.trace_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    
-    with open(dump_file, 'w') as f:
+    dump_file = (
+        dump_dir / f"error_{g.trace_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
+
+    with open(dump_file, "w") as f:
         json.dump(error_dump, f, indent=2, default=str)
-    
+
     logger.error(f"[TraceID: {g.trace_id}] Error state dumped to {dump_file}")
-    
-    return jsonify({
-        'error': str(e),
-        'trace_id': g.trace_id,
-        'timestamp': datetime.now().isoformat()
-    }), 500
+
+    return (
+        jsonify(
+            {
+                "error": str(e),
+                "trace_id": g.trace_id,
+                "timestamp": datetime.now().isoformat(),
+            }
+        ),
+        500,
+    )
 
 
 # ============================================================================
 # FRONTEND ROUTES
 # ============================================================================
 
-@app.route('/')
+
+@app.route("/")
 def index():
     """Serve dashboard"""
-    return render_template('dashboard_modern.html')
-
+    return render_template("dashboard_modern.html")
 
 
 # ============================================================================
@@ -151,14 +162,16 @@ logger.info("✅ All blueprints registered successfully")
 # MAIN
 # ============================================================================
 
-if __name__ == '__main__':
-    print("\n" + "="*70)
+if __name__ == "__main__":
+    print("\n" + "=" * 70)
     print("🚀 UPSTOX TRADING API SERVER - REFACTORED WITH BLUEPRINTS")
-    print("="*70)
+    print("=" * 70)
     print("\n📍 Server: http://localhost:8000")
     print("📊 Database: market_data.db")
     print("\n📡 Registered Blueprints:")
-    print("   📈 Portfolio Blueprint (/api/portfolio, /api/positions, /api/user/profile)")
+    print(
+        "   📈 Portfolio Blueprint (/api/portfolio, /api/positions, /api/user/profile)"
+    )
     print("   📊 Orders Blueprint (/api/orders, /api/alerts)")
     print("   🎯 Signals Blueprint (/api/signals, /api/instruments/nse-eq)")
     print("   📉 Analytics Blueprint (/api/performance, /api/analytics/*)")
@@ -174,12 +187,16 @@ if __name__ == '__main__':
     print("✅ Global error handling with state dumps")
     print("✅ Modular architecture with blueprints")
     print("\nPress CTRL+C to stop\n")
-    
+
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Upstox Trading API Server')
-    parser.add_argument('--port', type=int, default=8000, help='Port to run server on (default: 8000)')
-    parser.add_argument('--host', type=str, default='0.0.0.0', help='Host to bind to (default: 0.0.0.0)')
+    parser = argparse.ArgumentParser(description="Upstox Trading API Server")
+    parser.add_argument(
+        "--port", type=int, default=8000, help="Port to run server on (default: 8000)"
+    )
+    parser.add_argument(
+        "--host", type=str, default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)"
+    )
     args = parser.parse_args()
-    
+
     print(f"🚀 Starting on {args.host}:{args.port}\n")
     app.run(debug=True, host=args.host, port=args.port)
