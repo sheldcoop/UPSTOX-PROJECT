@@ -10,13 +10,40 @@
 
 ---
 
-## 🏠 **[→ READ FULL DOCUMENTATION (HOME.md)](HOME.md)**
+## ⚡ Quick Start (3 Steps)
+
+### 🖥️ Local Development (Recommended - 5 minutes)
+
+```bash
+# Step 1: Clone & Setup
+git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
+cd UPSTOX-PROJECT
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# Step 2: Configure
+cp .env.example .env
+# Edit .env with your Upstox credentials
+
+# Step 3: Run
+python run_platform.py
+
+# Access: http://localhost:5001
+```
+
+**That's it!** The platform will:
+- ✅ Check your Python version
+- ✅ Verify dependencies
+- ✅ Initialize the database
+- ✅ Start all services (API + Frontend + OAuth)
+- ✅ Open your browser automatically
+
+For manual control, see [Local Development Guide](docs/LOCAL_DEVELOPMENT.md).
 
 ---
 
-## ⚡ Ultra Quick Start
-
-### 🐳 Docker (Fastest - 3 minutes)
+### 🐳 Docker (Alternative - 3 minutes)
 
 ```bash
 git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
@@ -25,48 +52,6 @@ cp .env.example .env
 # Edit .env with your Upstox credentials
 
 docker-compose up -d
-
-# Access:
-# Frontend: http://localhost:5001
-# Backend API: http://localhost:8000
-```
-
-### 🖥️ Ubuntu/Linux (10 minutes)
-
-```bash
-git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
-cd UPSTOX-PROJECT
-
-# Setup
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env
-
-# Start (2 terminals)
-python scripts/api_server.py        # Terminal 1
-python nicegui_dashboard.py         # Terminal 2
-
-# Access: http://localhost:5001
-```
-
-### 🪟 Windows (10 minutes)
-
-```powershell
-git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
-cd UPSTOX-PROJECT
-
-# Setup
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-copy .env.example .env
-# Edit .env
-
-# Start (2 terminals)
-python scripts/api_server.py        # Terminal 1
-python nicegui_dashboard.py         # Terminal 2
 
 # Access: http://localhost:5001
 ```
@@ -101,10 +86,31 @@ python nicegui_dashboard.py         # Terminal 2
 
 ---
 
+## 🎮 Platform Commands
+
+The `run_platform.py` script provides a unified interface for all platform operations:
+
+```bash
+# Start all services (one-click)
+python run_platform.py
+
+# First-time setup only
+python run_platform.py --setup
+
+# Check service health
+python run_platform.py --check
+
+# Stop all services
+python run_platform.py --stop
+```
+
+**Advanced:** For manual control, see the [Local Development Guide](docs/LOCAL_DEVELOPMENT.md) which explains how to run individual services.
+
+---
+
 ## 📚 Documentation
 
 **Essential Reading:**
-- 🏠 **[HOME.md](HOME.md)** - Complete documentation hub ⭐ START HERE
 - 🚀 **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Production deployment
 - 🛠️ **[docs/LOCAL_DEVELOPMENT.md](docs/LOCAL_DEVELOPMENT.md)** - Development setup
 - 📊 **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - Current status
@@ -118,58 +124,6 @@ python nicegui_dashboard.py         # Terminal 2
 ---
 
 ## 🏗️ Architecture
-
-# Access services
-# Frontend: http://localhost:5001
-# API: http://localhost:8000
-# Grafana: http://localhost:3000
-```
-
-### Option 3: Production Deployment (15 minutes)
-
-```bash
-# On Oracle Cloud (or any server)
-git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
-cd UPSTOX-PROJECT
-sudo bash deploy/oracle_cloud_deploy.sh
-
-# Configure credentials
-cp .env.example .env
-nano .env
-
-# Restart services
-sudo systemctl restart upstox-api upstox-frontend
-```
-
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment guide.
-
----
-
-## 📚 Documentation
-
-### Getting Started
-- 📖 **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide (single source of truth)
-- 🛠️ **[LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md)** - Local development setup and workflow
-- 🧪 **[TESTING.md](TESTING.md)** - Testing guide and best practices
-
-### Technical Documentation
-- 🏗️ **[COMPREHENSIVE_ANALYSIS.md](COMPREHENSIVE_ANALYSIS.md)** - Complete system architecture
-- 📡 **[docs/ENDPOINTS.md](docs/ENDPOINTS.md)** - API endpoint documentation
-- 🔧 **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Implementation details
-
-### Migration Guides
-- 🔄 **[V3_API_IMPLEMENTATION_GUIDE.md](V3_API_IMPLEMENTATION_GUIDE.md)** - Upstox API v3 migration
-- 🌐 **[WEBSOCKET_IMPLEMENTATION_PLAN.md](WEBSOCKET_IMPLEMENTATION_PLAN.md)** - WebSocket v3 upgrade
-- 📋 **[MISSING_API_ENDPOINTS.md](MISSING_API_ENDPOINTS.md)** - Pending API integrations
-
-### Operations
-- 🐛 **[.github/debugging-protocol.md](.github/debugging-protocol.md)** - God-Mode debugging guide
-- 📊 **[docs/PRODUCTION_FEATURES.md](docs/PRODUCTION_FEATURES.md)** - Production feature list
-- 🔒 **[docs/SECURITY_PATCH.md](docs/SECURITY_PATCH.md)** - Security guidelines
-
----
-
-## 🏛️ Architecture
 
 ### System Overview
 
@@ -340,6 +294,9 @@ Contributions are welcome! Please follow these steps:
 
 ## 🐛 Troubleshooting
 
+### Quick Debugging
+See **[.github/debugging-quick-reference.md](.github/debugging-quick-reference.md)** for instant help.
+
 ### Common Issues
 
 **Import errors:**
@@ -359,7 +316,23 @@ kill -9 <PID>
 rm market_data.db-shm market_data.db-wal
 ```
 
-**See:** [DEPLOYMENT.md](DEPLOYMENT.md#troubleshooting) for complete guide
+**UI not updating (NiceGUI):**
+- Check if you're using `@ui.refreshable` decorator
+- Call `.refresh()` after async updates
+- See debugging-examples.md for solutions
+
+**UI freezes on button click:**
+- Never use `time.sleep()` in event handlers
+- Use `await run.io_bound()` for blocking operations
+- See async awareness section in debugging protocol
+
+**Docker networking issues:**
+- Use service names instead of `localhost`
+- Set `API_BASE=http://backend:9000` in environment
+
+**For complete debugging guide:** [.github/debugging-protocol.md](.github/debugging-protocol.md)
+
+**See:** [DEPLOYMENT.md](DEPLOYMENT.md#troubleshooting) for deployment-specific issues
 
 ---
 
