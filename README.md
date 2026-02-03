@@ -10,13 +10,40 @@
 
 ---
 
-## 🏠 **[→ READ FULL DOCUMENTATION (HOME.md)](HOME.md)**
+## ⚡ Quick Start (3 Steps)
+
+### 🖥️ Local Development (Recommended - 5 minutes)
+
+```bash
+# Step 1: Clone & Setup
+git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
+cd UPSTOX-PROJECT
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# Step 2: Configure
+cp .env.example .env
+# Edit .env with your Upstox credentials
+
+# Step 3: Run
+python run_platform.py
+
+# Access: http://localhost:5001
+```
+
+**That's it!** The platform will:
+- ✅ Check your Python version
+- ✅ Verify dependencies
+- ✅ Initialize the database
+- ✅ Start all services (API + Frontend + OAuth)
+- ✅ Open your browser automatically
+
+For manual control, see [Local Development Guide](docs/LOCAL_DEVELOPMENT.md).
 
 ---
 
-## ⚡ Ultra Quick Start
-
-### 🐳 Docker (Fastest - 3 minutes)
+### 🐳 Docker (Alternative - 3 minutes)
 
 ```bash
 git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
@@ -26,50 +53,10 @@ cp .env.example .env
 
 docker-compose up -d
 
-# Access:
-# Frontend: http://localhost:5001
-# Backend API: http://localhost:8000
-```
-
-### 🖥️ Ubuntu/Linux (10 minutes)
-
-```bash
-git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
-cd UPSTOX-PROJECT
-
-# Setup
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env
-
-# Start (2 terminals)
-python scripts/api_server.py        # Terminal 1
-python nicegui_dashboard.py         # Terminal 2
-
 # Access: http://localhost:5001
 ```
 
-### 🪟 Windows (10 minutes)
-
-```powershell
-git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
-cd UPSTOX-PROJECT
-
-# Setup
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-copy .env.example .env
-# Edit .env
-
-# Start (2 terminals)
-python scripts/api_server.py        # Terminal 1
-python nicegui_dashboard.py         # Terminal 2
-
-# Access: http://localhost:5001
-```
+---
 
 ---
 
@@ -104,7 +91,6 @@ python nicegui_dashboard.py         # Terminal 2
 ## 📚 Documentation
 
 **Essential Reading:**
-- 🏠 **[HOME.md](HOME.md)** - Complete documentation hub ⭐ START HERE
 - 🚀 **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Production deployment
 - 🛠️ **[docs/LOCAL_DEVELOPMENT.md](docs/LOCAL_DEVELOPMENT.md)** - Development setup
 - 📊 **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - Current status
@@ -118,19 +104,6 @@ python nicegui_dashboard.py         # Terminal 2
 ---
 
 ## 🏗️ Architecture
-
-# Access services
-# Frontend: http://localhost:5001
-# API: http://localhost:8000
-# Grafana: http://localhost:3000
-```
-
-### Option 3: Production Deployment (15 minutes)
-
-```bash
-# On Oracle Cloud (or any server)
-git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
-cd UPSTOX-PROJECT
 sudo bash deploy/oracle_cloud_deploy.sh
 
 # Configure credentials
