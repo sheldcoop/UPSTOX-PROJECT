@@ -15,7 +15,7 @@ scikit-learn>=1.3.2
 pyyaml>=6.0.1
 python-dotenv>=1.0.0
 psutil>=5.9.6
-cryptography>=41.0.7  # Security: Use recent version for vulnerability patches
+cryptography>=42.0.4  # Security: NULL pointer dereference and Bleichenbacher timing oracle patches
 schedule>=1.2.1
 python-dateutil>=2.8.2
 beautifulsoup4>=4.12.3
@@ -23,7 +23,7 @@ apscheduler>=3.10.4
 markdown>=3.5.1
 
 # API Integration
-upstox-python-sdk  # If available, otherwise use requests
+upstox-python-sdk>=2.0.0  # Official Upstox Python SDK
 
 # Development
 pytest>=7.4.3
@@ -36,7 +36,7 @@ transformers>=5.0.0
 torch>=2.0.0
 
 # Production Server
-gunicorn>=21.2.0
+gunicorn>=22.0.0  # Security: HTTP request/response smuggling patches
 setproctitle>=1.3.3
 
 # NiceGUI Dashboard

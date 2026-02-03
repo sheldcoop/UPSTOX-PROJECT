@@ -15,6 +15,22 @@ Updated `requirements.txt` to use **minimum secure versions** instead of strict 
   - Directory traversal attacks
   - Other HTTP parsing vulnerabilities
 
+### 2. cryptography (UPGRADED)
+- **Old Version**: `>=41.0.7`
+- **New Version**: `>=42.0.4`
+- **Security Impact**: Patches critical vulnerabilities:
+  - NULL pointer dereference with pkcs12.serialize_key_and_certificates
+  - Bleichenbacher timing oracle attack
+  - CVEs affecting versions < 42.0.4
+
+### 3. gunicorn (UPGRADED)
+- **Old Version**: `>=21.2.0`
+- **New Version**: `>=22.0.0`
+- **Security Impact**: Patches HTTP smuggling vulnerabilities:
+  - HTTP Request/Response smuggling vulnerability
+  - Request smuggling leading to endpoint restriction bypass
+  - CVEs affecting versions < 22.0.0
+
 ## Changes Made
 
 ### Strategy: Strict Pinning (`==`) → Minimum Versions (`>=`)
@@ -41,7 +57,7 @@ Updated `requirements.txt` to use **minimum secure versions** instead of strict 
 - pyyaml: `==6.0.1` → `>=6.0.1`
 - python-dotenv: `==1.0.0` → `>=1.0.0`
 - psutil: `==5.9.6` → `>=5.9.6`
-- cryptography: `==41.0.7` → `>=41.0.7` (added security comment)
+- cryptography: `==41.0.7` → `>=42.0.4` (SECURITY: bumped for CVE patches)
 - schedule: `==1.2.1` → `>=1.2.1`
 - python-dateutil: `==2.8.2` → `>=2.8.2`
 - beautifulsoup4: `==4.12.3` → `>=4.12.3`
@@ -52,6 +68,9 @@ Updated `requirements.txt` to use **minimum secure versions** instead of strict 
 - pytest: `==7.4.3` → `>=7.4.3`
 - black: `==23.12.1` → `>=23.12.1`
 
+#### API Integration (NEW: Added Version Constraint)
+- upstox-python-sdk: *no version* → `>=2.0.0`
+
 #### AI Assistant (NEW: Added Version Constraints)
 - google-generativeai: *no version* → `>=0.8.0`
 - python-telegram-bot: *no version* → `>=22.0`
@@ -59,7 +78,7 @@ Updated `requirements.txt` to use **minimum secure versions** instead of strict 
 - torch: *no version* → `>=2.0.0`
 
 #### Production
-- gunicorn: `==21.2.0` → `>=21.2.0`
+- gunicorn: `==21.2.0` → `>=22.0.0` (SECURITY: bumped for HTTP smuggling patches)
 - setproctitle: `==1.3.3` → `>=1.3.3`
 
 #### Database
