@@ -149,10 +149,14 @@ class CorporateAnnouncementsDB:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
+        params = []
+        
         if start_date and end_date:
-            date_filter = f"announcement_date BETWEEN '{start_date}' AND '{end_date}'"
+            date_filter = "announcement_date BETWEEN ? AND ?"
+            params.extend([start_date, end_date])
         else:
-            date_filter = f"announcement_date >= date('now', '-{days} days')"
+            date_filter = "announcement_date >= date('now', ? || ' days')"
+            params.append(f"-{days}")
 
         query = f"""
             SELECT company_name, symbol, subject, announcement_date, category, url
@@ -161,11 +165,13 @@ class CorporateAnnouncementsDB:
         """
 
         if search_term:
-            query += f" AND (company_name LIKE '%{search_term}%' OR subject LIKE '%{search_term}%')"
+            query += " AND (company_name LIKE ? OR subject LIKE ?)"
+            search_pattern = f"%{search_term}%"
+            params.extend([search_pattern, search_pattern])
 
         query += " ORDER BY announcement_date DESC"
 
-        cursor.execute(query)
+        cursor.execute(query, params)
         rows = cursor.fetchall()
         conn.close()
 
@@ -192,10 +198,14 @@ class CorporateAnnouncementsDB:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
+        params = []
+        
         if start_date and end_date:
-            date_filter = f"result_date BETWEEN '{start_date}' AND '{end_date}'"
+            date_filter = "result_date BETWEEN ? AND ?"
+            params.extend([start_date, end_date])
         else:
-            date_filter = f"result_date >= date('now', '-{days} days')"
+            date_filter = "result_date >= date('now', ? || ' days')"
+            params.append(f"-{days}")
 
         query = f"""
             SELECT company_name, symbol, period, result_date, category, result_type, url
@@ -204,11 +214,13 @@ class CorporateAnnouncementsDB:
         """
 
         if search_term:
-            query += f" AND (company_name LIKE '%{search_term}%' OR period LIKE '%{search_term}%')"
+            query += " AND (company_name LIKE ? OR period LIKE ?)"
+            search_pattern = f"%{search_term}%"
+            params.extend([search_pattern, search_pattern])
 
         query += " ORDER BY result_date DESC"
 
-        cursor.execute(query)
+        cursor.execute(query, params)
         rows = cursor.fetchall()
         conn.close()
 
@@ -236,10 +248,14 @@ class CorporateAnnouncementsDB:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
+        params = []
+        
         if start_date and end_date:
-            date_filter = f"event_date BETWEEN '{start_date}' AND '{end_date}'"
+            date_filter = "event_date BETWEEN ? AND ?"
+            params.extend([start_date, end_date])
         else:
-            date_filter = f"event_date >= date('now', '-{days} days')"
+            date_filter = "event_date >= date('now', ? || ' days')"
+            params.append(f"-{days}")
 
         query = f"""
             SELECT company_name, symbol, event_type, event_date, venue, purpose, url
@@ -248,11 +264,13 @@ class CorporateAnnouncementsDB:
         """
 
         if search_term:
-            query += f" AND (company_name LIKE '%{search_term}%' OR event_type LIKE '%{search_term}%')"
+            query += " AND (company_name LIKE ? OR event_type LIKE ?)"
+            search_pattern = f"%{search_term}%"
+            params.extend([search_pattern, search_pattern])
 
         query += " ORDER BY event_date DESC"
 
-        cursor.execute(query)
+        cursor.execute(query, params)
         rows = cursor.fetchall()
         conn.close()
 
@@ -280,10 +298,14 @@ class CorporateAnnouncementsDB:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
+        params = []
+        
         if start_date and end_date:
-            date_filter = f"meeting_date BETWEEN '{start_date}' AND '{end_date}'"
+            date_filter = "meeting_date BETWEEN ? AND ?"
+            params.extend([start_date, end_date])
         else:
-            date_filter = f"meeting_date >= date('now', '-{days} days')"
+            date_filter = "meeting_date >= date('now', ? || ' days')"
+            params.append(f"-{days}")
 
         query = f"""
             SELECT company_name, symbol, meeting_date, purpose, category, url
@@ -292,11 +314,13 @@ class CorporateAnnouncementsDB:
         """
 
         if search_term:
-            query += f" AND (company_name LIKE '%{search_term}%' OR purpose LIKE '%{search_term}%')"
+            query += " AND (company_name LIKE ? OR purpose LIKE ?)"
+            search_pattern = f"%{search_term}%"
+            params.extend([search_pattern, search_pattern])
 
         query += " ORDER BY meeting_date DESC"
 
-        cursor.execute(query)
+        cursor.execute(query, params)
         rows = cursor.fetchall()
         conn.close()
 
