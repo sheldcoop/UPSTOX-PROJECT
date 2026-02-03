@@ -4,10 +4,12 @@ UPSTOX Trading Platform - One-Click Launcher
 Master script to start all services with health checks and dependency verification.
 
 Usage:
-    python run_platform.py              # Start all services
-    python run_platform.py --check      # Health check only
-    python run_platform.py --stop       # Stop all services
-    python run_platform.py --setup      # First-time setup only
+    python run_platform.py                  # Start all services
+    python run_platform.py --check          # Health check only
+    python run_platform.py --stop           # Stop all services
+    python run_platform.py --setup          # First-time setup only
+    python run_platform.py --reinstall      # Clean and reinstall environment
+    python run_platform.py --clean          # Same as --reinstall
 """
 
 import sys
@@ -18,6 +20,10 @@ import signal
 import argparse
 import json
 import webbrowser
+import urllib.request
+import urllib.error
+import shutil
+import platform
 from pathlib import Path
 from typing import List, Dict, Optional
 
@@ -105,6 +111,37 @@ class PlatformLauncher:
             return True
         else:
             self.print_step("Python Version", f"Python 3.11+ required (found {version.major}.{version.minor})", "error")
+            print()
+            
+            # Provide platform-specific instructions
+            system = platform.system()
+            if system == "Darwin":  # macOS
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}")
+                print(f"{Colors.BOLD}  💡 How to install Python 3.11+ on macOS:{Colors.NC}")
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}")
+                print(f"  1. Install using Homebrew:")
+                print(f"     {Colors.CYAN}brew install python@3.11{Colors.NC}")
+                print()
+                print(f"  2. Then run this script with:")
+                print(f"     {Colors.CYAN}python3.11 run_platform.py{Colors.NC}")
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}\n")
+            elif system == "Linux":
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}")
+                print(f"{Colors.BOLD}  💡 How to install Python 3.11+ on Linux:{Colors.NC}")
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}")
+                print(f"  Ubuntu/Debian:")
+                print(f"     {Colors.CYAN}sudo apt update && sudo apt install python3.11{Colors.NC}")
+                print()
+                print(f"  Fedora/RHEL:")
+                print(f"     {Colors.CYAN}sudo dnf install python3.11{Colors.NC}")
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}\n")
+            elif system == "Windows":
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}")
+                print(f"{Colors.BOLD}  💡 How to install Python 3.11+ on Windows:{Colors.NC}")
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}")
+                print(f"  Download from: {Colors.CYAN}https://www.python.org/downloads/{Colors.NC}")
+                print(f"{Colors.YELLOW}{'─'*60}{Colors.NC}\n")
+            
             return False
 
     def check_virtual_environment(self) -> bool:
@@ -173,14 +210,21 @@ class PlatformLauncher:
             return self.install_dependencies()
 
     def install_dependencies(self) -> bool:
-        """Install dependencies from requirements.txt"""
+        """Install dependencies from requirements.txt using venv pip"""
         python_exe = self.get_python_executable()
         requirements_file = self.project_root / "requirements.txt"
         
+        # Get pip from venv explicitly
+        if sys.platform == "win32":
+            pip_exe = str(self.venv_path / "Scripts" / "pip")
+        else:
+            pip_exe = str(self.venv_path / "bin" / "pip")
+        
         try:
             self.print_step("Dependencies", "Installing from requirements.txt...", "running")
+            # Use venv pip directly to ensure we don't use system pip
             subprocess.run(
-                [python_exe, "-m", "pip", "install", "-r", str(requirements_file)],
+                [pip_exe, "install", "-r", str(requirements_file)],
                 check=True,
                 cwd=str(self.project_root)
             )
@@ -221,6 +265,69 @@ class PlatformLauncher:
             dir_path.mkdir(exist_ok=True)
         
         self.print_step("Directories", f"Created {', '.join(dirs)}/", "success")
+        return True
+
+    def clean_environment(self) -> bool:
+        """Clean virtual environment and cached files for fresh reinstall"""
+        self.print_header()
+        self.print_step("Cleanup", "Starting environment cleanup...", "running")
+        print()
+        
+        cleaned_items = []
+        
+        # Remove .venv directory
+        if self.venv_path.exists():
+            try:
+                self.print_step("Virtual Environment", "Removing .venv/", "running")
+                shutil.rmtree(self.venv_path)
+                cleaned_items.append(".venv/")
+                self.print_step("Virtual Environment", "Removed successfully", "success")
+            except Exception as e:
+                self.print_step("Virtual Environment", f"Failed to remove: {e}", "error")
+                return False
+        else:
+            self.print_step("Virtual Environment", "Not found (already clean)", "info")
+        
+        # Remove __pycache__ directories
+        pycache_count = 0
+        for pycache_dir in self.project_root.rglob("__pycache__"):
+            try:
+                shutil.rmtree(pycache_dir)
+                pycache_count += 1
+            except Exception:
+                pass
+        
+        if pycache_count > 0:
+            cleaned_items.append(f"{pycache_count} __pycache__ directories")
+            self.print_step("Cache", f"Removed {pycache_count} __pycache__ directories", "success")
+        else:
+            self.print_step("Cache", "No __pycache__ directories found", "info")
+        
+        # Remove .pyc files
+        pyc_count = 0
+        for pyc_file in self.project_root.rglob("*.pyc"):
+            try:
+                pyc_file.unlink()
+                pyc_count += 1
+            except Exception:
+                pass
+        
+        if pyc_count > 0:
+            cleaned_items.append(f"{pyc_count} .pyc files")
+            self.print_step("Cache", f"Removed {pyc_count} .pyc files", "success")
+        else:
+            self.print_step("Cache", "No .pyc files found", "info")
+        
+        print()
+        self.print_step("Cleanup", f"Environment cleaned successfully!", "success")
+        print()
+        
+        if cleaned_items:
+            print(f"{Colors.CYAN}📦 Cleaned:{Colors.NC}")
+            for item in cleaned_items:
+                print(f"   • {item}")
+            print()
+        
         return True
 
     def kill_port(self, port: int) -> None:
@@ -287,25 +394,25 @@ class PlatformLauncher:
             return False
 
     def wait_for_service(self, service_key: str, timeout: int = 30) -> bool:
-        """Wait for service to become healthy"""
+        """Wait for service to become healthy using stdlib urllib"""
         service = self.services[service_key]
         
         if service["health_endpoint"] is None:
             time.sleep(2)  # Just wait a bit for services without health checks
             return True
         
-        import requests
-        
         self.print_step(service["name"], "Waiting for service to be ready...", "running")
         
         start_time = time.time()
         while time.time() - start_time < timeout:
             try:
-                response = requests.get(service["health_endpoint"], timeout=1)
-                if response.status_code == 200:
-                    self.print_step(service["name"], "Service is healthy ✓", "success")
-                    return True
-            except:
+                # Use urllib.request instead of requests (stdlib only)
+                req = urllib.request.Request(service["health_endpoint"])
+                with urllib.request.urlopen(req, timeout=1) as response:
+                    if response.status == 200:
+                        self.print_step(service["name"], "Service is healthy ✓", "success")
+                        return True
+            except (urllib.error.URLError, urllib.error.HTTPError, OSError):
                 pass
             time.sleep(1)
         
@@ -338,7 +445,7 @@ class PlatformLauncher:
             self.kill_port(service["port"])
 
     def run_health_check(self) -> bool:
-        """Run health checks on all services"""
+        """Run health checks on all services using stdlib urllib"""
         self.print_header()
         self.print_step("Health Check", "Checking platform health...", "running")
         print()
@@ -347,14 +454,15 @@ class PlatformLauncher:
         for service_key, service in self.services.items():
             if service["health_endpoint"]:
                 try:
-                    import requests
-                    response = requests.get(service["health_endpoint"], timeout=2)
-                    if response.status_code == 200:
-                        self.print_step(service["name"], f"Healthy on port {service['port']}", "success")
-                    else:
-                        self.print_step(service["name"], f"Unhealthy (status {response.status_code})", "error")
-                        all_healthy = False
-                except:
+                    # Use urllib.request instead of requests (stdlib only)
+                    req = urllib.request.Request(service["health_endpoint"])
+                    with urllib.request.urlopen(req, timeout=2) as response:
+                        if response.status == 200:
+                            self.print_step(service["name"], f"Healthy on port {service['port']}", "success")
+                        else:
+                            self.print_step(service["name"], f"Unhealthy (status {response.status})", "error")
+                            all_healthy = False
+                except (urllib.error.URLError, urllib.error.HTTPError, OSError):
                     self.print_step(service["name"], "Not responding", "error")
                     all_healthy = False
             else:
@@ -569,6 +677,8 @@ def main():
     parser.add_argument("--check", action="store_true", help="Run health check only")
     parser.add_argument("--stop", action="store_true", help="Stop all services")
     parser.add_argument("--setup", action="store_true", help="Run first-time setup only")
+    parser.add_argument("--reinstall", "--clean", dest="reinstall", action="store_true",
+                        help="Clean environment and reinstall (removes .venv, __pycache__, and .pyc files)")
     
     args = parser.parse_args()
     
@@ -581,6 +691,13 @@ def main():
         launcher.print_header()
         launcher.stop_all_services()
         print()
+    elif args.reinstall:
+        # Clean environment first
+        if not launcher.clean_environment():
+            sys.exit(1)
+        # Then run setup
+        success = launcher.setup_only()
+        sys.exit(0 if success else 1)
     elif args.setup:
         success = launcher.setup_only()
         sys.exit(0 if success else 1)
