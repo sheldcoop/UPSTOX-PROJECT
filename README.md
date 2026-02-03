@@ -58,8 +58,6 @@ docker-compose up -d
 
 ---
 
----
-
 ## 📊 What's Included
 
 ### ✅ 31 Interactive UI Pages
@@ -88,6 +86,28 @@ docker-compose up -d
 
 ---
 
+## 🎮 Platform Commands
+
+The `run_platform.py` script provides a unified interface for all platform operations:
+
+```bash
+# Start all services (one-click)
+python run_platform.py
+
+# First-time setup only
+python run_platform.py --setup
+
+# Check service health
+python run_platform.py --check
+
+# Stop all services
+python run_platform.py --stop
+```
+
+**Advanced:** For manual control, see the [Local Development Guide](docs/LOCAL_DEVELOPMENT.md) which explains how to run individual services.
+
+---
+
 ## 📚 Documentation
 
 **Essential Reading:**
@@ -104,47 +124,6 @@ docker-compose up -d
 ---
 
 ## 🏗️ Architecture
-sudo bash deploy/oracle_cloud_deploy.sh
-
-# Configure credentials
-cp .env.example .env
-nano .env
-
-# Restart services
-sudo systemctl restart upstox-api upstox-frontend
-```
-
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment guide.
-
----
-
-## 📚 Documentation
-
-### Getting Started
-- 📖 **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide (single source of truth)
-- 🛠️ **[LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md)** - Local development setup and workflow
-- 🧪 **[TESTING.md](TESTING.md)** - Testing guide and best practices
-
-### Technical Documentation
-- 🏗️ **[COMPREHENSIVE_ANALYSIS.md](COMPREHENSIVE_ANALYSIS.md)** - Complete system architecture
-- 📡 **[docs/ENDPOINTS.md](docs/ENDPOINTS.md)** - API endpoint documentation
-- 🔧 **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Implementation details
-
-### Migration Guides
-- 🔄 **[V3_API_IMPLEMENTATION_GUIDE.md](V3_API_IMPLEMENTATION_GUIDE.md)** - Upstox API v3 migration
-- 🌐 **[WEBSOCKET_IMPLEMENTATION_PLAN.md](WEBSOCKET_IMPLEMENTATION_PLAN.md)** - WebSocket v3 upgrade
-- 📋 **[MISSING_API_ENDPOINTS.md](MISSING_API_ENDPOINTS.md)** - Pending API integrations
-
-### Operations
-- 🐛 **[.github/debugging-protocol.md](.github/debugging-protocol.md)** - Complete debugging protocol (1000 lines)
-- 📖 **[.github/debugging-examples.md](.github/debugging-examples.md)** - 6 real-world debugging scenarios
-- ⚡ **[.github/debugging-quick-reference.md](.github/debugging-quick-reference.md)** - Quick debugging cheat sheets
-- 📊 **[docs/PRODUCTION_FEATURES.md](docs/PRODUCTION_FEATURES.md)** - Production feature list
-- 🔒 **[docs/SECURITY_PATCH.md](docs/SECURITY_PATCH.md)** - Security guidelines
-
----
-
-## 🏛️ Architecture
 
 ### System Overview
 
