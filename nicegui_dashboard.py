@@ -57,6 +57,13 @@ from dashboard_ui.pages import (
     api_debugger,
     health,
     user_profile,
+    orders_alerts,
+    analytics,
+    backtest,
+    signals,
+    strategies,
+    upstox_live,
+    live_trading,
 )
 
 # Configuration
@@ -265,9 +272,20 @@ def main_dashboard(page: str = None):
 
                     menu_group("Trading")
                     menu_item("Positions", "positions", "pie_chart")
+                    menu_item("Orders & Alerts", "orders_alerts", "receipt")
+                    menu_item("Live Trading", "live_trading", "local_atm")
                     menu_item("Option Chain", "option_chain", "list_alt")
                     menu_item("Option Greeks", "option_greeks", "data_exploration")
                     menu_item("F&O Analysis", "fno_analysis", "timeline")
+
+                    menu_group("Strategies")
+                    menu_item("Signals", "signals", "track_changes")
+                    menu_item("Strategy Builder", "strategies", "settings_suggest")
+                    menu_item("Backtest", "backtest", "science")
+
+                    menu_group("Upstox Live")
+                    menu_item("Live Data", "upstox_live", "cloud_sync")
+                    menu_item("Analytics", "analytics", "analytics")
 
                     menu_group("Account")
                     menu_item("User Profile", "user_profile", "account_circle")
@@ -278,7 +296,6 @@ def main_dashboard(page: str = None):
                     menu_item(
                         "API Debugger", "api_debugger", "integration_instructions"
                     )
-                    menu_item("Backtest", "backtest", "science")
                     menu_item("Market Guide", "market_guide", "library_books")
                     menu_item("Configurations", "settings", "settings")
 
@@ -341,6 +358,20 @@ def main_dashboard(page: str = None):
                 health.render_page(state)
             elif state.current_page == "user_profile":
                 user_profile.render_page(state)
+            elif state.current_page == "orders_alerts":
+                orders_alerts.render_page(state)
+            elif state.current_page == "analytics":
+                analytics.render_page(state)
+            elif state.current_page == "backtest":
+                backtest.render_page(state)
+            elif state.current_page == "signals":
+                signals.render_page(state)
+            elif state.current_page == "strategies":
+                strategies.render_page(state)
+            elif state.current_page == "upstox_live":
+                upstox_live.render_page(state)
+            elif state.current_page == "live_trading":
+                live_trading.render_page(state)
             else:
                 wip.render_page(state.current_page)
 
