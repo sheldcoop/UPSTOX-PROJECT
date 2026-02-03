@@ -55,6 +55,8 @@ from dashboard_ui.pages import (
     option_greeks,
     historical_options,
     api_debugger,
+    health,
+    user_profile,
 )
 
 # Configuration
@@ -267,6 +269,10 @@ def main_dashboard(page: str = None):
                     menu_item("Option Greeks", "option_greeks", "data_exploration")
                     menu_item("F&O Analysis", "fno_analysis", "timeline")
 
+                    menu_group("Account")
+                    menu_item("User Profile", "user_profile", "account_circle")
+                    menu_item("Health Status", "health", "health_and_safety")
+
                     menu_group("Tools")
                     menu_item("AI Assistant", "ai_chat", "smart_toy")
                     menu_item(
@@ -331,6 +337,10 @@ def main_dashboard(page: str = None):
                 fno.render_page(state)
             elif state.current_page == "market_guide":
                 guide.render_page(state)
+            elif state.current_page == "health":
+                health.render_page(state)
+            elif state.current_page == "user_profile":
+                user_profile.render_page(state)
             else:
                 wip.render_page(state.current_page)
 
