@@ -13,25 +13,24 @@ from datetime import datetime
 import time
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 # NSE Index URLs
 NSE_INDICES = {
-    'NIFTY50': 'https://archives.nseindia.com/content/indices/ind_nifty50list.csv',
-    'NIFTYNEXT50': 'https://archives.nseindia.com/content/indices/ind_niftynext50list.csv',
-    'NIFTY100': 'https://archives.nseindia.com/content/indices/ind_nifty100list.csv',
-    'NIFTY200': 'https://archives.nseindia.com/content/indices/ind_nifty200list.csv',
-    'NIFTY500': 'https://archives.nseindia.com/content/indices/ind_nifty500list.csv',
-    'NIFTYMIDCAP50': 'https://archives.nseindia.com/content/indices/ind_niftymidcap50list.csv',
-    'NIFTYMIDCAP100': 'https://archives.nseindia.com/content/indices/ind_niftymidcap100list.csv',
-    'NIFTYSMALLCAP50': 'https://archives.nseindia.com/content/indices/ind_niftysmallcap50list.csv',
-    'NIFTYSMALLCAP100': 'https://archives.nseindia.com/content/indices/ind_niftysmallcap100list.csv',
+    "NIFTY50": "https://archives.nseindia.com/content/indices/ind_nifty50list.csv",
+    "NIFTYNEXT50": "https://archives.nseindia.com/content/indices/ind_niftynext50list.csv",
+    "NIFTY100": "https://archives.nseindia.com/content/indices/ind_nifty100list.csv",
+    "NIFTY200": "https://archives.nseindia.com/content/indices/ind_nifty200list.csv",
+    "NIFTY500": "https://archives.nseindia.com/content/indices/ind_nifty500list.csv",
+    "NIFTYMIDCAP50": "https://archives.nseindia.com/content/indices/ind_niftymidcap50list.csv",
+    "NIFTYMIDCAP100": "https://archives.nseindia.com/content/indices/ind_niftymidcap100list.csv",
+    "NIFTYSMALLCAP50": "https://archives.nseindia.com/content/indices/ind_niftysmallcap50list.csv",
+    "NIFTYSMALLCAP100": "https://archives.nseindia.com/content/indices/ind_niftysmallcap100list.csv",
 }
 
-DB_PATH = 'market_data.db'
+DB_PATH = "market_data.db"
 
 
 class NSEIndexUpdater:
@@ -41,13 +40,15 @@ class NSEIndexUpdater:
         self.db_path = db_path
         self.session = requests.Session()
         # NSE requires proper headers to avoid 403
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive',
-        })
+        self.session.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Accept-Encoding": "gzip, deflate",
+                "Connection": "keep-alive",
+            }
+        )
 
     def init_database(self):
         """Create index membership and sector tables if they don't exist"""
@@ -105,14 +106,14 @@ class NSEIndexUpdater:
             response.raise_for_status()
 
             # Decode content
-            content = response.content.decode('utf-8')
-            lines = content.split('\n')
+            content = response.content.decode("utf-8")
+            lines = content.split("\n")
 
             # Parse CSV
             reader = csv.DictReader(lines)
             data = []
             for row in reader:
-                if row.get('Symbol'):  # Skip empty rows
+                if row.get("Symbol"):  # Skip empty rows
                     data.append(row)
 
             logger.info(f"✅ Downloaded {len(data)} stocks for {index_name}")
@@ -131,18 +132,19 @@ class NSEIndexUpdater:
         updated = 0
 
         for row in data:
-            symbol = row.get('Symbol', '').strip()
-            company_name = row.get('Company Name', '').strip()
-            series = row.get('Series', '').strip()
-            isin = row.get('ISIN Code', '').strip()
-            industry = row.get('Industry', '').strip()
+            symbol = row.get("Symbol", "").strip()
+            company_name = row.get("Company Name", "").strip()
+            series = row.get("Series", "").strip()
+            isin = row.get("ISIN Code", "").strip()
+            industry = row.get("Industry", "").strip()
 
             if not symbol:
                 continue
 
             try:
                 # Insert or update index membership
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO nse_index_membership 
                     (symbol, company_name, index_name, series, isin, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?)
@@ -151,7 +153,9 @@ class NSEIndexUpdater:
                         series = excluded.series,
                         isin = excluded.isin,
                         updated_at = excluded.updated_at
-                """, (symbol, company_name, index_name, series, isin, datetime.now()))
+                """,
+                    (symbol, company_name, index_name, series, isin, datetime.now()),
+                )
 
                 if cursor.rowcount == 1:
                     inserted += 1
@@ -161,9 +165,12 @@ class NSEIndexUpdater:
                 # Update sector information if available
                 if industry:
                     # Extract sector from industry (first part usually)
-                    sector = industry.split('-')[0].strip() if '-' in industry else industry
+                    sector = (
+                        industry.split("-")[0].strip() if "-" in industry else industry
+                    )
 
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         INSERT INTO nse_sector_info 
                         (symbol, company_name, sector, industry, updated_at)
                         VALUES (?, ?, ?, ?, ?)
@@ -172,7 +179,9 @@ class NSEIndexUpdater:
                             sector = excluded.sector,
                             industry = excluded.industry,
                             updated_at = excluded.updated_at
-                    """, (symbol, company_name, sector, industry, datetime.now()))
+                    """,
+                        (symbol, company_name, sector, industry, datetime.now()),
+                    )
 
             except Exception as e:
                 logger.error(f"Error updating {symbol}: {str(e)}")
@@ -211,11 +220,14 @@ class NSEIndexUpdater:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT index_name FROM nse_index_membership
             WHERE symbol = ?
             ORDER BY index_name
-        """, (symbol,))
+        """,
+            (symbol,),
+        )
 
         indices = [row[0] for row in cursor.fetchall()]
         conn.close()
@@ -226,16 +238,19 @@ class NSEIndexUpdater:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT sector, industry FROM nse_sector_info
             WHERE symbol = ?
-        """, (symbol,))
+        """,
+            (symbol,),
+        )
 
         result = cursor.fetchone()
         conn.close()
 
         if result:
-            return {'sector': result[0], 'industry': result[1]}
+            return {"sector": result[0], "industry": result[1]}
         return None
 
     def get_index_constituents(self, index_name):
@@ -243,21 +258,26 @@ class NSEIndexUpdater:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT symbol, company_name, series, isin
             FROM nse_index_membership
             WHERE index_name = ?
             ORDER BY symbol
-        """, (index_name,))
+        """,
+            (index_name,),
+        )
 
         constituents = []
         for row in cursor.fetchall():
-            constituents.append({
-                'symbol': row[0],
-                'company_name': row[1],
-                'series': row[2],
-                'isin': row[3]
-            })
+            constituents.append(
+                {
+                    "symbol": row[0],
+                    "company_name": row[1],
+                    "series": row[2],
+                    "isin": row[3],
+                }
+            )
 
         conn.close()
         return constituents
@@ -267,20 +287,21 @@ class NSEIndexUpdater:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT symbol, company_name, industry
             FROM nse_sector_info
             WHERE sector = ?
             ORDER BY symbol
-        """, (sector,))
+        """,
+            (sector,),
+        )
 
         stocks = []
         for row in cursor.fetchall():
-            stocks.append({
-                'symbol': row[0],
-                'company_name': row[1],
-                'industry': row[2]
-            })
+            stocks.append(
+                {"symbol": row[0], "company_name": row[1], "industry": row[2]}
+            )
 
         conn.close()
         return stocks
@@ -300,20 +321,22 @@ def main():
     logger.info("📊 Sample Queries:")
 
     # Test: Get RELIANCE info
-    reliance_indices = updater.get_stock_indices('RELIANCE')
+    reliance_indices = updater.get_stock_indices("RELIANCE")
     logger.info(f"RELIANCE is in indices: {', '.join(reliance_indices)}")
 
-    reliance_sector = updater.get_stock_sector('RELIANCE')
+    reliance_sector = updater.get_stock_sector("RELIANCE")
     if reliance_sector:
-        logger.info(f"RELIANCE sector: {reliance_sector['sector']}, industry: {reliance_sector['industry']}")
+        logger.info(
+            f"RELIANCE sector: {reliance_sector['sector']}, industry: {reliance_sector['industry']}"
+        )
 
     # Test: Get NIFTY50 constituents
-    nifty50 = updater.get_index_constituents('NIFTY50')
+    nifty50 = updater.get_index_constituents("NIFTY50")
     logger.info(f"NIFTY50 has {len(nifty50)} constituents")
 
     logger.info("")
     logger.info("✅ Done! Database updated with NSE index and sector data")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
