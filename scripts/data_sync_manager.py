@@ -13,6 +13,7 @@ import time
 import schedule
 
 from scripts.database_validator import DatabaseValidator
+from scripts.etl.upstox_instruments_fetcher_v2 import UpstoxInstrumentsFetcherV2
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -421,6 +422,102 @@ class DataSyncManager:
             "records_synced": total_records,
             "errors": errors,
         }
+
+    def sync_instruments_daily(self) -> Dict[str, Any]:
+        """
+        Daily instruments sync at 6:30 AM IST (called by scheduler)
+        Uses tiered fetcher v2 with JSON format
+        
+        Returns:
+            Sync summary with stats
+        """
+        sync_id = self.start_sync("instruments_daily_sync")
+        
+        try:
+            logger.info("🚀 Starting daily instruments sync (Tiered V2)")
+            
+            # Run tiered fetcher
+            fetcher = UpstoxInstrumentsFetcherV2(db_path=self.db_path)
+            success = fetcher.run_full_sync()
+            
+            if success:
+                self.complete_sync(
+                    sync_id,
+                    status="SUCCESS",
+                    records_synced=fetcher.stats['total_fetched'],
+                    errors_count=fetcher.stats['errors']
+                )
+                
+                logger.info("✅ Instruments daily sync completed")
+                
+                return {
+                    'status': 'SUCCESS',
+                    'total_fetched': fetcher.stats['total_fetched'],
+                    'tier1': fetcher.stats['tier1_inserted'],
+                    'sme': fetcher.stats['sme_inserted'],
+                    'derivatives': fetcher.stats['derivatives_inserted'],
+                    'indices': fetcher.stats['indices_inserted'],
+                    'expired_cleaned': fetcher.stats['expired_cleaned']
+                }
+            else:
+                self.complete_sync(
+                    sync_id,
+                    status="FAILED",
+                    errors_count=1,
+                    error_message="Instruments fetcher returned False"
+                )
+                
+                logger.error("❌ Instruments daily sync failed")
+                return {'status': 'FAILED'}
+                
+        except Exception as e:
+            self.complete_sync(
+                sync_id,
+                status="FAILED",
+                errors_count=1,
+                error_message=str(e)
+            )
+            
+            logger.error(f"❌ Instruments daily sync exception: {e}")
+            import traceback
+            traceback.print_exc()
+            
+            return {'status': 'FAILED', 'error': str(e)}
+
+    def schedule_instruments_sync(self):
+        """
+        Schedule daily instruments refresh at 6:30 AM IST
+        Registers job and configures scheduler
+        """
+        # Register job in database
+        self.register_sync_job(
+            name="instruments_daily_sync",
+            description="Daily tiered instruments fetch from Upstox CDN (JSON format)",
+            schedule_cron="30 6 * * *"  # 6:30 AM daily
+        )
+        
+        # Schedule with schedule library
+        schedule.every().day.at("06:30").do(self.sync_instruments_daily)
+        
+        logger.info("📅 Scheduled instruments sync: Daily at 6:30 AM IST")
+        logger.info("   - Fetches from: https://assets.upstox.com/.../complete.json.gz")
+        logger.info("   - Tiers: Tier1 (liquid), SME, Derivatives, Indices/ETFs")
+        logger.info("   - Auto-cleanup: Expired derivatives")
+
+    def run_scheduler(self):
+        """
+        Run the scheduled tasks loop
+        Call this to start automated sync operations
+        """
+        logger.info("🕐 Starting DataSyncManager scheduler...")
+        logger.info("   Press Ctrl+C to stop")
+        
+        try:
+            while True:
+                schedule.run_pending()
+                time.sleep(60)  # Check every minute
+        except KeyboardInterrupt:
+            logger.info("\n⏹️  Scheduler stopped by user")
 
     def get_sync_status(self) -> Dict[str, Any]:
         """Get status of all sync jobs"""
