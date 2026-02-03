@@ -61,6 +61,7 @@ class TestHealthEndpoints:
         assert isinstance(timestamp, str)
         # Should be able to parse as ISO format
         from datetime import datetime
+
         try:
             datetime.fromisoformat(timestamp)
         except ValueError:
