@@ -18,6 +18,8 @@ import signal
 import argparse
 import json
 import webbrowser
+import urllib.request
+import urllib.error
 from pathlib import Path
 from typing import List, Dict, Optional
 
@@ -287,25 +289,25 @@ class PlatformLauncher:
             return False
 
     def wait_for_service(self, service_key: str, timeout: int = 30) -> bool:
-        """Wait for service to become healthy"""
+        """Wait for service to become healthy using stdlib urllib"""
         service = self.services[service_key]
         
         if service["health_endpoint"] is None:
             time.sleep(2)  # Just wait a bit for services without health checks
             return True
         
-        import requests
-        
         self.print_step(service["name"], "Waiting for service to be ready...", "running")
         
         start_time = time.time()
         while time.time() - start_time < timeout:
             try:
-                response = requests.get(service["health_endpoint"], timeout=1)
-                if response.status_code == 200:
-                    self.print_step(service["name"], "Service is healthy ✓", "success")
-                    return True
-            except:
+                # Use urllib.request instead of requests (stdlib only)
+                req = urllib.request.Request(service["health_endpoint"])
+                with urllib.request.urlopen(req, timeout=1) as response:
+                    if response.status == 200:
+                        self.print_step(service["name"], "Service is healthy ✓", "success")
+                        return True
+            except (urllib.error.URLError, urllib.error.HTTPError, OSError):
                 pass
             time.sleep(1)
         
@@ -338,7 +340,7 @@ class PlatformLauncher:
             self.kill_port(service["port"])
 
     def run_health_check(self) -> bool:
-        """Run health checks on all services"""
+        """Run health checks on all services using stdlib urllib"""
         self.print_header()
         self.print_step("Health Check", "Checking platform health...", "running")
         print()
@@ -347,14 +349,15 @@ class PlatformLauncher:
         for service_key, service in self.services.items():
             if service["health_endpoint"]:
                 try:
-                    import requests
-                    response = requests.get(service["health_endpoint"], timeout=2)
-                    if response.status_code == 200:
-                        self.print_step(service["name"], f"Healthy on port {service['port']}", "success")
-                    else:
-                        self.print_step(service["name"], f"Unhealthy (status {response.status_code})", "error")
-                        all_healthy = False
-                except:
+                    # Use urllib.request instead of requests (stdlib only)
+                    req = urllib.request.Request(service["health_endpoint"])
+                    with urllib.request.urlopen(req, timeout=2) as response:
+                        if response.status == 200:
+                            self.print_step(service["name"], f"Healthy on port {service['port']}", "success")
+                        else:
+                            self.print_step(service["name"], f"Unhealthy (status {response.status})", "error")
+                            all_healthy = False
+                except (urllib.error.URLError, urllib.error.HTTPError, OSError):
                     self.print_step(service["name"], "Not responding", "error")
                     all_healthy = False
             else:
