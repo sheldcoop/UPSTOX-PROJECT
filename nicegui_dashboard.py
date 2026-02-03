@@ -74,6 +74,7 @@ from dashboard_ui.pages import (
     portfolio_summary,
     charges_calc,
     instruments_browser,
+    market_explorer,
 )
 
 # Configuration
@@ -309,6 +310,7 @@ def main_dashboard(page: str = None):
                     menu_item("Health Status", "health", "health_and_safety")
 
                     menu_group("Tools")
+                    menu_item("Market Explorer", "market_explorer", "explore")
                     menu_item("AI Assistant", "ai_chat", "smart_toy")
                     menu_item(
                         "API Debugger", "api_debugger", "integration_instructions"
@@ -412,6 +414,8 @@ def main_dashboard(page: str = None):
                 charges_calc.render_page(state)
             elif state.current_page == "instruments_browser":
                 instruments_browser.render_page(state)
+            elif state.current_page == "market_explorer":
+                market_explorer.render_page(state)
             else:
                 wip.render_page(state.current_page)
 
