@@ -48,6 +48,7 @@ from dashboard_ui.pages import (
     positions,
     fno,
     guide,
+    guide_local,
     wip,
     live_data,
     ai_chat,
@@ -321,6 +322,7 @@ def main_dashboard(page: str = None):
                     menu_item("Charges Calc", "charges_calc", "calculate")
                     menu_item("Market Calendar", "market_calendar", "calendar_month")
                     menu_item("Market Guide", "market_guide", "library_books")
+                    menu_item("Local Dev Guide", "local_guide", "code")
                     menu_item("Configurations", "settings", "settings")
 
                     # Debug Item
@@ -378,6 +380,8 @@ def main_dashboard(page: str = None):
                 fno.render_page(state)
             elif state.current_page == "market_guide":
                 guide.render_page(state)
+            elif state.current_page == "local_guide":
+                guide_local.create_page()
             elif state.current_page == "health":
                 health.render_page(state)
             elif state.current_page == "user_profile":
