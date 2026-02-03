@@ -477,4 +477,4 @@ def main_dashboard(page: str = None):
         content_area()
 
 
-ui.run(title="Upstox Pro", host="127.0.0.1", port=8080, dark=True)
+ui.run(title="Upstox Pro", host="127.0.0.1", port=5001, dark=True)
