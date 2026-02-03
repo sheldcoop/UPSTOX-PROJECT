@@ -401,12 +401,65 @@ class PlatformLauncher:
         print()
         return True
 
+    def run_zero_error_checks(self) -> bool:
+        """Run Zero-Error Architect health and preflight checks"""
+        self.print_step("Zero-Error Checks", "Running comprehensive validation...", "running")
+        print()
+        
+        # Run health check
+        health_check_script = self.project_root / "scripts" / "check_health.py"
+        if health_check_script.exists():
+            python_exe = self.get_python_executable()
+            try:
+                self.print_step("Health Check", "Validating system health...", "running")
+                result = subprocess.run(
+                    [python_exe, str(health_check_script), "--quick"],
+                    capture_output=True,
+                    text=True,
+                    cwd=str(self.project_root)
+                )
+                if result.returncode == 0:
+                    self.print_step("Health Check", "System health validated ✓", "success")
+                elif result.returncode == 1:
+                    self.print_step("Health Check", "Passed with warnings", "warning")
+                else:
+                    self.print_step("Health Check", "Failed - check issues above", "error")
+                    return False
+            except Exception as e:
+                self.print_step("Health Check", f"Failed to run: {e}", "error")
+                return False
+        
+        # Run preflight check
+        preflight_script = self.project_root / "scripts" / "preflight_check.py"
+        if preflight_script.exists():
+            try:
+                self.print_step("Preflight Check", "Running pre-flight safety checks...", "running")
+                result = subprocess.run(
+                    [python_exe, str(preflight_script)],
+                    capture_output=True,
+                    text=True,
+                    cwd=str(self.project_root)
+                )
+                if result.returncode == 0:
+                    self.print_step("Preflight Check", "Pre-flight checks passed ✓", "success")
+                elif result.returncode == 1:
+                    self.print_step("Preflight Check", "Passed with warnings", "warning")
+                else:
+                    self.print_step("Preflight Check", "Failed - check issues above", "error")
+                    return False
+            except Exception as e:
+                self.print_step("Preflight Check", f"Failed to run: {e}", "error")
+                return False
+        
+        print()
+        return True
+
     def run(self) -> bool:
         """Main execution flow"""
         self.print_header()
         
         # Step 1: Environment checks
-        self.print_step("Step 1/4", "Environment Verification", "running")
+        self.print_step("Step 1/5", "Environment Verification", "running")
         print()
         
         if not self.check_python_version():
@@ -426,8 +479,18 @@ class PlatformLauncher:
         
         print()
         
-        # Step 2: Start services
-        self.print_step("Step 2/4", "Starting Services", "running")
+        # Step 2: Zero-Error Architect validation
+        self.print_step("Step 2/5", "Zero-Error Validation", "running")
+        print()
+        
+        if not self.run_zero_error_checks():
+            self.print_step("Validation", "Zero-Error checks failed - fix issues before proceeding", "error")
+            return False
+        
+        print()
+        
+        # Step 3: Start services
+        self.print_step("Step 3/5", "Starting Services", "running")
         print()
         
         for service_key in ["api", "oauth", "frontend"]:
@@ -438,8 +501,8 @@ class PlatformLauncher:
         
         print()
         
-        # Step 3: Health checks
-        self.print_step("Step 3/4", "Health Checks", "running")
+        # Step 4: Health checks
+        self.print_step("Step 4/5", "Health Checks", "running")
         print()
         
         time.sleep(3)  # Give services time to start
@@ -449,8 +512,8 @@ class PlatformLauncher:
         
         print()
         
-        # Step 4: Success message
-        self.print_step("Step 4/4", "Platform Ready!", "success")
+        # Step 5: Success message
+        self.print_step("Step 5/5", "Platform Ready!", "success")
         print()
         
         print(f"{Colors.GREEN}{'='*60}{Colors.NC}")

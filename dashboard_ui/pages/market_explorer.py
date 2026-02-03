@@ -250,19 +250,12 @@ def render_page(state):
             fixed_container = ui.column().classes("w-full gap-4")
             render_indices_table(FIXED_INCOME_INDICES, fixed_container, search_input)
     
-    # Auto-refresh timer
-    async def auto_refresh():
-        while True:
-            await asyncio.sleep(30)  # 30 seconds
-            refresh_all_data()
-            last_updated.text = f"Last updated: {datetime.now().strftime('%H:%M:%S')}"
-    
     def refresh_all_data():
         """Refresh all visible index data"""
         ui.notify("Refreshing market data...", type="info", position="top")
         last_updated.text = f"Last updated: {datetime.now().strftime('%H:%M:%S')}"
     
-    # Start auto-refresh
+    # Start auto-refresh using ui.timer (non-blocking)
     ui.timer(30.0, lambda: refresh_all_data())
 
 
