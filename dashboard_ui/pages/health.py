@@ -103,10 +103,10 @@ def render_page(state):
                             ui.label("Endpoint").classes("text-xs text-slate-400 uppercase tracking-wider")
                             ui.label("/api/health").classes("text-sm font-mono text-blue-400")
                         
-                        # Response Time (if available)
+                        # Uptime (placeholder)
                         with ui.column().classes("gap-1"):
-                            ui.label("Response").classes("text-xs text-slate-400 uppercase tracking-wider")
-                            ui.label("< 100ms").classes("text-sm font-medium text-green-400")
+                            ui.label("Status").classes("text-xs text-slate-400 uppercase tracking-wider")
+                            ui.label("Online").classes("text-sm font-medium text-green-400")
     
     # Initial load
     ui.timer(0.1, load_health_data, once=True)

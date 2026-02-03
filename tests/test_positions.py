@@ -131,11 +131,21 @@ class TestPositionsEndpoints:
         if len(data) > 0:
             position = data[0]
             
-            # Verify P&L calculation
-            expected_pnl = (position["current_price"] - position["entry_price"]) * position["quantity"]
+            # Verify P&L calculation accounting for position side
+            # For long positions: P&L = (current_price - entry_price) * quantity
+            # For short positions: P&L = (entry_price - current_price) * quantity
+            if position.get("side", "").lower() == "long":
+                expected_pnl = (position["current_price"] - position["entry_price"]) * position["quantity"]
+            else:  # short
+                expected_pnl = (position["entry_price"] - position["current_price"]) * position["quantity"]
+            
             assert abs(position["pnl"] - expected_pnl) < 0.01  # Allow small rounding errors
             
             # Verify P&L percentage calculation
             if position["entry_price"] > 0:
-                expected_pnl_percent = ((position["current_price"] - position["entry_price"]) / position["entry_price"]) * 100
+                if position.get("side", "").lower() == "long":
+                    expected_pnl_percent = ((position["current_price"] - position["entry_price"]) / position["entry_price"]) * 100
+                else:  # short
+                    expected_pnl_percent = ((position["entry_price"] - position["current_price"]) / position["entry_price"]) * 100
+                
                 assert abs(position["pnl_percent"] - expected_pnl_percent) < 0.01

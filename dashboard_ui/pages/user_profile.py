@@ -25,7 +25,10 @@ def render_page(state):
                     
                     def open_login():
                         import webbrowser
-                        webbrowser.open("http://127.0.0.1:5050/auth/start")
+                        import os
+                        # Use environment variable or default to localhost
+                        oauth_url = os.getenv("OAUTH_SERVER_URL", "http://127.0.0.1:5050")
+                        webbrowser.open(f"{oauth_url}/auth/start")
                     
                     ui.button("Login to Upstox", icon="login", on_click=open_login).classes(
                         "bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold px-6 py-3"
@@ -40,10 +43,11 @@ def render_page(state):
                 with Components.card():
                     with ui.row().classes("w-full items-center justify-between"):
                         with ui.row().classes("items-center gap-4"):
-                            # Avatar
-                            ui.avatar(
-                                "img:https://cdn.quasar.dev/img/boy-avatar.png", size="xl"
-                            ).classes("border-2 border-indigo-500")
+                            # Avatar - use icon instead of external CDN
+                            with ui.element("div").classes(
+                                "w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center border-2 border-indigo-500"
+                            ):
+                                ui.icon("account_circle", size="3xl").classes("text-white")
                             
                             with ui.column():
                                 ui.label(profile_data.get("name", "User")).classes(
