@@ -1,8 +1,0 @@
-{
-  "trace_id": "e76fc7fe",
-  "error": "'data' is undefined",
-  "type": "UndefinedError",
-  "path": "/",
-  "method": "GET",
-  "timestamp": "2026-02-01T13:19:39.432746"
-}

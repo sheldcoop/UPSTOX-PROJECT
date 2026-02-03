@@ -93,7 +93,8 @@ class WebSocketV3Streamer:
         """Initialize database for websocket metrics"""
         with self.db_pool.get_connection() as conn:
             # WebSocket metrics table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS websocket_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     connection_start DATETIME,
@@ -104,10 +105,12 @@ class WebSocketV3Streamer:
                     disconnect_reason TEXT,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+            """
+            )
 
             # WebSocket ticks table (v3 format)
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS websocket_ticks_v3 (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -124,12 +127,15 @@ class WebSocketV3Streamer:
                     open REAL,
                     close REAL
                 )
-            """)
+            """
+            )
 
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_ws_ticks_v3_instrument 
                 ON websocket_ticks_v3(instrument_key, timestamp)
-            """)
+            """
+            )
 
     def _get_headers(self) -> Dict[str, str]:
         """Get authorization headers"""

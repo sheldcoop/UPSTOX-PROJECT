@@ -95,7 +95,8 @@ class OrderManagerV3:
     def _init_database(self):
         """Initialize database tables for order tracking"""
         with self.db_pool.get_connection() as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS orders_v3 (
                     order_id TEXT PRIMARY KEY,
                     exchange TEXT,
@@ -120,18 +121,23 @@ class OrderManagerV3:
                     average_price REAL,
                     rejection_reason TEXT
                 )
-            """)
+            """
+            )
 
             # Create index for faster queries
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_orders_v3_symbol_status 
                 ON orders_v3(symbol, order_status)
-            """)
+            """
+            )
 
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_orders_v3_created_at 
                 ON orders_v3(created_at)
-            """)
+            """
+            )
 
     @with_retry(max_attempts=3, use_cache=False)
     def place_order(

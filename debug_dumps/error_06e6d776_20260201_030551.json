@@ -1,8 +1,0 @@
-{
-  "trace_id": "06e6d776",
-  "error": "404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
-  "type": "NotFound",
-  "path": "/",
-  "method": "GET",
-  "timestamp": "2026-02-01T03:05:51.288315"
-}

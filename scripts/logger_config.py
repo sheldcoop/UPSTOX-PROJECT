@@ -73,7 +73,8 @@ class DatabaseLogHandler(logging.Handler):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS application_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -86,18 +87,23 @@ class DatabaseLogHandler(logging.Handler):
                 exception TEXT,
                 extra_data TEXT
             )
-        """)
+        """
+        )
 
         # Create index for faster queries
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_logs_timestamp
             ON application_logs(timestamp)
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_logs_level
             ON application_logs(level)
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -226,7 +232,8 @@ class LoggerConfig:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS system_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -239,7 +246,8 @@ class LoggerConfig:
                 process_memory_mb REAL,
                 process_threads INTEGER
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -321,12 +329,16 @@ class LoggerConfig:
         cursor = conn.cursor()
 
         # Total logs by level
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT level, COUNT(*) as count
             FROM application_logs
             WHERE timestamp >= datetime('now', '-{} hours')
             GROUP BY level
-        """.format(hours))
+        """.format(
+                hours
+            )
+        )
 
         logs_by_level = dict(cursor.fetchall())
 
@@ -338,14 +350,18 @@ class LoggerConfig:
         error_rate = (errors / total_logs * 100) if total_logs > 0 else 0
 
         # Top logging modules
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT module, COUNT(*) as count
             FROM application_logs
             WHERE timestamp >= datetime('now', '-{} hours')
             GROUP BY module
             ORDER BY count DESC
             LIMIT 10
-        """.format(hours))
+        """.format(
+                hours
+            )
+        )
 
         top_modules = dict(cursor.fetchall())
 
@@ -364,7 +380,8 @@ class LoggerConfig:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT 
                 AVG(cpu_percent) as avg_cpu,
                 MAX(cpu_percent) as max_cpu,
@@ -374,7 +391,10 @@ class LoggerConfig:
                 MAX(process_memory_mb) as max_process_mem
             FROM system_metrics
             WHERE timestamp >= datetime('now', '-{} hours')
-        """.format(hours))
+        """.format(
+                hours
+            )
+        )
 
         result = cursor.fetchone()
         conn.close()
@@ -395,18 +415,26 @@ class LoggerConfig:
         cursor = conn.cursor()
 
         # Delete old application logs
-        cursor.execute("""
+        cursor.execute(
+            """
             DELETE FROM application_logs
             WHERE timestamp < datetime('now', '-{} days')
-        """.format(days))
+        """.format(
+                days
+            )
+        )
 
         app_logs_deleted = cursor.rowcount
 
         # Delete old metrics
-        cursor.execute("""
+        cursor.execute(
+            """
             DELETE FROM system_metrics
             WHERE timestamp < datetime('now', '-{} days')
-        """.format(days))
+        """.format(
+                days
+            )
+        )
 
         metrics_deleted = cursor.rowcount
 

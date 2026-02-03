@@ -140,11 +140,13 @@ class MarketMoversService:
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT ms.symbol, s.name 
                 FROM master_stocks ms
                 LEFT JOIN sectors s ON ms.sector_id = s.id
-            """)
+            """
+            )
             for r in cursor.fetchall():
                 sector_map[r[0]] = r[1] or "-"
             conn.close()

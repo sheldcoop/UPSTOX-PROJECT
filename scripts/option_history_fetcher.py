@@ -47,7 +47,8 @@ def ensure_option_candles_table():
         cursor = conn.cursor()
 
         # Create option_candles table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS option_candles (
                 symbol TEXT NOT NULL,
                 instrument_key TEXT NOT NULL,
@@ -66,18 +67,23 @@ def ensure_option_candles_table():
                 UNIQUE(instrument_key, timeframe, timestamp),
                 FOREIGN KEY(instrument_key) REFERENCES exchange_listings(instrument_key)
             )
-        """)
+        """
+        )
 
         # Create index for faster queries
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_option_candles_symbol_expiry_type
             ON option_candles(symbol, expiry_date, option_type)
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_option_candles_instrument_ts
             ON option_candles(instrument_key, timestamp)
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()

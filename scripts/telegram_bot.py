@@ -212,9 +212,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
     def send_news_alert(self, headline: str, symbol: str, sentiment: str, summary: str):
         """Send breaking news alert."""
         emoji = (
-            "🟢"
-            if sentiment == "POSITIVE"
-            else "🔴" if sentiment == "NEGATIVE" else "⚪"
+            "🟢" if sentiment == "POSITIVE" else "🔴" if sentiment == "NEGATIVE" else "⚪"
         )
 
         message = f"""
@@ -298,14 +296,16 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
         # Check corporate announcement alerts
         try:
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT a.*, c.event_date, c.description, c.announcement_type
                 FROM announcement_alerts a
                 JOIN corporate_announcements c ON a.announcement_id = c.id
                 WHERE a.status = 'PENDING'
                 AND date(a.alert_date) <= date('now')
                 LIMIT 10
-            """)
+            """
+            )
 
             for row in cursor.fetchall():
                 symbol = row[2]
@@ -338,14 +338,16 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
         # Check economic event alerts
         try:
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT a.*, e.event_date, e.impact_level
                 FROM economic_alerts a
                 JOIN economic_events e ON a.event_id = e.id
                 WHERE a.status = 'PENDING'
                 AND date(a.alert_date) <= date('now')
                 LIMIT 10
-            """)
+            """
+            )
 
             for row in cursor.fetchall():
                 event_name = row[2]
@@ -379,12 +381,14 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
         # Check margin alerts
         try:
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT available_margin, used_margin, margin_utilization_pct
                 FROM margin_history
                 ORDER BY timestamp DESC
                 LIMIT 1
-            """)
+            """
+            )
 
             result = cursor.fetchone()
             if result:
@@ -492,14 +496,17 @@ def main():
 
     elif args.test:
         print("\n📤 Sending test message...")
-        success = bot.send_message("""
+        success = bot.send_message(
+            """
 🤖 *Test Message*
 
 This is a test alert from your Upstox Trading Bot!
 
 ✅ If you see this, your bot is configured correctly.
 
-Time: """ + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+Time: """
+            + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
 
         if success:
             print("✅ Test message sent successfully!")

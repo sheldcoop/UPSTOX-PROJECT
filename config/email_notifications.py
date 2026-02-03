@@ -252,7 +252,9 @@ class EmailNotifier:
         color = (
             "#d32f2f"
             if alert_level == "HIGH"
-            else "#ff9800" if alert_level == "MEDIUM" else "#4caf50"
+            else "#ff9800"
+            if alert_level == "MEDIUM"
+            else "#4caf50"
         )
 
         body = f"""

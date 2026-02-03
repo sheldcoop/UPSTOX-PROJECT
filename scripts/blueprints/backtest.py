@@ -90,11 +90,13 @@ def get_backtest_results():
         cursor = conn.cursor()
 
         # Query backtest results (if stored in DB)
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM backtest_results 
             ORDER BY created_at DESC 
             LIMIT 10
-        """)
+        """
+        )
 
         results = []
         for row in cursor.fetchall():

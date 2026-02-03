@@ -41,7 +41,8 @@ class DatabaseValidator:
         # We'll create new tables with constraints and migrate data if needed
 
         # Create validation rules table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS validation_rules (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 table_name TEXT NOT NULL,
@@ -52,7 +53,8 @@ class DatabaseValidator:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(table_name, column_name, rule_type)
             )
-        """)
+        """
+        )
 
         # Insert default validation rules
         rules = [
@@ -145,10 +147,12 @@ class DatabaseValidator:
 
         for index_name, table_name, columns in indexes:
             try:
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                     CREATE INDEX IF NOT EXISTS {index_name}
                     ON {table_name} ({columns})
-                """)
+                """
+                )
                 logger.info(f"Index created: {index_name}")
             except Exception as e:
                 logger.error(f"Failed to create index {index_name}: {str(e)}")
@@ -338,7 +342,8 @@ class DatabaseValidator:
 
             # Check for NULL values (if applicable)
             if table_name == "market_data":
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                     SELECT 
                         SUM(CASE WHEN open IS NULL THEN 1 ELSE 0 END) as null_open,
                         SUM(CASE WHEN high IS NULL THEN 1 ELSE 0 END) as null_high,
@@ -347,7 +352,8 @@ class DatabaseValidator:
                         SUM(CASE WHEN volume IS NULL THEN 1 ELSE 0 END) as null_volume
                     FROM {table_name}
                     WHERE timestamp >= datetime('now', '-{days} days')
-                """)
+                """
+                )
 
                 row = cursor.fetchone()
                 quality_report["null_count"] = {
@@ -359,7 +365,8 @@ class DatabaseValidator:
                 }
 
                 # Check for invalid OHLC relationships
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                     SELECT symbol, timestamp, open, high, low, close
                     FROM {table_name}
                     WHERE timestamp >= datetime('now', '-{days} days')
@@ -375,7 +382,8 @@ class DatabaseValidator:
                         OR close <= 0
                     )
                     LIMIT 10
-                """)
+                """
+                )
 
                 invalid_records = cursor.fetchall()
                 quality_report["invalid_records"] = [
@@ -391,13 +399,15 @@ class DatabaseValidator:
                 ]
 
                 # Check for duplicates
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                     SELECT symbol, timestamp, COUNT(*) as count
                     FROM {table_name}
                     WHERE timestamp >= datetime('now', '-{days} days')
                     GROUP BY symbol, timestamp
                     HAVING COUNT(*) > 1
-                """)
+                """
+                )
 
                 duplicates = cursor.fetchall()
                 quality_report["duplicate_count"] = len(duplicates)
@@ -435,12 +445,14 @@ class DatabaseValidator:
         try:
             if table_name == "market_data":
                 # Find and remove exact duplicates
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT symbol, timestamp, COUNT(*) as count
                     FROM market_data
                     GROUP BY symbol, timestamp
                     HAVING COUNT(*) > 1
-                """)
+                """
+                )
 
                 duplicates = cursor.fetchall()
 
@@ -470,12 +482,14 @@ class DatabaseValidator:
                         )
 
                 # Find records with invalid OHLC relationships
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT COUNT(*)
                     FROM market_data
                     WHERE high < low OR high < open OR high < close
                     OR low > open OR low > close
-                """)
+                """
+                )
 
                 invalid_count = cursor.fetchone()[0]
 

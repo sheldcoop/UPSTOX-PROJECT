@@ -110,7 +110,8 @@ class CorporateAnnouncementsFetcher:
         cursor = conn.cursor()
 
         # Corporate announcements table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS corporate_announcements (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT NOT NULL,
@@ -130,10 +131,12 @@ class CorporateAnnouncementsFetcher:
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(symbol, announcement_type, event_date)
             )
-        """)
+        """
+        )
 
         # Earnings calendar table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS earnings_calendar (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT NOT NULL,
@@ -152,10 +155,12 @@ class CorporateAnnouncementsFetcher:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(symbol, quarter, fiscal_year)
             )
-        """)
+        """
+        )
 
         # Announcement alerts table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS announcement_alerts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 announcement_id INTEGER,
@@ -169,10 +174,12 @@ class CorporateAnnouncementsFetcher:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY(announcement_id) REFERENCES corporate_announcements(id)
             )
-        """)
+        """
+        )
 
         # Board meetings table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS board_meetings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT NOT NULL,
@@ -184,7 +191,8 @@ class CorporateAnnouncementsFetcher:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(symbol, meeting_date, meeting_type)
             )
-        """)
+        """
+        )
 
         # Create indexes
         cursor.execute(
@@ -787,14 +795,16 @@ class CorporateAnnouncementsFetcher:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT a.*, c.announcement_type, c.event_date, c.description
             FROM announcement_alerts a
             JOIN corporate_announcements c ON a.announcement_id = c.id
             WHERE a.status = 'PENDING'
             AND date(a.alert_date) <= date('now')
             ORDER BY a.alert_date ASC
-        """)
+        """
+        )
 
         columns = [desc[0] for desc in cursor.description]
         alerts = [dict(zip(columns, row)) for row in cursor.fetchall()]
@@ -1054,7 +1064,9 @@ def main():
         symbols = (
             args.symbols.split(",")
             if args.symbols
-            else [args.symbol] if args.symbol else [None]
+            else [args.symbol]
+            if args.symbol
+            else [None]
         )
 
         for symbol in symbols:
@@ -1067,7 +1079,9 @@ def main():
         symbols = (
             args.symbols.split(",")
             if args.symbols
-            else [args.symbol] if args.symbol else [None]
+            else [args.symbol]
+            if args.symbol
+            else [None]
         )
 
         for symbol in symbols:
