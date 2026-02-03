@@ -37,6 +37,7 @@ import json
 import sqlite3
 import sys
 import time
+import random
 from datetime import datetime
 from typing import Optional, Callable, Dict, List
 import websocket
@@ -190,12 +191,13 @@ class WebsocketQuoteStreamer:
         self.connected = False
         print(f"⚠️  Websocket closed (code: {close_status_code}, msg: {close_msg})")
 
-        # Attempt reconnect
+        # Attempt reconnect with exponential backoff + jitter
         if self.reconnect_attempts < self.max_reconnect_attempts:
             self.reconnect_attempts += 1
-            wait_time = self.reconnect_delay * self.reconnect_attempts
+            # Exponential backoff: 2^n seconds, capped at 300s (5 min), with jitter
+            wait_time = min(300, (2 ** self.reconnect_attempts) + random.uniform(0, 1))
             print(
-                f"🔄 Attempting reconnect #{self.reconnect_attempts} in {wait_time}s..."
+                f"🔄 Attempting reconnect #{self.reconnect_attempts} in {wait_time:.1f}s..."
             )
             time.sleep(wait_time)
             self.connect()
