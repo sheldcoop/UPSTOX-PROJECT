@@ -162,10 +162,11 @@ Updated `requirements.txt` to use **minimum secure versions** instead of strict 
 ## Additional Security Considerations
 
 ### Packages Requiring Special Attention
-1. **cryptography>=41.0.7**: Critical for secure API communication
+1. **cryptography>=42.0.4**: Critical for secure API communication (upgraded for CVE patches)
 2. **aiohttp>=3.13.3**: Already secured against DoS attacks
-3. **sentry-sdk>=1.39.2**: Error tracking must remain stable
-4. **Flask-WTF>=1.2.1**: CSRF protection must work correctly
+3. **gunicorn>=22.0.0**: Patched HTTP smuggling vulnerabilities  
+4. **sentry-sdk>=1.39.2**: Error tracking must remain stable
+5. **Flask-WTF>=1.2.1**: CSRF protection must work correctly
 
 ### Recommended Follow-ups
 - [ ] Set up automated dependency scanning (Dependabot, Snyk, etc.)
