@@ -202,13 +202,15 @@ if __name__ == "__main__":
 
     # Test table creation
     with pool.get_connection() as conn:
-        conn.execute("""
+        conn.execute(
+            """
             CREATE TABLE IF NOT EXISTS test_data (
                 id INTEGER PRIMARY KEY,
                 value TEXT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
         print("✅ Test table created")
 
     # Test concurrent access

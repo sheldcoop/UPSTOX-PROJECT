@@ -79,7 +79,8 @@ class WebsocketQuoteStreamer:
         c = conn.cursor()
 
         # Create ticks table if not exists
-        c.execute("""
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS quote_ticks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -98,7 +99,8 @@ class WebsocketQuoteStreamer:
                 exchange TEXT,
                 UNIQUE(timestamp, symbol)
             )
-        """)
+        """
+        )
 
         # Create index for faster queries
         c.execute(

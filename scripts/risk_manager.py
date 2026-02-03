@@ -49,7 +49,8 @@ class RiskManager:
         cursor = conn.cursor()
 
         # Risk configurations table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS risk_configs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 config_name TEXT UNIQUE NOT NULL,
@@ -61,10 +62,12 @@ class RiskManager:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # Stop-loss orders table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS stop_loss_orders (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT NOT NULL,
@@ -78,10 +81,12 @@ class RiskManager:
                 pnl REAL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # Circuit breaker events table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS circuit_breaker_events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 trigger_reason TEXT NOT NULL,
@@ -90,10 +95,12 @@ class RiskManager:
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
                 reset_at DATETIME
             )
-        """)
+        """
+        )
 
         # Risk metrics table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS risk_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 metric_date DATE DEFAULT CURRENT_DATE,
@@ -106,7 +113,8 @@ class RiskManager:
                 volatility REAL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -230,11 +238,13 @@ class RiskManager:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT id, symbol, entry_price, stop_loss_price, quantity, order_id
             FROM stop_loss_orders
             WHERE status = 'ACTIVE'
-        """)
+        """
+        )
 
         active_stops = cursor.fetchall()
         triggered_stops = []
@@ -308,22 +318,26 @@ class RiskManager:
         cursor = conn.cursor()
 
         # Calculate today's P&L from orders/trades
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT SUM(pnl) as daily_pnl
             FROM stop_loss_orders
             WHERE DATE(triggered_at) = DATE('now')
             AND status = 'TRIGGERED'
-        """)
+        """
+        )
 
         result = cursor.fetchone()
         daily_pnl = result[0] if result[0] is not None else 0
 
         # Check if circuit breaker is already active today
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT COUNT(*) FROM circuit_breaker_events
             WHERE DATE(timestamp) = DATE('now')
             AND reset_at IS NULL
-        """)
+        """
+        )
 
         active_breaker = cursor.fetchone()[0] > 0
 
@@ -380,11 +394,13 @@ class RiskManager:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE circuit_breaker_events
             SET reset_at = CURRENT_TIMESTAMP
             WHERE reset_at IS NULL
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -518,13 +534,17 @@ class RiskManager:
         cursor = conn.cursor()
 
         # Get daily returns (simulated from P&L)
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT DATE(triggered_at) as trade_date, SUM(pnl) as daily_pnl
             FROM stop_loss_orders
             WHERE triggered_at >= datetime('now', '-{} days')
             GROUP BY DATE(triggered_at)
             ORDER BY trade_date
-        """.format(days))
+        """.format(
+                days
+            )
+        )
 
         daily_pnls = [row[1] for row in cursor.fetchall()]
 
@@ -603,18 +623,22 @@ class RiskManager:
         cursor = conn.cursor()
 
         # Count active positions
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT COUNT(*) FROM stop_loss_orders
             WHERE status = 'ACTIVE'
-        """)
+        """
+        )
         active_positions = cursor.fetchone()[0]
 
         # Sum total position value
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT SUM(entry_price * quantity) as total_value
             FROM stop_loss_orders
             WHERE status = 'ACTIVE'
-        """)
+        """
+        )
         total_position_value = cursor.fetchone()[0] or 0
 
         conn.close()

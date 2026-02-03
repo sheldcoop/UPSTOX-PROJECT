@@ -67,10 +67,12 @@ print("\n2️⃣  Checking sample symbols...")
 try:
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         SELECT symbol, instrument_key FROM exchange_listings 
         WHERE segment='NSE_EQ' LIMIT 5
-    """)
+    """
+    )
     symbols = cur.fetchall()
     conn.close()
 

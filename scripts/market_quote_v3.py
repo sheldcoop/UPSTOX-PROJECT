@@ -99,7 +99,8 @@ class MarketQuoteV3:
         """Initialize database for quote caching"""
         with self.db_pool.get_connection() as conn:
             # Quote cache table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS quote_cache_v3 (
                     instrument_key TEXT PRIMARY KEY,
                     ltp REAL,
@@ -117,10 +118,12 @@ class MarketQuoteV3:
                     lower_circuit REAL,
                     cached_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+            """
+            )
 
             # Quote request metrics
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS quote_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     request_type TEXT,
@@ -130,7 +133,8 @@ class MarketQuoteV3:
                     total_time_ms INTEGER,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+            """
+            )
 
     @with_retry(max_attempts=3, use_cache=False)
     def get_quote(self, instrument_key: str) -> Optional[Dict[str, Any]]:
@@ -420,22 +424,26 @@ class MarketQuoteV3:
                 cursor = conn.cursor()
 
                 # DB cache count
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT COUNT(*) 
                     FROM quote_cache_v3
                     WHERE cached_at >= datetime('now', '-1 hour')
-                """)
+                """
+                )
                 db_entries = cursor.fetchone()[0]
 
                 # Recent metrics
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT 
                         AVG(cache_hit_count * 100.0 / instruments_count) as avg_hit_rate,
                         AVG(total_time_ms) as avg_time_ms,
                         SUM(api_call_count) as total_api_calls
                     FROM quote_metrics
                     WHERE timestamp >= datetime('now', '-1 hour')
-                """)
+                """
+                )
 
                 row = cursor.fetchone()
 

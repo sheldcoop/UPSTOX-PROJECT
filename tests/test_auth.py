@@ -65,10 +65,12 @@ def test_auth_system():
         cursor = conn.cursor()
 
         # Check if auth_tokens table exists
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT name FROM sqlite_master 
             WHERE type='table' AND name='auth_tokens'
-        """)
+        """
+        )
         result = cursor.fetchone()
         assert result, "auth_tokens table not found"
 

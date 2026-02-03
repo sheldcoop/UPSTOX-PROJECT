@@ -135,7 +135,8 @@ def ensure_expired_options_table() -> None:
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS expired_options (
             id INTEGER PRIMARY KEY,
             underlying_symbol TEXT NOT NULL,
@@ -152,16 +153,20 @@ def ensure_expired_options_table() -> None:
             fetch_timestamp INTEGER NOT NULL,
             UNIQUE(underlying_symbol, strike_price, option_type, expiry_date)
         )
-    """)
+    """
+    )
 
     # Create index for common queries
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE INDEX IF NOT EXISTS idx_expired_opt_underlying_expiry 
         ON expired_options(underlying_symbol, expiry_date)
-    """)
+    """
+    )
 
     # Create table for expired candles (OHLC)
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS expired_candles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             instrument_key TEXT NOT NULL,
@@ -175,7 +180,8 @@ def ensure_expired_options_table() -> None:
             oi INTEGER,
             UNIQUE(instrument_key, interval, timestamp)
         )
-    """)
+    """
+    )
 
     conn.commit()
     conn.close()

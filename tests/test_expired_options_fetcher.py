@@ -202,10 +202,12 @@ class TestExpiredOptionsStorage(unittest.TestCase):
             conn = sqlite3.connect("market_data.db")
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT name FROM sqlite_master 
                 WHERE type='table' AND name='expired_options'
-            """)
+            """
+            )
 
             result = cursor.fetchone()
             self.assertIsNotNone(result)
