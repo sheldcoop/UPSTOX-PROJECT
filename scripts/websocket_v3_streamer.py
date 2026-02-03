@@ -27,6 +27,7 @@ import sys
 import json
 import time
 import random
+import uuid
 from datetime import datetime, timedelta
 from typing import Optional, Dict, List, Callable, Any
 from pathlib import Path
@@ -297,7 +298,7 @@ class WebSocketV3Streamer:
             
             # Build subscription message
             sub_message = {
-                "guid": "someguid",
+                "guid": str(uuid.uuid4()),  # Generate unique GUID for message tracking
                 "method": "sub",
                 "data": {
                     "mode": mode,
@@ -330,7 +331,7 @@ class WebSocketV3Streamer:
                 return False
             
             unsub_message = {
-                "guid": "someguid",
+                "guid": str(uuid.uuid4()),  # Generate unique GUID for message tracking
                 "method": "unsub",
                 "data": {
                     "instrumentKeys": instrument_keys,
