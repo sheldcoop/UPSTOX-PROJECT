@@ -51,9 +51,10 @@ def debug_config():
 def auth_start():
     """Start OAuth flow by redirecting to Upstox"""
     try:
-        # Force reload redirect_uri from env to ensure it matches
+        # Reload redirect_uri from environment for production deployment
         auth_manager.redirect_uri = os.getenv(
-            "UPSTOX_REDIRECT_URI", "http://localhost:5050/auth/callback"
+            "UPSTOX_REDIRECT_URI",
+            "http://localhost:5050/auth/callback"
         )
 
         auth_url = auth_manager.get_authorization_url()
@@ -104,9 +105,11 @@ def auth_callback():
         logger.info("✅ Authentication successful! Redirecting to Dashboard...")
 
         # ------------------------------------------------------------------
-        # FIX: AUTO-REDIRECT TO DASHBOARD
+        # AUTO-REDIRECT TO DASHBOARD
         # ------------------------------------------------------------------
-        return redirect("http://localhost:8080")
+        # Dynamically construct dashboard URL from environment or use localhost default
+        dashboard_url = os.getenv("DASHBOARD_URL", "http://localhost:5050")
+        return redirect(dashboard_url)
 
     except Exception as e:
         logger.error(f"❌ Request failed: {e}", exc_info=True)
@@ -151,14 +154,20 @@ def auth_status():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-if __name__ == "__main__":
+from dotenv import load_dotenv
+    load_dotenv()
+    
+    # Get OAuth URL from environment or use localhost default
+    oauth_url = os.getenv("OAUTH_URL", "http://localhost:5050/auth/start")
+    
     print("=" * 60)
     print("🚀 UPSTOX OAUTH SERVER RUNNING")
-    print("   Open: http://localhost:5050/auth/start")
+    print(f"   Open: {oauth_url}")
     print("=" * 60)
 
     # Auto-open browser if requested
+    if "--open-browser" in sys.argv or "-o" in sys.argv:
+        webbrowser.open(oauth_url
     if "--open-browser" in sys.argv or "-o" in sys.argv:
         webbrowser.open("http://localhost:5050/auth/start")
 

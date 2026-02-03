@@ -10,7 +10,6 @@ services:
       - FLASK_PORT=8000
       - FLASK_DEBUG=False
       - REDIS_URL=redis://redis:6379/0
-      - DATABASE_URL=postgresql://upstox:upstox_password@postgres:5432/upstox_trading
     ports:
       - "8000:8000"
     volumes:
@@ -20,27 +19,26 @@ services:
       - ./.env:/app/.env
     depends_on:
       - redis
-      - postgres
     restart: unless-stopped
     command: ["gunicorn", "--config", "gunicorn_config.py", "wsgi:application"]
 
-  # Frontend Server
-  frontend:
+  # NiceGUI Dashboard Frontend
+  nicegui:
     build: .
-    container_name: upstox-frontend
+    container_name: upstox-nicegui
     environment:
-      - APP_MODE=frontend
-      - FLASK_PORT=5001
-      - BACKEND_API_URL=http://api:8000/api
+      - PYTHONUNBUFFERED=1
     ports:
-      - "5001:5001"
+      - "5050:5050"
     volumes:
       - ./logs:/app/logs
+      - ./market_data.db:/app/market_data.db
+      - ./upstox.db:/app/upstox.db
       - ./.env:/app/.env
     depends_on:
       - api
     restart: unless-stopped
-    command: ["gunicorn", "--config", "gunicorn_config.py", "--bind", "0.0.0.0:5001", "app:app"]
+    command: ["python", "nicegui_dashboard.py"]
 
   # Redis Cache
   redis:
@@ -52,21 +50,6 @@ services:
       - redis_data:/data
     restart: unless-stopped
     command: redis-server --appendonly yes
-
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    container_name: upstox-postgres
-    environment:
-      - POSTGRES_USER=upstox
-      - POSTGRES_PASSWORD=upstox_password
-      - POSTGRES_DB=upstox_trading
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./scripts/init_postgres.sql:/docker-entrypoint-initdb.d/init.sql
-    restart: unless-stopped
 
   # Prometheus Monitoring
   prometheus:
@@ -100,6 +83,5 @@ services:
 
 volumes:
   redis_data:
-  postgres_data:
   prometheus_data:
   grafana_data:
