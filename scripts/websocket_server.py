@@ -6,6 +6,7 @@ Provides live updates for option chains, market quotes, and positions
 import sys
 import logging
 import asyncio
+import re
 from typing import Dict, Set
 from datetime import datetime
 from pathlib import Path
@@ -13,7 +14,7 @@ import json
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from flask import Flask
+from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS
 import logging
@@ -45,6 +46,27 @@ active_subscriptions: Dict[str, Set[str]] = {
 upstox_api = get_upstox_api()
 
 
+# Input validation functions
+def validate_symbol(symbol: str) -> bool:
+    """Validate symbol format (alphanumeric, max 20 chars)"""
+    if not symbol or not isinstance(symbol, str):
+        return False
+    return bool(re.match(r'^[A-Z0-9]{1,20}$', symbol))
+
+
+def validate_expiry_date(expiry_date: str) -> bool:
+    """Validate expiry date format (YYYY-MM-DD)"""
+    if not expiry_date:
+        return True  # Optional field
+    if not isinstance(expiry_date, str):
+        return False
+    try:
+        datetime.strptime(expiry_date, '%Y-%m-%d')
+        return True
+    except (ValueError, TypeError):
+        return False
+
+
 @socketio.on("connect")
 def handle_connect():
     """Client connected"""
@@ -65,8 +87,22 @@ def handle_disconnect():
 @socketio.on("subscribe_options")
 def handle_subscribe_options(data):
     """Subscribe to option chain updates"""
+    if not data or not isinstance(data, dict):
+        emit("error", {"message": "Invalid request data"})
+        return
+    
     symbol = data.get("symbol", "NIFTY")
     expiry_date = data.get("expiry_date")
+
+    # Validate symbol
+    if not validate_symbol(symbol):
+        emit("error", {"message": "Invalid symbol format. Must be alphanumeric, max 20 characters"})
+        return
+    
+    # Validate expiry date
+    if not validate_expiry_date(expiry_date):
+        emit("error", {"message": "Invalid expiry date format. Must be YYYY-MM-DD"})
+        return
 
     logger.info(f"Client {request.sid} subscribed to options: {symbol}")
 
@@ -102,7 +138,17 @@ def handle_subscribe_options(data):
 @socketio.on("unsubscribe_options")
 def handle_unsubscribe_options(data):
     """Unsubscribe from option chain updates"""
+    if not data or not isinstance(data, dict):
+        emit("error", {"message": "Invalid request data"})
+        return
+    
     symbol = data.get("symbol", "NIFTY")
+    
+    # Validate symbol
+    if not validate_symbol(symbol):
+        emit("error", {"message": "Invalid symbol format"})
+        return
+    
     room = f"options_{symbol}"
     leave_room(room)
     active_subscriptions["options"].discard(request.sid)
@@ -112,7 +158,16 @@ def handle_unsubscribe_options(data):
 @socketio.on("subscribe_quote")
 def handle_subscribe_quote(data):
     """Subscribe to market quote updates"""
+    if not data or not isinstance(data, dict):
+        emit("error", {"message": "Invalid request data"})
+        return
+    
     symbol = data.get("symbol", "NIFTY")
+    
+    # Validate symbol
+    if not validate_symbol(symbol):
+        emit("error", {"message": "Invalid symbol format"})
+        return
 
     logger.info(f"Client {request.sid} subscribed to quotes: {symbol}")
 
