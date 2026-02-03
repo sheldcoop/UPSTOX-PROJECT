@@ -397,10 +397,6 @@ def render_indices_table(indices: List[str], container: ui.column, search_input:
             
             search_input.on("input", lambda: filter_table())
             
-            # Loading state overlay
-            loading_spinner = ui.spinner("dots", size="lg", color="primary")
-            loading_spinner.set_visibility(False)
-            
             # Info footer
             with ui.row().classes("w-full justify-between items-center mt-4 pt-4 border-t border-slate-800"):
                 ui.label(f"Showing {len(indices_data)} indices").classes(
