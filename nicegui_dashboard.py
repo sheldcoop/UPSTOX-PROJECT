@@ -75,6 +75,7 @@ from dashboard_ui.pages import (
     charges_calc,
     instruments_browser,
     market_explorer,
+    corporate_announcements,
 )
 
 # Configuration
@@ -311,6 +312,7 @@ def main_dashboard(page: str = None):
 
                     menu_group("Tools")
                     menu_item("Market Explorer", "market_explorer", "explore")
+                    menu_item("Corporate Announcements", "corporate_announcements", "campaign")
                     menu_item("AI Assistant", "ai_chat", "smart_toy")
                     menu_item(
                         "API Debugger", "api_debugger", "integration_instructions"
@@ -416,6 +418,8 @@ def main_dashboard(page: str = None):
                 instruments_browser.render_page(state)
             elif state.current_page == "market_explorer":
                 market_explorer.render_page(state)
+            elif state.current_page == "corporate_announcements":
+                corporate_announcements.render_page(state)
             else:
                 wip.render_page(state.current_page)
 
