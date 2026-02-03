@@ -141,6 +141,12 @@ from scripts.blueprints.backtest import backtest_bp
 from scripts.blueprints.strategies import strategies_bp
 from scripts.blueprints.expiry import expiry_bp
 from scripts.blueprints.health import health_bp
+from scripts.blueprints.auth import auth_bp
+from scripts.blueprints.market_info import market_info_bp
+from scripts.blueprints.charges import charges_bp
+from scripts.blueprints.quote_v3 import quote_v3_bp
+from scripts.blueprints.historical_v3 import historical_v3_bp
+from scripts.blueprints.websocket import websocket_bp
 
 # Register blueprints
 app.register_blueprint(portfolio_bp)
@@ -154,6 +160,12 @@ app.register_blueprint(backtest_bp)
 app.register_blueprint(strategies_bp)
 app.register_blueprint(expiry_bp)
 app.register_blueprint(health_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(market_info_bp)
+app.register_blueprint(charges_bp)
+app.register_blueprint(quote_v3_bp)
+app.register_blueprint(historical_v3_bp)
+app.register_blueprint(websocket_bp)
 
 logger.info("✅ All blueprints registered successfully")
 
