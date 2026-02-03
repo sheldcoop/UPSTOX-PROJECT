@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Quick Demo - Expired Options Fetcher Capabilities"""
 
-print("""
+print(
+    """
 ╔════════════════════════════════════════════════════════════════════════════╗
 ║            EXPIRED OPTIONS FETCHER - ENHANCED CAPABILITIES               ║
 ╚════════════════════════════════════════════════════════════════════════════╝
@@ -258,4 +259,5 @@ Documentation: EXPIRED_OPTIONS_GUIDE.md
 Test coverage: test_expired_options_fetcher.py (14 tests)
 
 ════════════════════════════════════════════════════════════════════════════
-""")
+"""
+)

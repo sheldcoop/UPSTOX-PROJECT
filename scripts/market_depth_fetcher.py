@@ -145,7 +145,9 @@ class MarketDepthFetcher:
             url = f"{self.base_url}/market-quote/depth"
             params = {"mode": "FULL", "exchange_tokens": symbol}
 
-            response = requests.get(url, params=params, headers=self.headers, timeout=10)
+            response = requests.get(
+                url, params=params, headers=self.headers, timeout=10
+            )
 
             if response.status_code == 200:
                 data = response.json().get("data", {})
@@ -162,7 +164,9 @@ class MarketDepthFetcher:
                     print(f"❌ No depth data for {symbol}")
                     return None
             else:
-                print(f"❌ Failed to get market depth: {response.json().get('message')}")
+                print(
+                    f"❌ Failed to get market depth: {response.json().get('message')}"
+                )
                 return None
 
         except Exception as e:
@@ -183,7 +187,9 @@ class MarketDepthFetcher:
             url = f"{self.base_url}/market-quote/ltp"
             params = {"mode": "FULL", "exchange_tokens": symbol}
 
-            response = requests.get(url, params=params, headers=self.headers, timeout=10)
+            response = requests.get(
+                url, params=params, headers=self.headers, timeout=10
+            )
 
             if response.status_code == 200:
                 data = response.json().get("data", {})
@@ -257,7 +263,11 @@ class MarketDepthFetcher:
             ask_cum_vol = sum(ask_volumes)
 
             # Analyze order imbalance
-            imbalance = (bid_cum_vol - ask_cum_vol) / (bid_cum_vol + ask_cum_vol) if (bid_cum_vol + ask_cum_vol) > 0 else 0
+            imbalance = (
+                (bid_cum_vol - ask_cum_vol) / (bid_cum_vol + ask_cum_vol)
+                if (bid_cum_vol + ask_cum_vol) > 0
+                else 0
+            )
 
             liquidity_analysis = {
                 "symbol": symbol,
@@ -279,7 +289,9 @@ class MarketDepthFetcher:
             print(f"❌ Error analyzing liquidity: {e}")
             return None
 
-    def _calculate_liquidity_score(self, bid_vol: float, ask_vol: float, spread_pct: float) -> float:
+    def _calculate_liquidity_score(
+        self, bid_vol: float, ask_vol: float, spread_pct: float
+    ) -> float:
         """Calculate liquidity score (0-100)."""
         # Higher volume = higher score
         # Lower spread = higher score
@@ -313,7 +325,16 @@ class MarketDepthFetcher:
                     (timestamp, symbol, level, bid_price, bid_qty, ask_price, ask_qty, spread)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                    (datetime.now(), symbol, level, bid_price, bid_qty, ask_price, ask_qty, spread),
+                    (
+                        datetime.now(),
+                        symbol,
+                        level,
+                        bid_price,
+                        bid_qty,
+                        ask_price,
+                        ask_qty,
+                        spread,
+                    ),
                 )
 
             conn.commit()
@@ -388,7 +409,9 @@ class MarketDepthFetcher:
         asks = depth.get("asks", [])[:10]
 
         print(f"\n{'BID SIDE':^45} | {'ASK SIDE':^45}")
-        print(f"{'Price':>10} {'Qty':>10} {'Vol':>20} | {'Vol':>20} {'Qty':>10} {'Price':>10}")
+        print(
+            f"{'Price':>10} {'Qty':>10} {'Vol':>20} | {'Vol':>20} {'Qty':>10} {'Price':>10}"
+        )
         print("-" * 100)
 
         for level in range(max(len(bids), len(asks))):
@@ -420,8 +443,12 @@ class MarketDepthFetcher:
         print(f"Mid Price:               {bid_ask.get('mid_price', 0):12.2f}")
 
         print(f"\n{'BID SIDE':20} | {'ASK SIDE':20}")
-        print(f"  Price: {bid_ask.get('bid_price', 0):12.2f} |   Price: {bid_ask.get('ask_price', 0):12.2f}")
-        print(f"  Qty:   {bid_ask.get('bid_qty', 0):12} |   Qty:   {bid_ask.get('ask_qty', 0):12}")
+        print(
+            f"  Price: {bid_ask.get('bid_price', 0):12.2f} |   Price: {bid_ask.get('ask_price', 0):12.2f}"
+        )
+        print(
+            f"  Qty:   {bid_ask.get('bid_qty', 0):12} |   Qty:   {bid_ask.get('ask_qty', 0):12}"
+        )
 
         print(f"\n📊 SPREAD ANALYSIS:")
         print(f"  Absolute Spread: {bid_ask.get('spread', 0):12.2f}")
@@ -441,12 +468,14 @@ class MarketDepthFetcher:
         print(f"  Total Depth Vol: {analysis.get('total_depth_volume', 0):15,.0f}")
 
         print(f"\n📈 ORDER IMBALANCE:")
-        imbalance = analysis.get('order_imbalance', 0)
+        imbalance = analysis.get("order_imbalance", 0)
         print(f"  Imbalance Ratio: {imbalance:15.3f}")
-        print(f"  Direction:       {'BID DOMINANT' if imbalance > 0.1 else 'ASK DOMINANT' if imbalance < -0.1 else 'BALANCED'}")
+        print(
+            f"  Direction:       {'BID DOMINANT' if imbalance > 0.1 else 'ASK DOMINANT' if imbalance < -0.1 else 'BALANCED'}"
+        )
 
         print(f"\n💧 LIQUIDITY SCORE:")
-        score = analysis.get('liquidity_score', 0)
+        score = analysis.get("liquidity_score", 0)
         print(f"  Score:           {score:15.1f}/100")
 
         if score > 75:
@@ -462,7 +491,9 @@ class MarketDepthFetcher:
 
     def monitor_depth(self, symbol: str, interval: int = 5, duration: int = 300):
         """Monitor market depth changes."""
-        print(f"📡 Monitoring {symbol} (interval: {interval}s, duration: {duration}s)...")
+        print(
+            f"📡 Monitoring {symbol} (interval: {interval}s, duration: {duration}s)..."
+        )
         print("=" * 80)
 
         start_time = time.time()
@@ -513,12 +544,30 @@ def main():
     parser.add_argument("--token", type=str, help="Upstox access token")
     parser.add_argument("--symbol", type=str, help="Trading symbol")
     parser.add_argument("--symbols", type=str, help="Comma-separated symbols")
-    parser.add_argument("--action", type=str,
-                        choices=["depth", "spread", "liquidity", "history", "compare", "monitor", "visualize"],
-                        default="spread", help="Action to perform")
-    parser.add_argument("--level", type=int, choices=[1, 2], default=1, help="Depth level")
-    parser.add_argument("--interval", type=int, default=5, help="Monitor interval in seconds")
-    parser.add_argument("--duration", type=int, default=300, help="Monitor duration in seconds")
+    parser.add_argument(
+        "--action",
+        type=str,
+        choices=[
+            "depth",
+            "spread",
+            "liquidity",
+            "history",
+            "compare",
+            "monitor",
+            "visualize",
+        ],
+        default="spread",
+        help="Action to perform",
+    )
+    parser.add_argument(
+        "--level", type=int, choices=[1, 2], default=1, help="Depth level"
+    )
+    parser.add_argument(
+        "--interval", type=int, default=5, help="Monitor interval in seconds"
+    )
+    parser.add_argument(
+        "--duration", type=int, default=300, help="Monitor duration in seconds"
+    )
     parser.add_argument("--limit", type=int, default=50, help="History limit")
 
     args = parser.parse_args()
@@ -583,7 +632,9 @@ def main():
         if spreads:
             print(f"\n📊 SPREAD COMPARISON")
             print("=" * 100)
-            print(f"{'Symbol':10} | {'Bid':10} | {'Ask':10} | {'Spread':10} | {'Spread %':10}")
+            print(
+                f"{'Symbol':10} | {'Bid':10} | {'Ask':10} | {'Spread':10} | {'Spread %':10}"
+            )
             print("=" * 100)
             for spread in spreads:
                 print(

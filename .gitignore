@@ -1,10 +1,61 @@
+# Environment and Secrets
 .env
+.env.local
+.env.production
+
+# Database
 market_data.db
+market_data.db-shm
+market_data.db-wal
+upstox.db
+*.db
+backups/
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+
+# Application Data
 logs/
 downloads/
-.DS_Store
-.venv/
 cache/
 debug_dumps/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+*.bak2
+
+# PID files
+*.pid
+
+# Backup files created by scripts
+backtest_results_*.json

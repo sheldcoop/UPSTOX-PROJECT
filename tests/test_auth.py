@@ -6,23 +6,22 @@ Verifies all components are working correctly
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'scripts'))
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
 from auth_manager import AuthManager
 import logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
+
 
 def test_auth_system():
     """Run comprehensive authentication tests"""
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("🧪 AUTHENTICATION SYSTEM TEST")
-    print("="*60 + "\n")
-    
+    print("=" * 60 + "\n")
+
     # Test 1: AuthManager initialization
     print("✓ Test 1: Initializing AuthManager...")
     try:
@@ -31,7 +30,7 @@ def test_auth_system():
     except Exception as e:
         print(f"  ❌ Failed: {e}")
         return False
-    
+
     # Test 2: Configuration check
     print("\n✓ Test 2: Checking configuration...")
     try:
@@ -45,7 +44,7 @@ def test_auth_system():
     except AssertionError as e:
         print(f"  ❌ Failed: {e}")
         return False
-    
+
     # Test 3: Authorization URL generation
     print("\n✓ Test 3: Generating authorization URL...")
     try:
@@ -56,33 +55,36 @@ def test_auth_system():
     except Exception as e:
         print(f"  ❌ Failed: {e}")
         return False
-    
+
     # Test 4: Database connection
     print("\n✓ Test 4: Testing database...")
     try:
         import sqlite3
+
         conn = sqlite3.connect(auth.db_path)
         cursor = conn.cursor()
-        
+
         # Check if auth_tokens table exists
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT name FROM sqlite_master 
             WHERE type='table' AND name='auth_tokens'
-        """)
+        """
+        )
         result = cursor.fetchone()
         assert result, "auth_tokens table not found"
-        
+
         # Count tokens
         cursor.execute("SELECT COUNT(*) FROM auth_tokens WHERE is_active = 1")
         count = cursor.fetchone()[0]
         conn.close()
-        
+
         print(f"  ✅ Database connected")
         print(f"  ✅ Active tokens: {count}")
     except Exception as e:
         print(f"  ❌ Failed: {e}")
         return False
-    
+
     # Test 5: Token retrieval (may not exist yet)
     print("\n✓ Test 5: Checking for existing tokens...")
     try:
@@ -94,7 +96,7 @@ def test_auth_system():
     except Exception as e:
         print(f"  ❌ Failed: {e}")
         return False
-    
+
     # Test 6: Encryption test
     print("\n✓ Test 6: Testing encryption...")
     try:
@@ -106,17 +108,17 @@ def test_auth_system():
     except Exception as e:
         print(f"  ❌ Failed: {e}")
         return False
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("✅ ALL TESTS PASSED")
-    print("="*60)
-    
+    print("=" * 60)
+
     print("\n📋 Next Steps:")
     print("   1. Run: ./authenticate.sh")
     print("   2. Login to Upstox in browser")
     print("   3. Test with: python3 scripts/auth_manager.py check")
     print()
-    
+
     return True
 
 

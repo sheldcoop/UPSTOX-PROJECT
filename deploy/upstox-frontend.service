@@ -1,0 +1,33 @@
+[Unit]
+Description=UPSTOX Trading Platform - Frontend Server
+After=network.target upstox-api.service
+
+[Service]
+Type=notify
+User=opc
+Group=opc
+WorkingDirectory=/home/opc/upstox-trading-platform
+Environment="PATH=/home/opc/upstox-trading-platform/.venv/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="APP_MODE=frontend"
+Environment="PORT=5001"
+ExecStart=/home/opc/upstox-trading-platform/.venv/bin/gunicorn --config gunicorn_config.py wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=30
+PrivateTmp=true
+Restart=on-failure
+RestartSec=10
+
+# Security
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/home/opc/upstox-trading-platform/logs /home/opc/upstox-trading-platform/cache /home/opc/upstox-trading-platform/debug_dumps
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictNamespaces=true
+
+[Install]
+WantedBy=multi-user.target

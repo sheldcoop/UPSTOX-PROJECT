@@ -135,9 +135,7 @@ class WebsocketQuoteStreamer:
             self._external_on_open = on_open
 
             # Run websocket in separate thread
-            self.ws_thread = threading.Thread(
-                target=self.ws.run_forever, daemon=True
-            )
+            self.ws_thread = threading.Thread(target=self.ws.run_forever, daemon=True)
             self.ws_thread.start()
 
             # Wait for connection
@@ -157,7 +155,9 @@ class WebsocketQuoteStreamer:
         """Handle websocket open event."""
         self.connected = True
         self.start_time = datetime.now()
-        print(f"✅ Websocket connected at {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        print(
+            f"✅ Websocket connected at {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}"
+        )
 
     def _on_message(self, ws, message):
         """Handle incoming websocket messages (quotes)."""
@@ -188,15 +188,15 @@ class WebsocketQuoteStreamer:
     def _on_close(self, ws, close_status_code, close_msg):
         """Handle websocket close."""
         self.connected = False
-        print(
-            f"⚠️  Websocket closed (code: {close_status_code}, msg: {close_msg})"
-        )
+        print(f"⚠️  Websocket closed (code: {close_status_code}, msg: {close_msg})")
 
         # Attempt reconnect
         if self.reconnect_attempts < self.max_reconnect_attempts:
             self.reconnect_attempts += 1
             wait_time = self.reconnect_delay * self.reconnect_attempts
-            print(f"🔄 Attempting reconnect #{self.reconnect_attempts} in {wait_time}s...")
+            print(
+                f"🔄 Attempting reconnect #{self.reconnect_attempts} in {wait_time}s..."
+            )
             time.sleep(wait_time)
             self.connect()
 
@@ -390,9 +390,7 @@ class WebsocketQuoteStreamer:
     def get_stats(self) -> Dict:
         """Get streaming stats."""
         uptime = (
-            (datetime.now() - self.start_time).total_seconds()
-            if self.start_time
-            else 0
+            (datetime.now() - self.start_time).total_seconds() if self.start_time else 0
         )
 
         return {
@@ -432,7 +430,9 @@ class WebsocketQuoteStreamer:
                         )
 
                 print("=" * 80)
-                print(f"Ticks received: {self.tick_count} | Uptime: {self.get_stats()['uptime_seconds']:.0f}s")
+                print(
+                    f"Ticks received: {self.tick_count} | Uptime: {self.get_stats()['uptime_seconds']:.0f}s"
+                )
 
                 time.sleep(refresh_interval)
 
@@ -456,8 +456,12 @@ def main():
 
     parser.add_argument("--symbols", type=str, help="Comma-separated symbols to stream")
     parser.add_argument("--duration", type=int, help="Stream duration in seconds")
-    parser.add_argument("--live-display", action="store_true", help="Show live quote display")
-    parser.add_argument("--stats", action="store_true", help="Show streaming statistics")
+    parser.add_argument(
+        "--live-display", action="store_true", help="Show live quote display"
+    )
+    parser.add_argument(
+        "--stats", action="store_true", help="Show streaming statistics"
+    )
     parser.add_argument("--query-ticks", type=str, help="Query tick history for symbol")
     parser.add_argument("--limit", type=int, default=10, help="Limit for tick history")
     parser.add_argument("--token", type=str, help="Upstox access token")
@@ -491,8 +495,10 @@ def main():
         ticks = streamer.get_tick_history(args.query_ticks, args.limit)
         if ticks:
             for tick in ticks:
-                print(f"{tick['timestamp']} | LTP: {tick['ltp']:.2f} | Bid: {tick['bid_price']:.2f} "
-                      f"| Ask: {tick['ask_price']:.2f} | Vol: {tick['volume']}")
+                print(
+                    f"{tick['timestamp']} | LTP: {tick['ltp']:.2f} | Bid: {tick['bid_price']:.2f} "
+                    f"| Ask: {tick['ask_price']:.2f} | Vol: {tick['volume']}"
+                )
         else:
             print("No ticks found")
 
@@ -520,7 +526,9 @@ def main():
                         if streamer.connected:
                             quotes = streamer.get_all_quotes()
                             if quotes:
-                                print(f"📊 {len(quotes)} quotes received | Total ticks: {streamer.tick_count}")
+                                print(
+                                    f"📊 {len(quotes)} quotes received | Total ticks: {streamer.tick_count}"
+                                )
                         time.sleep(2)
                 except KeyboardInterrupt:
                     print("\n📴 Stopped")
@@ -536,4 +544,5 @@ def main():
 
 if __name__ == "__main__":
     import os
+
     main()

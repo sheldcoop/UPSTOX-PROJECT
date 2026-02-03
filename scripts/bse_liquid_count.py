@@ -2,7 +2,7 @@
 """BSE Liquid Groups inventory."""
 import sqlite3
 
-DB = 'market_data.db'
+DB = "market_data.db"
 conn = sqlite3.connect(DB)
 cur = conn.cursor()
 

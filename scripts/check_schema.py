@@ -4,7 +4,7 @@ Check database schema
 """
 import sqlite3
 
-DB_PATH = 'market_data.db'
+DB_PATH = "market_data.db"
 
 conn = sqlite3.connect(DB_PATH)
 cur = conn.cursor()

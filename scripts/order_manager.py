@@ -202,7 +202,9 @@ class OrderManager:
 
             # Call API
             url = f"{self.base_url}/order/place"
-            response = requests.post(url, json=order_data, headers=self.headers, timeout=10)
+            response = requests.post(
+                url, json=order_data, headers=self.headers, timeout=10
+            )
 
             if response.status_code == 200:
                 data = response.json()
@@ -335,14 +337,18 @@ class OrderManager:
             url = f"{self.base_url}/order/retrieve"
             params = {"order_id": order_id}
 
-            response = requests.get(url, params=params, headers=self.headers, timeout=10)
+            response = requests.get(
+                url, params=params, headers=self.headers, timeout=10
+            )
 
             if response.status_code == 200:
                 order_data = response.json().get("data", {})
                 self._update_order_status(order_id, order_data.get("status"))
                 return order_data
             else:
-                print(f"❌ Failed to get order status: {response.json().get('message')}")
+                print(
+                    f"❌ Failed to get order status: {response.json().get('message')}"
+                )
                 return None
 
         except Exception as e:
@@ -367,7 +373,9 @@ class OrderManager:
             print(f"❌ Error getting orders: {e}")
             return []
 
-    def get_order_history(self, symbol: Optional[str] = None, limit: int = 50) -> List[Dict]:
+    def get_order_history(
+        self, symbol: Optional[str] = None, limit: int = 50
+    ) -> List[Dict]:
         """Get order history from database."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -466,7 +474,9 @@ class OrderManager:
 
             print(f"✅ Bracket order placed")
             print(f"   Bracket ID: {bracket_id}")
-            print(f"   Entry: {entry_price} | SL: {stop_loss_price} | Target: {target_price}")
+            print(
+                f"   Entry: {entry_price} | SL: {stop_loss_price} | Target: {target_price}"
+            )
 
             return bracket_id
 
@@ -544,7 +554,9 @@ class OrderManager:
             return
 
         print("\n" + "=" * 120)
-        print(f"{'Order ID':12} | {'Symbol':8} | {'Side':4} | {'Qty':5} | {'Type':7} | {'Price':10} | {'Status':10} | {'Created':19}")
+        print(
+            f"{'Order ID':12} | {'Symbol':8} | {'Side':4} | {'Qty':5} | {'Type':7} | {'Price':10} | {'Status':10} | {'Created':19}"
+        )
         print("=" * 120)
 
         for order in orders:
@@ -560,14 +572,14 @@ class OrderManager:
             )
 
         print("=" * 120)
-    
+
     def place_multi_order(self, orders: List[Dict]) -> List[str]:
         """
         Place multiple orders in a single API call (atomic operation).
-        
+
         Args:
             orders: List of order dicts with keys: symbol, side, quantity, order_type, price, etc.
-        
+
         Returns:
             List of order IDs if successful
         """
@@ -580,27 +592,28 @@ class OrderManager:
                     "side": order.get("side"),
                     "quantity": order.get("quantity"),
                     "order_type": order.get("order_type", "MARKET"),
-                    "product_type": order.get("product_type", "MIS")
+                    "product_type": order.get("product_type", "MIS"),
                 }
-                
+
                 if order.get("price"):
                     order_data["price"] = order["price"]
                 if order.get("trigger_price"):
                     order_data["trigger_price"] = order["trigger_price"]
-                
+
                 order_list.append(order_data)
-            
+
             # Call multi-order API
             url = f"{self.base_url}/order/multi/place"
-            response = requests.post(url, json={"orders": order_list}, 
-                                    headers=self.headers, timeout=30)
-            
+            response = requests.post(
+                url, json={"orders": order_list}, headers=self.headers, timeout=30
+            )
+
             if response.status_code == 200:
                 data = response.json()
                 order_ids = [item.get("order_id") for item in data.get("data", [])]
-                
+
                 print(f"✅ Multi-order placed successfully - {len(order_ids)} orders")
-                
+
                 # Store all orders
                 for i, order_id in enumerate(order_ids):
                     if order_id:
@@ -611,38 +624,40 @@ class OrderManager:
                             quantity=orders[i].get("quantity"),
                             order_type=orders[i].get("order_type", "MARKET"),
                             price=orders[i].get("price"),
-                            product_type=orders[i].get("product_type", "MIS")
+                            product_type=orders[i].get("product_type", "MIS"),
                         )
-                
+
                 return order_ids
             else:
                 error_msg = response.json().get("message", response.text)
                 print(f"❌ Multi-order failed: {error_msg}")
                 return []
-        
+
         except Exception as e:
             print(f"❌ Error placing multi-order: {e}")
             return []
-    
+
     def get_order_details(self, order_id: str) -> Optional[Dict]:
         """
         Get FULL order details including lifecycle, fills, and exchange timestamps.
-        
+
         Args:
             order_id: Order ID
-        
+
         Returns:
             Detailed order information
         """
         try:
             url = f"{self.base_url}/order/details"
             params = {"order_id": order_id}
-            
-            response = requests.get(url, params=params, headers=self.headers, timeout=10)
-            
+
+            response = requests.get(
+                url, params=params, headers=self.headers, timeout=10
+            )
+
             if response.status_code == 200:
                 data = response.json().get("data", {})
-                
+
                 # Enhanced details
                 details = {
                     "order_id": data.get("order_id"),
@@ -657,26 +672,28 @@ class OrderManager:
                     "status": data.get("status"),
                     "status_message": data.get("status_message"),
                     "rejection_reason": data.get("rejection_reason"),
-                    "average_price": data.get("average_price")
+                    "average_price": data.get("average_price"),
                 }
-                
+
                 return details
             else:
-                print(f"❌ Failed to get order details: {response.json().get('message')}")
+                print(
+                    f"❌ Failed to get order details: {response.json().get('message')}"
+                )
                 return None
-        
+
         except Exception as e:
             print(f"❌ Error getting order details: {e}")
             return None
-    
+
     def get_trades(self, order_id: Optional[str] = None) -> List[Dict]:
         """
         Get trades (executions/fills) for orders.
         One order can have multiple trades if partially filled.
-        
+
         Args:
             order_id: Specific order ID (optional, gets all trades if None)
-        
+
         Returns:
             List of trade dictionaries
         """
@@ -685,28 +702,32 @@ class OrderManager:
             params = {}
             if order_id:
                 params["order_id"] = order_id
-            
-            response = requests.get(url, params=params, headers=self.headers, timeout=10)
-            
+
+            response = requests.get(
+                url, params=params, headers=self.headers, timeout=10
+            )
+
             if response.status_code == 200:
                 trades = response.json().get("data", [])
-                
+
                 processed_trades = []
                 for trade in trades:
-                    processed_trades.append({
-                        "trade_id": trade.get("trade_id"),
-                        "order_id": trade.get("order_id"),
-                        "symbol": trade.get("tradingsymbol"),
-                        "quantity": trade.get("quantity"),
-                        "price": trade.get("price"),
-                        "trade_timestamp": trade.get("trade_timestamp")
-                    })
-                
+                    processed_trades.append(
+                        {
+                            "trade_id": trade.get("trade_id"),
+                            "order_id": trade.get("order_id"),
+                            "symbol": trade.get("tradingsymbol"),
+                            "quantity": trade.get("quantity"),
+                            "price": trade.get("price"),
+                            "trade_timestamp": trade.get("trade_timestamp"),
+                        }
+                    )
+
                 return processed_trades
             else:
                 print(f"❌ Failed to get trades: {response.json().get('message')}")
                 return []
-        
+
         except Exception as e:
             print(f"❌ Error getting trades: {e}")
             return []
@@ -720,20 +741,42 @@ def main():
     )
 
     parser.add_argument("--token", type=str, help="Upstox access token")
-    parser.add_argument("--action", type=str, required=True,
-                        choices=["place", "modify", "cancel", "status", "list-active", "history", "place-bracket"],
-                        help="Action to perform")
+    parser.add_argument(
+        "--action",
+        type=str,
+        required=True,
+        choices=[
+            "place",
+            "modify",
+            "cancel",
+            "status",
+            "list-active",
+            "history",
+            "place-bracket",
+        ],
+        help="Action to perform",
+    )
 
     # Place order arguments
     parser.add_argument("--symbol", type=str, help="Trading symbol")
     parser.add_argument("--side", type=str, choices=["BUY", "SELL"], help="Buy or Sell")
     parser.add_argument("--qty", type=int, help="Quantity")
-    parser.add_argument("--type", type=str, choices=["MARKET", "LIMIT", "STOP_LOSS"],
-                        default="MARKET", help="Order type")
+    parser.add_argument(
+        "--type",
+        type=str,
+        choices=["MARKET", "LIMIT", "STOP_LOSS"],
+        default="MARKET",
+        help="Order type",
+    )
     parser.add_argument("--price", type=float, help="Limit price")
     parser.add_argument("--trigger-price", type=float, help="Trigger price")
-    parser.add_argument("--product-type", type=str, choices=["MIS", "CNC", "MTF"],
-                        default="MIS", help="Product type")
+    parser.add_argument(
+        "--product-type",
+        type=str,
+        choices=["MIS", "CNC", "MTF"],
+        default="MIS",
+        help="Product type",
+    )
 
     # Modify/Cancel/Status arguments
     parser.add_argument("--order-id", type=str, help="Order ID")
@@ -811,7 +854,9 @@ def main():
         manager.display_orders(orders)
 
     elif args.action == "place-bracket":
-        if not all([args.symbol, args.qty, args.entry_price, args.stop_loss, args.target]):
+        if not all(
+            [args.symbol, args.qty, args.entry_price, args.stop_loss, args.target]
+        ):
             print("❌ --symbol, --qty, --entry-price, --stop-loss, --target required")
             sys.exit(1)
 

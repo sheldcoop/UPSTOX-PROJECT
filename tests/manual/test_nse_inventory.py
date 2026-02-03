@@ -2,7 +2,7 @@
 """Test queries: NSE EQ stocks and F&O coverage."""
 import sqlite3
 
-DB = 'market_data.db'
+DB = "market_data.db"
 conn = sqlite3.connect(DB)
 cur = conn.cursor()
 
@@ -27,7 +27,9 @@ print(f"✅ NSE stocks with F&O (options/futures):                 {result3:,}")
 
 # Q4: Coverage - what % of NSE_EQ have F&O?
 coverage = (result3 / result2 * 100) if result2 > 0 else 0
-print(f"\n💡 Coverage: {result3}/{result2} = {coverage:.1f}% of mainboard stocks have derivatives")
+print(
+    f"\n💡 Coverage: {result3}/{result2} = {coverage:.1f}% of mainboard stocks have derivatives"
+)
 
 # Q5: NSE_EQ stocks WITHOUT F&O
 q5 = """

@@ -3,7 +3,8 @@
 Debug candle fetch - check raw API response
 """
 import sys
-sys.path.insert(0, '/Users/prince/Desktop/UPSTOX-project/scripts')
+
+sys.path.insert(0, "/Users/prince/Desktop/UPSTOX-project/scripts")
 
 from candle_fetcher import get_access_token
 import requests
@@ -13,14 +14,14 @@ token = get_access_token()
 print(f"Token: {token[:20]}...")
 
 # Try with dates from 2025
-end_date = '2025-01-31'
-start_date = '2025-01-26'
+end_date = "2025-01-31"
+start_date = "2025-01-26"
 
 url = f"https://api.upstox.com/v2/historical-candle/NSE_EQ|INE002A01018/day/{start_date}/{end_date}"
 
 headers = {
-    'Authorization': f'Bearer {token}',
-    'Accept': 'application/json',
+    "Authorization": f"Bearer {token}",
+    "Accept": "application/json",
 }
 
 print(f"\nURL: {url}")
