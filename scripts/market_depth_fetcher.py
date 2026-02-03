@@ -75,7 +75,8 @@ class MarketDepthFetcher:
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
 
-        c.execute("""
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS market_depth (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -92,9 +93,11 @@ class MarketDepthFetcher:
                 market_type TEXT,
                 UNIQUE(timestamp, symbol, level)
             )
-        """)
+        """
+        )
 
-        c.execute("""
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS spread_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -108,9 +111,11 @@ class MarketDepthFetcher:
                 top_ask_qty INTEGER,
                 UNIQUE(timestamp, symbol)
             )
-        """)
+        """
+        )
 
-        c.execute("""
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS order_book (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -120,7 +125,8 @@ class MarketDepthFetcher:
                 quantity INTEGER,
                 level INTEGER
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -158,9 +164,7 @@ class MarketDepthFetcher:
                     print(f"❌ No depth data for {symbol}")
                     return None
             else:
-                print(
-                    f"❌ Failed to get market depth: {response.json().get('message')}"
-                )
+                print(f"❌ Failed to get market depth: {response.json().get('message')}")
                 return None
 
         except Exception as e:

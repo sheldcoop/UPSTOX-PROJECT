@@ -92,7 +92,8 @@ class ErrorHandler:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS error_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -105,7 +106,8 @@ class ErrorHandler:
                 resolution_time DATETIME,
                 context TEXT
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -178,24 +180,33 @@ class ErrorHandler:
             cursor = conn.cursor()
 
             # Total errors in time period
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT COUNT(*) FROM error_logs
                 WHERE timestamp >= datetime('now', '-{} hours')
-            """.format(hours))
+            """.format(
+                    hours
+                )
+            )
             total_errors = cursor.fetchone()[0]
 
             # Errors by type
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT error_type, COUNT(*) as count
                 FROM error_logs
                 WHERE timestamp >= datetime('now', '-{} hours')
                 GROUP BY error_type
                 ORDER BY count DESC
-            """.format(hours))
+            """.format(
+                    hours
+                )
+            )
             errors_by_type = dict(cursor.fetchall())
 
             # Errors by endpoint
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT endpoint, COUNT(*) as count
                 FROM error_logs
                 WHERE timestamp >= datetime('now', '-{} hours')
@@ -203,17 +214,24 @@ class ErrorHandler:
                 GROUP BY endpoint
                 ORDER BY count DESC
                 LIMIT 10
-            """.format(hours))
+            """.format(
+                    hours
+                )
+            )
             errors_by_endpoint = dict(cursor.fetchall())
 
             # Resolution rate
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT 
                     COUNT(CASE WHEN resolved = 1 THEN 1 END) as resolved,
                     COUNT(*) as total
                 FROM error_logs
                 WHERE timestamp >= datetime('now', '-{} hours')
-            """.format(hours))
+            """.format(
+                    hours
+                )
+            )
             resolved, total = cursor.fetchone()
             resolution_rate = (resolved / total * 100) if total > 0 else 0
 
@@ -358,14 +376,16 @@ class ErrorHandler:
             cursor = conn.cursor()
 
             # Create cache table if it doesn't exist
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS api_cache (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     cache_key TEXT NOT NULL,
                     data TEXT NOT NULL,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+            """
+            )
 
             # Insert cached data
             cursor.execute(
@@ -377,10 +397,12 @@ class ErrorHandler:
             )
 
             # Clean old cache entries (older than 24 hours)
-            cursor.execute("""
+            cursor.execute(
+                """
                 DELETE FROM api_cache
                 WHERE timestamp < datetime('now', '-24 hours')
-            """)
+            """
+            )
 
             conn.commit()
             conn.close()
@@ -402,10 +424,14 @@ class ErrorHandler:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT COUNT(*) FROM error_logs
                 WHERE timestamp >= datetime('now', '-{} minutes')
-            """.format(minutes))
+            """.format(
+                    minutes
+                )
+            )
 
             error_count = cursor.fetchone()[0]
             conn.close()
@@ -451,14 +477,18 @@ class ErrorHandler:
                 conn = sqlite3.connect(self.db_path)
                 cursor = conn.cursor()
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT error_type, COUNT(*) as count
                     FROM error_logs
                     WHERE timestamp >= datetime('now', '-{} minutes')
                     GROUP BY error_type
                     ORDER BY count DESC
                     LIMIT 5
-                """.format(window_minutes))
+                """.format(
+                        window_minutes
+                    )
+                )
 
                 error_breakdown = dict(cursor.fetchall())
                 alert_info["error_breakdown"] = error_breakdown

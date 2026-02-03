@@ -38,7 +38,8 @@ class PerformanceAnalytics:
         cursor = conn.cursor()
 
         # Trade journal
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS trade_journal (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 trade_date DATE NOT NULL,
@@ -57,10 +58,12 @@ class PerformanceAnalytics:
                 status TEXT DEFAULT 'OPEN',
                 UNIQUE(symbol, entry_time)
             )
-        """)
+        """
+        )
 
         # Daily performance
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS daily_performance (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 performance_date DATE UNIQUE NOT NULL,
@@ -73,10 +76,12 @@ class PerformanceAnalytics:
                 losing_trades INTEGER DEFAULT 0,
                 total_commission REAL DEFAULT 0
             )
-        """)
+        """
+        )
 
         # Monthly performance summary
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS monthly_performance (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 year INTEGER NOT NULL,
@@ -93,7 +98,8 @@ class PerformanceAnalytics:
                 max_drawdown REAL,
                 UNIQUE(year, month)
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -305,13 +311,17 @@ class PerformanceAnalytics:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT pnl
             FROM trade_journal
             WHERE status = 'CLOSED'
             AND trade_date >= DATE('now', '-{} days')
             ORDER BY trade_date
-        """.format(days))
+        """.format(
+                days
+            )
+        )
 
         pnls = [row[0] for row in cursor.fetchall()]
         conn.close()
@@ -352,13 +362,17 @@ class PerformanceAnalytics:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT pnl
             FROM trade_journal
             WHERE status = 'CLOSED'
             AND trade_date >= DATE('now', '-{} days')
             ORDER BY trade_date
-        """.format(days))
+        """.format(
+                days
+            )
+        )
 
         pnls = [row[0] for row in cursor.fetchall()]
         conn.close()
@@ -376,7 +390,9 @@ class PerformanceAnalytics:
 
         # Only consider negative returns for downside deviation
         downside_returns = [min(r - daily_rf, 0) for r in returns]
-        downside_variance = sum(r**2 for r in downside_returns) / len(downside_returns)
+        downside_variance = sum(r**2 for r in downside_returns) / len(
+            downside_returns
+        )
         downside_std = math.sqrt(downside_variance)
 
         if downside_std == 0:
@@ -391,14 +407,18 @@ class PerformanceAnalytics:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT trade_date, SUM(pnl) as daily_pnl
             FROM trade_journal
             WHERE status = 'CLOSED'
             AND trade_date >= DATE('now', '-{} days')
             GROUP BY trade_date
             ORDER BY trade_date
-        """.format(days))
+        """.format(
+                days
+            )
+        )
 
         daily_results = cursor.fetchall()
         conn.close()

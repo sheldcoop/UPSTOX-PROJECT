@@ -1,8 +1,0 @@
-{
-  "trace_id": "f8eef865",
-  "error": "dashboard.html",
-  "type": "TemplateNotFound",
-  "path": "/",
-  "method": "GET",
-  "timestamp": "2026-02-01T13:13:22.060561"
-}

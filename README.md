@@ -1,103 +1,123 @@
 # 🚀 UPSTOX Trading Platform
 
-**Production-grade algorithmic trading platform built on the Upstox API**
+**Production-grade algorithmic trading platform with 31 UI pages built on Upstox API**
 
 [![CI/CD Pipeline](https://github.com/sheldcoop/UPSTOX-PROJECT/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/sheldcoop/UPSTOX-PROJECT/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![UI Pages](https://img.shields.io/badge/UI_Pages-31-success.svg)]()
+[![API Endpoints](https://img.shields.io/badge/API_Endpoints-60+-blue.svg)]()
 
 ---
 
-## 📋 Table of Contents
-
-- [Features](#features)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Contributing](#contributing)
-- [License](#license)
+## 🏠 **[→ READ FULL DOCUMENTATION (HOME.md)](HOME.md)**
 
 ---
 
-## ✨ Features
+## ⚡ Ultra Quick Start
 
-### Backend (11 Production Features)
-- 🔐 **OAuth 2.0 Authentication** - Auto-refresh, Fernet encryption
-- 📊 **Risk Management** - Position sizing, circuit breakers, VAR/Sharpe calculation
-- 📈 **Trading Strategies** - RSI, MACD, SMA with backtesting engine
-- ⚠️ **Alert System** - Price/volume/technical alerts with notifications
-- 🎯 **Paper Trading** - Virtual portfolio with realistic order matching
-- 📉 **Performance Analytics** - Win rate, Sharpe/Sortino ratios, equity curve
-- 🔄 **Data Synchronization** - Scheduled sync, gap detection, backfill
-- 📰 **News Integration** - NewsAPI, FinBERT AI sentiment analysis
-- 🏢 **Corporate Actions** - NSE announcements, dividends, splits
-- 🔧 **Database Validation** - Data quality checks, constraint enforcement
-- 📝 **Centralized Logging** - System metrics with psutil integration
-
-### Frontend (NiceGUI Dashboard)
-- 🎨 **Modern UI** - 12+ modular pages with responsive design
-- 📊 **Real-time Data** - Live market quotes, positions, P&L
-- 🔍 **Option Chain** - Multi-expiry support with Greeks calculation
-- 📈 **Historical Data** - Interactive charts and analysis
-- 🤖 **AI Assistant** - Integrated chatbot for trading insights
-- 🐛 **API Debugger** - Built-in testing console
-- 📥 **Downloads** - Export data and reports
-
-### Infrastructure
-- 🐳 **Docker Support** - Full containerization with docker-compose
-- 🔧 **Production Ready** - Gunicorn, Nginx, systemd services
-- 📊 **Monitoring** - Prometheus + Grafana dashboards
-- 💾 **Database** - SQLite with 40+ tables (PostgreSQL-ready)
-- 🔄 **CI/CD Pipeline** - Automated testing, linting, security scans
-
----
-
-## 🚀 Quick Start
-
-### Option 1: Local Development (5 minutes)
+### 🐳 Docker (Fastest - 3 minutes)
 
 ```bash
-# Clone repository
 git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
 cd UPSTOX-PROJECT
-
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment
 cp .env.example .env
-nano .env  # Add your Upstox credentials
+# Edit .env with your Upstox credentials
 
-# Generate encryption key
-python scripts/generate_encryption_key.py
+docker-compose up -d
 
-# Start API server (Terminal 1)
-python scripts/api_server.py
-
-# Start frontend (Terminal 2)
-python nicegui_dashboard.py
-
-# Access dashboard
-open http://localhost:5001
+# Access:
+# Frontend: http://localhost:5001
+# Backend API: http://localhost:8000
 ```
 
-### Option 2: Docker (3 minutes)
+### 🖥️ Ubuntu/Linux (10 minutes)
 
 ```bash
-# Clone and start
 git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
 cd UPSTOX-PROJECT
-cp .env.example .env
-# Edit .env with your credentials
 
-# Start all services
-docker-compose up -d
+# Setup
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env
+
+# Start (2 terminals)
+python scripts/api_server.py        # Terminal 1
+python nicegui_dashboard.py         # Terminal 2
+
+# Access: http://localhost:5001
+```
+
+### 🪟 Windows (10 minutes)
+
+```powershell
+git clone https://github.com/sheldcoop/UPSTOX-PROJECT.git
+cd UPSTOX-PROJECT
+
+# Setup
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+# Edit .env
+
+# Start (2 terminals)
+python scripts/api_server.py        # Terminal 1
+python nicegui_dashboard.py         # Terminal 2
+
+# Access: http://localhost:5001
+```
+
+---
+
+## 📊 What's Included
+
+### ✅ 31 Interactive UI Pages
+- **Dashboard**: Home, Health, Portfolio Summary, Analytics
+- **Trading**: Positions, Orders, Live Trading, Order Book, Trade Book, GTT Orders
+- **Data**: Live Data, Option Chain, Historical Data, Downloads, Market Calendar
+- **Strategies**: Backtest, Signals, Strategy Builder, Trade P&L
+- **Portfolio**: Upstox Live, Funds, Margins, Holdings  
+- **Tools**: AI Chat, API Debugger, Instruments Browser, Charges Calculator, Guide
+
+### ✅ 60+ Backend API Endpoints
+- Authentication & User Management
+- Trading Operations (Orders, Positions, Holdings)
+- Market Data (Quotes, Candles, Option Chains)
+- Analytics & Reports (P&L, Performance, Risk)
+- WebSocket Streams (Real-time updates)
+
+### ✅ Production Features
+- OAuth 2.0 Authentication with auto-refresh
+- Risk Management & Position Sizing
+- Trading Strategies (RSI, MACD, SMA)
+- Paper Trading System
+- Performance Analytics
+- AI-Powered Sentiment Analysis
+- Docker Deployment Ready
+
+---
+
+## 📚 Documentation
+
+**Essential Reading:**
+- 🏠 **[HOME.md](HOME.md)** - Complete documentation hub ⭐ START HERE
+- 🚀 **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Production deployment
+- 🛠️ **[docs/LOCAL_DEVELOPMENT.md](docs/LOCAL_DEVELOPMENT.md)** - Development setup
+- 📊 **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - Current status
+
+**Reference:**
+- 🧪 **[docs/TESTING.md](docs/TESTING.md)** - Testing guide
+- ⚠️ **[docs/MISSING_API_ENDPOINTS.md](docs/MISSING_API_ENDPOINTS.md)** - API status
+- 📡 **[docs/Upstox.md](docs/Upstox.md)** - Upstox API reference
+- 📖 **[docs/guides/](docs/guides/)** - Feature-specific guides
+
+---
+
+## 🏗️ Architecture
 
 # Access services
 # Frontend: http://localhost:5001

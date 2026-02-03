@@ -76,7 +76,8 @@ class AuthManager:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS auth_tokens (
                 user_id TEXT PRIMARY KEY,
                 access_token TEXT NOT NULL,
@@ -86,7 +87,8 @@ class AuthManager:
                 created_at REAL DEFAULT (strftime('%s', 'now')),
                 updated_at REAL DEFAULT (strftime('%s', 'now'))
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -355,9 +357,11 @@ if __name__ == "__main__":
             else:
                 print("\n❌ No valid token found")
     else:
-        print("""
+        print(
+            """
 Usage:
   python3 scripts/auth_manager.py url              # Get authorization URL
   python3 scripts/auth_manager.py exchange <code>  # Exchange auth code for token
   python3 scripts/auth_manager.py check            # Check if token is valid
-        """)
+        """
+        )

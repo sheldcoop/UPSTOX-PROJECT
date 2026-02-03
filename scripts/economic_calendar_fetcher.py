@@ -82,7 +82,8 @@ class EconomicCalendarFetcher:
         cursor = conn.cursor()
 
         # Economic events table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS economic_events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 country TEXT NOT NULL,
@@ -101,10 +102,12 @@ class EconomicCalendarFetcher:
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(country, event_name, event_date)
             )
-        """)
+        """
+        )
 
         # RBI policy decisions table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS rbi_policy_decisions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 meeting_date DATETIME NOT NULL,
@@ -121,10 +124,12 @@ class EconomicCalendarFetcher:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(meeting_date)
             )
-        """)
+        """
+        )
 
         # Economic alerts table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS economic_alerts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 event_id INTEGER,
@@ -136,10 +141,12 @@ class EconomicCalendarFetcher:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY(event_id) REFERENCES economic_events(id)
             )
-        """)
+        """
+        )
 
         # Market impact history table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS market_impact_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 event_id INTEGER,
@@ -152,7 +159,8 @@ class EconomicCalendarFetcher:
                 recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY(event_id) REFERENCES economic_events(id)
             )
-        """)
+        """
+        )
 
         # Create indexes
         cursor.execute(
@@ -583,14 +591,16 @@ class EconomicCalendarFetcher:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT a.*, e.event_date, e.description, e.impact_level
             FROM economic_alerts a
             JOIN economic_events e ON a.event_id = e.id
             WHERE a.status = 'PENDING'
             AND date(a.alert_date) <= date('now')
             ORDER BY a.alert_date ASC
-        """)
+        """
+        )
 
         columns = [desc[0] for desc in cursor.description]
         alerts = [dict(zip(columns, row)) for row in cursor.fetchall()]
@@ -857,9 +867,7 @@ def main():
         )
 
         if success:
-            print(
-                f"✅ Alert set for {args.event_name} ({args.days_before} days before)"
-            )
+            print(f"✅ Alert set for {args.event_name} ({args.days_before} days before)")
         else:
             print(f"❌ Failed to set alert")
 

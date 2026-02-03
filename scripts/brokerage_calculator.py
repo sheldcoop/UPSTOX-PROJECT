@@ -72,7 +72,8 @@ class BrokerageCalculator:
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
 
-        c.execute("""
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS brokerage_calculations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -92,7 +93,8 @@ class BrokerageCalculator:
                 total_cost REAL,
                 breakeven_price REAL
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()

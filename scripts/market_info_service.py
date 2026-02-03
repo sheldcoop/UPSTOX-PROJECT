@@ -92,7 +92,8 @@ class MarketInfoService:
         """Initialize database tables for market info"""
         with self.db_pool.get_connection() as conn:
             # Market status table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS market_status (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     exchange TEXT NOT NULL,
@@ -103,10 +104,12 @@ class MarketInfoService:
                     next_open_time DATETIME,
                     next_close_time DATETIME
                 )
-            """)
+            """
+            )
 
             # Market holidays table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS market_holidays (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     date DATE NOT NULL,
@@ -116,10 +119,12 @@ class MarketInfoService:
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(date, exchange, segment)
                 )
-            """)
+            """
+            )
 
             # Market timings table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS market_timings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     exchange TEXT NOT NULL,
@@ -133,13 +138,16 @@ class MarketInfoService:
                     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(exchange, segment)
                 )
-            """)
+            """
+            )
 
             # Create indexes
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_holidays_date 
                 ON market_holidays(date)
-            """)
+            """
+            )
 
     @with_retry(max_attempts=3, use_cache=True)
     def get_market_status(

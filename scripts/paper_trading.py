@@ -76,7 +76,8 @@ class PaperTradingSystem:
         cursor = conn.cursor()
 
         # Paper trading portfolio
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS paper_portfolio (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 cash_balance REAL NOT NULL,
@@ -86,10 +87,12 @@ class PaperTradingSystem:
                 total_pnl REAL DEFAULT 0,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # Paper trading positions
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS paper_positions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT UNIQUE NOT NULL,
@@ -100,10 +103,12 @@ class PaperTradingSystem:
                 unrealized_pnl_pct REAL,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # Paper trading orders
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS paper_orders (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id TEXT UNIQUE NOT NULL,
@@ -122,10 +127,12 @@ class PaperTradingSystem:
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 filled_at DATETIME
             )
-        """)
+        """
+        )
 
         # Paper trading executions
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS paper_executions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id TEXT NOT NULL,
@@ -136,7 +143,8 @@ class PaperTradingSystem:
                 execution_time DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (order_id) REFERENCES paper_orders(order_id)
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -171,21 +179,25 @@ class PaperTradingSystem:
         cursor = conn.cursor()
 
         # Get portfolio
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT cash_balance, total_value, unrealized_pnl, realized_pnl, total_pnl
             FROM paper_portfolio
             ORDER BY id DESC
             LIMIT 1
-        """)
+        """
+        )
 
         portfolio = cursor.fetchone()
 
         # Get positions
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT symbol, quantity, average_price, current_price, unrealized_pnl
             FROM paper_positions
             WHERE quantity > 0
-        """)
+        """
+        )
 
         positions = []
         total_position_value = 0
@@ -380,10 +392,12 @@ class PaperTradingSystem:
         total_cost = trade_value + commission
 
         # Update portfolio
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT cash_balance FROM paper_portfolio
             ORDER BY id DESC LIMIT 1
-        """)
+        """
+        )
 
         cash_balance = cursor.fetchone()[0]
 
@@ -592,11 +606,13 @@ class PaperTradingSystem:
         cursor = conn.cursor()
 
         # Get all positions
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT symbol, quantity, average_price
             FROM paper_positions
             WHERE quantity > 0
-        """)
+        """
+        )
 
         positions = cursor.fetchall()
 

@@ -75,7 +75,8 @@ class AccountFetcher:
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
 
-        c.execute("""
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS account_info (
                 timestamp DATETIME PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
                 user_id TEXT,
@@ -97,9 +98,11 @@ class AccountFetcher:
                 pnl_today REAL,
                 pnl_mtd REAL
             )
-        """)
+        """
+        )
 
-        c.execute("""
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS margin_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -108,7 +111,8 @@ class AccountFetcher:
                 margin_utilization_pct REAL,
                 buying_power REAL
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()

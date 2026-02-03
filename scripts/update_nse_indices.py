@@ -56,7 +56,8 @@ class NSEIndexUpdater:
         cursor = conn.cursor()
 
         # Create index membership table with market cap category
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS nse_index_membership (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT NOT NULL,
@@ -69,23 +70,31 @@ class NSEIndexUpdater:
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(symbol, index_name)
             )
-        """)
+        """
+        )
 
         # Create index on symbol for faster lookups
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_symbol ON nse_index_membership(symbol)
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_index_name ON nse_index_membership(index_name)
-        """)
-        
-        cursor.execute("""
+        """
+        )
+
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_index_category ON nse_index_membership(index_category)
-        """)
+        """
+        )
 
         # Create sector information table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS nse_sector_info (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT NOT NULL UNIQUE,
@@ -95,15 +104,20 @@ class NSEIndexUpdater:
                 market_cap_category TEXT,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_sector ON nse_sector_info(sector)
-        """)
-        
-        cursor.execute("""
+        """
+        )
+
+        cursor.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_market_cap_category ON nse_sector_info(market_cap_category)
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -214,7 +228,9 @@ class NSEIndexUpdater:
         for index_name, index_info in NSE_INDICES.items():
             data = self.download_index_data(index_name, index_info)
             if data:
-                inserted, updated = self.update_index_membership(index_name, data, index_info)
+                inserted, updated = self.update_index_membership(
+                    index_name, data, index_info
+                )
                 total_inserted += inserted
                 total_updated += updated
                 time.sleep(2)  # Be nice to NSE servers

@@ -87,7 +87,8 @@ class PortfolioServicesV3:
         """Initialize database tables for P&L tracking"""
         with self.db_pool.get_connection() as conn:
             # P&L reports table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS pnl_reports (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     trade_id TEXT,
@@ -103,10 +104,12 @@ class PortfolioServicesV3:
                     net_pnl REAL,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+            """
+            )
 
             # Position conversions table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS position_conversions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     symbol TEXT NOT NULL,
@@ -117,10 +120,12 @@ class PortfolioServicesV3:
                     status TEXT DEFAULT 'SUCCESS',
                     error_message TEXT
                 )
-            """)
+            """
+            )
 
             # Charges breakdown table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS trade_charges (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     trade_id TEXT NOT NULL,
@@ -134,13 +139,16 @@ class PortfolioServicesV3:
                     total_charges REAL DEFAULT 0,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            """)
+            """
+            )
 
             # Create indexes
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_pnl_symbol 
                 ON pnl_reports(symbol, sell_date)
-            """)
+            """
+            )
 
     @with_retry(max_attempts=3, use_cache=True)
     def get_pnl_report(
@@ -205,7 +213,8 @@ class PortfolioServicesV3:
                 cursor = conn.cursor()
 
                 # Total realized P&L
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT 
                         SUM(realized_pnl) as total_realized,
                         SUM(unrealized_pnl) as total_unrealized,
@@ -216,7 +225,8 @@ class PortfolioServicesV3:
                         COUNT(CASE WHEN net_pnl < 0 THEN 1 END) as losing_trades
                     FROM pnl_reports
                     WHERE sell_date IS NOT NULL
-                """)
+                """
+                )
 
                 row = cursor.fetchone()
 
@@ -395,11 +405,13 @@ class PortfolioServicesV3:
             with self.db_pool.get_connection() as conn:
                 cursor = conn.cursor()
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT * FROM pnl_reports
                     ORDER BY created_at DESC
                     LIMIT 100
-                """)
+                """
+                )
 
                 rows = cursor.fetchall()
 

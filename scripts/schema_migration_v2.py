@@ -28,34 +28,41 @@ def create_new_tables(conn):
     logger.info("creating normalized tables...")
 
     # 1. Exchanges
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS exchanges (
         id TEXT PRIMARY KEY,
         name TEXT
     )
-    """)
+    """
+    )
 
     # 2. Segments
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS segments (
         id TEXT PRIMARY KEY,
         exchange_id TEXT,
         type TEXT,
         FOREIGN KEY(exchange_id) REFERENCES exchanges(id)
     )
-    """)
+    """
+    )
 
     # 3. Instrument Types (The Decoder Ring)
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS instrument_types (
         code TEXT PRIMARY KEY,
         category TEXT, -- 'Equity', 'Bond', 'Index', 'Option', 'Future'
         description TEXT
     )
-    """)
+    """
+    )
 
     # 4. Master Instruments Table
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS instruments (
         instrument_key TEXT PRIMARY KEY,
         exchange_token TEXT,
@@ -70,10 +77,12 @@ def create_new_tables(conn):
         FOREIGN KEY(segment_id) REFERENCES segments(id),
         FOREIGN KEY(type_code) REFERENCES instrument_types(code)
     )
-    """)
+    """
+    )
 
     # 5. Equities Metadata
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS equities_metadata (
         instrument_key TEXT PRIMARY KEY,
         isin TEXT, 
@@ -81,10 +90,12 @@ def create_new_tables(conn):
         market_cap_category TEXT,
         FOREIGN KEY(instrument_key) REFERENCES instruments(instrument_key)
     )
-    """)
+    """
+    )
 
     # 6. Derivatives Metadata
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS derivatives_metadata (
         instrument_key TEXT PRIMARY KEY,
         underlying_symbol TEXT,
@@ -93,7 +104,8 @@ def create_new_tables(conn):
         option_type TEXT, -- CE, PE, FUT
         FOREIGN KEY(instrument_key) REFERENCES instruments(instrument_key)
     )
-    """)
+    """
+    )
 
     # Initialize Static Data
     logger.info("Populating static reference data...")
@@ -180,37 +192,43 @@ def migrate_data(conn):
 
     # --- Step 2: Migrate Instruments ---
     logger.info("Copying base instruments...")
-    cursor.execute("""
+    cursor.execute(
+        """
     INSERT OR IGNORE INTO instruments 
     (instrument_key, exchange_token, symbol, trading_symbol, segment_id, type_code, lot_size, tick_size, is_active, last_updated)
     SELECT 
         instrument_key, exchange_token, symbol, trading_symbol, segment, instrument_type, lot_size, tick_size, is_active, last_updated
     FROM exchange_listings
-    """)
+    """
+    )
     conn.commit()
 
     # --- Step 3: Populate Equities Metadata ---
     logger.info("Building Equities Metadata...")
-    cursor.execute("""
+    cursor.execute(
+        """
     INSERT OR IGNORE INTO equities_metadata (instrument_key)
     SELECT instrument_key 
     FROM instruments 
     JOIN instrument_types ON instruments.type_code = instrument_types.code
     WHERE instrument_types.category = 'Equity'
-    """)
+    """
+    )
     conn.commit()
 
     # --- Step 4: Populate Derivatives Metadata (The Hard Part) ---
     logger.info("Parsing Derivatives (this might take a moment)...")
 
     # Select derivatives that need metadata
-    cursor.execute("""
+    cursor.execute(
+        """
     SELECT i.instrument_key, i.trading_symbol, i.type_code, el.underlying_symbol
     FROM instruments i
     JOIN exchange_listings el ON i.instrument_key = el.instrument_key
     JOIN instrument_types it ON i.type_code = it.code
     WHERE it.category IN ('Option', 'Future')
-    """)
+    """
+    )
 
     derivatives = cursor.fetchall()
 

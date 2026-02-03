@@ -116,7 +116,8 @@ class AlertSystem:
         cursor = conn.cursor()
 
         # Alert rules
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS alert_rules (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 symbol TEXT NOT NULL,
@@ -129,10 +130,12 @@ class AlertSystem:
                 triggered_count INTEGER DEFAULT 0,
                 last_triggered DATETIME
             )
-        """)
+        """
+        )
 
         # Alert history
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS alert_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 rule_id INTEGER,
@@ -147,10 +150,12 @@ class AlertSystem:
                 acknowledged_at DATETIME,
                 FOREIGN KEY (rule_id) REFERENCES alert_rules(id)
             )
-        """)
+        """
+        )
 
         # Alert notifications (email, SMS, etc.)
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS alert_notifications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 alert_id INTEGER NOT NULL,
@@ -160,7 +165,8 @@ class AlertSystem:
                 error_message TEXT,
                 FOREIGN KEY (alert_id) REFERENCES alert_history(id)
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -583,40 +589,56 @@ class AlertSystem:
         cursor = conn.cursor()
 
         # Total alerts
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT COUNT(*) FROM alert_history
             WHERE triggered_at >= datetime('now', '-{} days')
-        """.format(days))
+        """.format(
+                days
+            )
+        )
         total_alerts = cursor.fetchone()[0]
 
         # Alerts by type
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT alert_type, COUNT(*) as count
             FROM alert_history
             WHERE triggered_at >= datetime('now', '-{} days')
             GROUP BY alert_type
             ORDER BY count DESC
-        """.format(days))
+        """.format(
+                days
+            )
+        )
         alerts_by_type = dict(cursor.fetchall())
 
         # Alerts by priority
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT priority, COUNT(*) as count
             FROM alert_history
             WHERE triggered_at >= datetime('now', '-{} days')
             GROUP BY priority
-        """.format(days))
+        """.format(
+                days
+            )
+        )
         alerts_by_priority = dict(cursor.fetchall())
 
         # Most active symbols
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT symbol, COUNT(*) as count
             FROM alert_history
             WHERE triggered_at >= datetime('now', '-{} days')
             GROUP BY symbol
             ORDER BY count DESC
             LIMIT 10
-        """.format(days))
+        """.format(
+                days
+            )
+        )
         top_symbols = dict(cursor.fetchall())
 
         conn.close()

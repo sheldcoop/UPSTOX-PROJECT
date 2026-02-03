@@ -28,13 +28,15 @@ class Theme:
             positive=Theme.SUCCESS,
             negative=Theme.DANGER,
         )
-        ui.add_css(f"""
+        ui.add_css(
+            f"""
             body {{ background-color: {Theme.DARK_BG}; }}
             .glass {{ background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); }}
             ::-webkit-scrollbar {{ width: 8px; height: 8px; }}
             ::-webkit-scrollbar-thumb {{ background: #1f2937; border-radius: 8px; }}
             ::-webkit-scrollbar-track {{ background: {Theme.DARK_BG}; }}
-        """)
+        """
+        )
 
 
 # ============================================================================

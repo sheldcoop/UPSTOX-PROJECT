@@ -1,8 +1,0 @@
-{
-  "trace_id": "531af777",
-  "error": "404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
-  "type": "NotFound",
-  "path": "/.well-known/appspecific/com.chrome.devtools.json",
-  "method": "GET",
-  "timestamp": "2026-02-01T13:20:50.669190"
-}

@@ -51,14 +51,16 @@ def api_debugger_page():
         with ui.expansion(
             "Why can't I just search by key?", icon="help_outline"
         ).classes("w-full bg-slate-900 border border-slate-700"):
-            ui.markdown("""
+            ui.markdown(
+                """
              **Understanding the Logic:**
              1. **Master Search**: You search for `NIFTY` -> Upstox gives us `NSE_INDEX|Nifty 50`.
              2. **Date Search**: We ask "What dates did this index have valid options?".
              3. **Contract Search**: We get the list. Each contract has a UNIQUE key like `NSE_FO|...|27-01-2026`.
              
              **Direct Key Mode:** If you ALREADY have the full key (e.g. from a previous search), you CAN verify it directly below.
-             """)
+             """
+            )
 
         # Start of Tabs
         with ui.tabs().classes("w-full") as tabs:

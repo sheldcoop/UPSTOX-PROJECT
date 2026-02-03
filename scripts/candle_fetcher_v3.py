@@ -94,7 +94,8 @@ class CandleFetcherV3:
         """Initialize database for candle caching"""
         with self.db_pool.get_connection() as conn:
             # Candle cache table
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS candle_cache_v3 (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     instrument_key TEXT NOT NULL,
@@ -109,12 +110,15 @@ class CandleFetcherV3:
                     cached_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(instrument_key, interval, timestamp)
                 )
-            """)
+            """
+            )
 
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_candle_cache_v3 
                 ON candle_cache_v3(instrument_key, interval, timestamp)
-            """)
+            """
+            )
 
     @with_retry(max_attempts=3, use_cache=True)
     def fetch_candles(

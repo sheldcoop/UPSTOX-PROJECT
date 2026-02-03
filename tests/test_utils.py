@@ -34,7 +34,8 @@ def initialize_database(db_path=":memory:"):
 
     # Also create the 'candles_new' table if it's not in the main schema yet
     # (Based on candle_fetcher.py logic)
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS candles_new (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             symbol TEXT NOT NULL,
@@ -49,7 +50,8 @@ def initialize_database(db_path=":memory:"):
             fetched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(instrument_key, timeframe, timestamp)
         )
-    """)
+    """
+    )
 
     conn.commit()
     conn.close()

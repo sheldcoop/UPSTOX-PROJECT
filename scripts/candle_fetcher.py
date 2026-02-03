@@ -59,7 +59,8 @@ def init_db():
     cur = conn.cursor()
 
     # Check if new candles table exists, if not create it
-    cur.execute("""
+    cur.execute(
+        """
         CREATE TABLE IF NOT EXISTS candles_new (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             symbol TEXT NOT NULL,
@@ -74,12 +75,15 @@ def init_db():
             fetched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(instrument_key, timeframe, timestamp)
         )
-    """)
+    """
+    )
     # Create index for fast lookups
-    cur.execute("""
+    cur.execute(
+        """
         CREATE INDEX IF NOT EXISTS idx_symbol_timeframe_timestamp 
         ON candles_new(symbol, timeframe, timestamp)
-    """)
+    """
+    )
     conn.commit()
     conn.close()
     logger.info("✅ Candles table initialized")

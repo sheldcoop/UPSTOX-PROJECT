@@ -360,9 +360,7 @@ def render_page(state):
                     status_label.text = f"❌ Failed: {res['error']}"
                     status_label.classes("text-red-400")
                 else:
-                    status_label.text = (
-                        f"✅ Success: {res.get('rows', 0)} rows fetched."
-                    )
+                    status_label.text = f"✅ Success: {res.get('rows', 0)} rows fetched."
                     status_label.classes("text-green-400")
                     if download_local_switch.value and res.get("filepath"):
                         ui.download(res["filepath"])
