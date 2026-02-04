@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """BSE Liquid Groups inventory."""
+
 import sqlite3
 
 DB = "market_data.db"

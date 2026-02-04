@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Populate has_fno column based on NSE_FO underlying_symbol."""
+
 import sqlite3
 
 DB = "market_data.db"

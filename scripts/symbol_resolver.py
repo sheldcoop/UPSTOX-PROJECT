@@ -15,6 +15,7 @@ Usage:
   # Find by criteria (keyword search)
   symbols = resolve_symbols(criteria={'segment': 'NSE_EQ', 'instrument_type': 'EQ', 'has_fno': 1})
 """
+
 import sqlite3
 from typing import List, Dict, Optional
 

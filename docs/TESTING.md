@@ -1,492 +1,726 @@
-# Testing Guide
+# 🧪 Testing Guide
 
-Complete guide to testing the Upstox backtesting project.
+**UPSTOX Trading Platform**  
+**Last Updated:** February 3, 2026
 
-## Quick Start
+Comprehensive guide for testing the UPSTOX Trading Platform.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Test Infrastructure](#test-infrastructure)
+- [Running Tests](#running-tests)
+- [Test Categories](#test-categories)
+- [Writing Tests](#writing-tests)
+- [Mocking External APIs](#mocking-external-apis)
+- [Coverage Reports](#coverage-reports)
+- [CI/CD Integration](#cicd-integration)
+- [Common Testing Patterns](#common-testing-patterns)
+
+---
+
+## Overview
+
+### Test Framework
+
+- **Framework:** `pytest` (primary) and `unittest` (legacy)
+- **Coverage Tool:** `pytest-cov`
+- **Mocking:** `unittest.mock` and `pytest-mock`
+- **API Testing:** `requests` library
+- **Database:** In-memory SQLite for tests
+
+### Test Organization
+
+```
+tests/
+├── __init__.py
+├── conftest.py              # Pytest configuration and fixtures
+├── test_utils.py            # Test utilities and helpers
+├── test_auth.py             # Authentication tests
+├── test_risk_manager.py     # Risk management tests
+├── test_order_manager.py    # Order execution tests
+├── test_strategy_runner.py  # Strategy tests
+├── test_api_*.py            # API endpoint tests
+├── test_*.py                # Component tests
+└── manual/                  # Manual integration tests
+    ├── test_live_data.py    # Requires live credentials
+    └── test_nse_inventory.py
+```
+
+---
+
+## Test Infrastructure
+
+### Setup Test Environment
+
+```bash
+# Install test dependencies
+pip install pytest pytest-cov pytest-mock
+
+# Or install from requirements
+pip install -r requirements.txt
+```
+
+### Test Configuration
+
+Create `pytest.ini` in project root:
+
+```ini
+[pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = 
+    -v
+    --strict-markers
+    --tb=short
+    --disable-warnings
+markers =
+    unit: Unit tests (fast, no external dependencies)
+    integration: Integration tests (require external services)
+    slow: Slow-running tests
+    live: Tests that require live API credentials
+```
+
+### Test Fixtures
+
+Located in `tests/conftest.py`:
+
+```python
+import pytest
+import sqlite3
+from scripts.auth_manager import AuthManager
+
+@pytest.fixture
+def auth_manager():
+    """Provide AuthManager instance for testing."""
+    return AuthManager()
+
+@pytest.fixture
+def test_db():
+    """Provide in-memory database for tests."""
+    conn = sqlite3.connect(':memory:')
+    # Initialize schema
+    yield conn
+    conn.close()
+
+@pytest.fixture
+def mock_api_response():
+    """Provide mock API responses."""
+    return {
+        'status': 'success',
+        'data': {'test': 'value'}
+    }
+```
+
+---
+
+## Running Tests
 
 ### Run All Tests
+
 ```bash
-python tests/run_tests.py
+# Basic test run
+pytest
+
+# With verbose output
+pytest -v
+
+# With summary
+pytest -v --tb=short
 ```
 
-### Run Specific Test Suite
+### Run Specific Tests
+
 ```bash
-# Candle fetcher tests
-python tests/run_tests.py --candle
-
-# Option chain fetcher tests
-python tests/run_tests.py --option-chain
-
-# Option history fetcher tests
-python tests/run_tests.py --option-history
-
-# Backtest engine tests
-python tests/run_tests.py --backtest
-
-# Expired options fetcher tests
-python tests/run_tests.py --expired-options
-```
-
-### Run Individual Test Files
-```bash
-python -m unittest tests.test_candle_fetcher
-python -m unittest tests.test_option_chain_fetcher
-python -m unittest tests.test_option_history_fetcher
-python -m unittest tests.test_backtest_engine
-python -m unittest tests.test_expired_options_fetcher
-```
-
-### Verbosity Options
-```bash
-# Verbose output (default)
-python tests/run_tests.py -v
-
-# Extra verbose
-python tests/run_tests.py -vv
-
-# Quiet mode
-python tests/run_tests.py -q
-```
-
----
-
-## Test Modules
-
-### 1. `test_candle_fetcher.py`
-
-Tests for stock candle data retrieval and storage.
-
-**Classes:**
-- `TestCandleFetcher`: API data fetching tests
-- `TestCandleStorage`: Database storage tests
-- `TestCandleValidation`: OHLCV validation tests
-
-**Key Tests:**
-- ✅ Fetch candle data from API
-- ✅ Symbol resolution to instrument keys
-- ✅ Timeframe mapping (1m, 5m, 15m, 1h, 1d, 1w, 1mo)
-- ✅ OHLC relationship validation
-- ✅ Volume validation
-- ✅ Date parsing
-
-**Run:**
-```bash
-python tests/run_tests.py --candle
-python -m unittest tests.test_candle_fetcher.TestCandleFetcher
-```
-
-**Example Output:**
-```
-test_fetch_candle_data (test_candle_fetcher.TestCandleFetcher) ... ok
-test_ohlc_relationships (test_candle_fetcher.TestCandleValidation) ... ok
-test_symbol_resolution (test_candle_fetcher.TestCandleFetcher) ... ok
-test_timeframe_mapping (test_candle_fetcher.TestCandleFetcher) ... ok
-```
-
----
-
-### 2. `test_option_chain_fetcher.py`
-
-Tests for current/live option chain data fetching.
-
-**Classes:**
-- `TestOptionChainFetcher`: API data fetching tests
-- `TestOptionDataValidation`: Greeks and option data validation
-- `TestOptionChainStructure`: Option chain structure verification
-
-**Key Tests:**
-- ✅ Fetch available option expiries
-- ✅ Fetch option chain for underlying
-- ✅ Option type validation (CE/PE)
-- ✅ Greeks validation (delta, gamma, theta, vega, IV)
-- ✅ Bid-ask spread validation
-- ✅ Volume and OI validation
-- ✅ Symmetric CE/PE chain validation
-
-**Run:**
-```bash
-python tests/run_tests.py --option-chain
-python -m unittest tests.test_option_chain_fetcher
-```
-
-**Example Output:**
-```
-test_get_option_expiries (test_option_chain_fetcher.TestOptionChainFetcher) ... ok
-test_fetch_option_chain (test_option_chain_fetcher.TestOptionChainFetcher) ... ok
-test_greeks_validation (test_option_chain_fetcher.TestOptionDataValidation) ... ok
-test_iv_validation (test_option_chain_fetcher.TestOptionDataValidation) ... ok
-```
-
----
-
-### 3. `test_option_history_fetcher.py`
-
-Tests for historical option candle data retrieval.
-
-**Classes:**
-- `TestOptionHistoryFetcher`: Historical data fetching tests
-- `TestOptionCandleStorage`: Storage and structure tests
-- `TestOptionExpiryManagement`: Expiry date management
-- `TestOptionCandleTimeframes`: Timeframe support
-
-**Key Tests:**
-- ✅ Fetch historical option candles
-- ✅ ISO8601 timestamp parsing
-- ✅ OHLCV validation for options
-- ✅ Option symbol format validation
-- ✅ Expiry date ordering
-- ✅ Timeframe support verification
-
-**Run:**
-```bash
-python tests/run_tests.py --option-history
-python -m unittest tests.test_option_history_fetcher
-```
-
-**Example Output:**
-```
-test_fetch_option_candles (test_option_history_fetcher.TestOptionHistoryFetcher) ... ok
-test_timestamp_parsing (test_option_history_fetcher.TestOptionHistoryFetcher) ... ok
-test_ohlc_validation (test_option_history_fetcher.TestOptionHistoryFetcher) ... ok
-```
-
----
-
-### 4. `test_backtest_engine.py`
-
-Tests for backtesting engine and strategy execution.
-
-**Classes:**
-- `TestCandleDataLoading`: Candle data loading tests
-- `TestSMAStrategy`: Simple Moving Average strategy tests
-- `TestRSIStrategy`: RSI strategy tests
-- `TestBacktestMetrics`: Metrics calculation tests
-- `TestStrategyExecution`: Strategy execution tests
-- `TestStrategyValidation`: Parameter validation tests
-
-**Key Tests:**
-- ✅ Load candle data from database
-- ✅ Candle ordering verification
-- ✅ SMA calculation
-- ✅ RSI calculation
-- ✅ Strategy initialization
-- ✅ Signal generation
-- ✅ Backtest metrics (Sharpe, Sortino, Calmar, max DD, etc.)
-- ✅ Return calculation
-- ✅ Win rate calculation
-- ✅ Position management logic
-- ✅ Period validation
-
-**Run:**
-```bash
-python tests/run_tests.py --backtest
-python -m unittest tests.test_backtest_engine
-```
-
-**Example Output:**
-```
-test_load_candle_data (test_backtest_engine.TestCandleDataLoading) ... ok
-test_sma_calculation (test_backtest_engine.TestSMAStrategy) ... ok
-test_return_calculation (test_backtest_engine.TestBacktestMetrics) ... ok
-test_sharpe_ratio_bounds (test_backtest_engine.TestBacktestMetrics) ... ok
-```
-
----
-
-### 5. `test_expired_options_fetcher.py`
-
-Tests for expired option contract data retrieval.
-
-**Classes:**
-- `TestExpiredOptionsFetcher`: API data fetching tests
-- `TestOptionDataParsing`: Data parsing and extraction
-- `TestExpiredOptionsStorage`: Storage and uniqueness
-- `TestExpiredOptionsValidation`: Data validation
-
-**Key Tests:**
-- ✅ Fetch available expiry dates
-- ✅ Fetch expired option contracts
-- ✅ Option type filtering (CE/PE)
-- ✅ Strike price filtering
-- ✅ Option type extraction from symbol
-- ✅ Strike extraction from symbol
-- ✅ Table creation and uniqueness constraints
-- ✅ Data validation (strike, type, date format)
-
-**Run:**
-```bash
-python tests/run_tests.py --expired-options
-python -m unittest tests.test_expired_options_fetcher
-```
-
-**Example Output:**
-```
-test_get_available_expiries (test_expired_options_fetcher.TestExpiredOptionsFetcher) ... ok
-test_fetch_expired_option_contracts (test_expired_options_fetcher.TestExpiredOptionsFetcher) ... ok
-test_parse_option_data (test_expired_options_fetcher.TestOptionDataParsing) ... ok
-```
-
----
-
-## Running Tests in Different Environments
-
-### Using Python's unittest directly
-```bash
-# Run all tests
-python -m unittest discover tests -p "test_*.py"
+# Run specific file
+pytest tests/test_auth.py
 
 # Run specific test class
-python -m unittest tests.test_candle_fetcher.TestCandleFetcher
+pytest tests/test_auth.py::TestAuthManager
 
 # Run specific test method
-python -m unittest tests.test_candle_fetcher.TestCandleFetcher.test_fetch_candle_data
+pytest tests/test_auth.py::TestAuthManager::test_token_encryption
+
+# Run tests matching pattern
+pytest -k "auth"
+pytest -k "test_fetch"
 ```
 
-### With coverage reporting (requires coverage package)
-```bash
-pip install coverage
+### Run by Category
 
+```bash
+# Unit tests only (fast)
+pytest -m unit
+
+# Integration tests
+pytest -m integration
+
+# Exclude slow tests
+pytest -m "not slow"
+
+# Exclude live tests (requires credentials)
+pytest -m "not live"
+```
+
+### Run with Coverage
+
+```bash
+# Basic coverage
+pytest --cov=scripts
+
+# With HTML report
+pytest --cov=scripts --cov-report=html
+
+# With term report showing missing lines
+pytest --cov=scripts --cov-report=term-missing
+
+# Coverage threshold (fail if below 80%)
+pytest --cov=scripts --cov-fail-under=80
+```
+
+### Parallel Test Execution
+
+```bash
+# Install pytest-xdist
+pip install pytest-xdist
+
+# Run tests in parallel (4 workers)
+pytest -n 4
+
+# Auto-detect CPU cores
+pytest -n auto
+```
+
+---
+
+## Test Categories
+
+### 1. Unit Tests
+
+**Purpose:** Test individual functions/methods in isolation  
+**Marker:** `@pytest.mark.unit`  
+**Speed:** Fast (< 1 second each)  
+**Dependencies:** None (fully mocked)
+
+**Example:**
+
+```python
+import pytest
+from scripts.risk_manager import RiskManager
+
+@pytest.mark.unit
+def test_calculate_position_size():
+    """Test position size calculation."""
+    rm = RiskManager()
+    size = rm.calculate_position_size(
+        account_value=100000,
+        risk_percent=2,
+        entry_price=100,
+        stop_loss=95
+    )
+    assert size == 400  # (100000 * 0.02) / (100 - 95)
+```
+
+### 2. Integration Tests
+
+**Purpose:** Test interactions between components  
+**Marker:** `@pytest.mark.integration`  
+**Speed:** Medium (1-10 seconds each)  
+**Dependencies:** Database, mocked external APIs
+
+**Example:**
+
+```python
+@pytest.mark.integration
+def test_order_flow(test_db, mock_api):
+    """Test complete order placement flow."""
+    # Setup
+    order_manager = OrderManager(test_db)
+    risk_manager = RiskManager(test_db)
+    
+    # Execute
+    order = order_manager.place_order(...)
+    risk_check = risk_manager.validate_order(order)
+    
+    # Assert
+    assert order.status == 'placed'
+    assert risk_check.passed is True
+```
+
+### 3. API Tests
+
+**Purpose:** Test Flask API endpoints  
+**Marker:** `@pytest.mark.api`  
+**Speed:** Fast-Medium  
+**Dependencies:** Flask test client, mocked services
+
+**Example:**
+
+```python
+import pytest
+from scripts.api_server import app
+
+@pytest.fixture
+def client():
+    with app.test_client() as client:
+        yield client
+
+@pytest.mark.api
+def test_health_endpoint(client):
+    """Test health check endpoint."""
+    response = client.get('/api/health')
+    assert response.status_code == 200
+    assert response.json['status'] == 'running'
+```
+
+### 4. Manual Tests
+
+**Purpose:** Tests requiring live credentials or human verification  
+**Marker:** `@pytest.mark.live`  
+**Speed:** Slow (10+ seconds)  
+**Dependencies:** Valid Upstox API credentials
+
+**Example:**
+
+```python
+@pytest.mark.live
+def test_live_market_data():
+    """Fetch real market data from Upstox API."""
+    # Skip if no credentials
+    if not os.getenv('UPSTOX_CLIENT_ID'):
+        pytest.skip("No live credentials available")
+    
+    # Test with real API
+    auth = AuthManager()
+    token = auth.get_valid_token()
+    assert token is not None
+```
+
+---
+
+## Writing Tests
+
+### Test Structure (AAA Pattern)
+
+```python
+def test_example():
+    # Arrange: Set up test data and conditions
+    account = Account(balance=10000)
+    
+    # Act: Execute the code being tested
+    result = account.withdraw(500)
+    
+    # Assert: Verify the results
+    assert result is True
+    assert account.balance == 9500
+```
+
+### Using Fixtures
+
+```python
+@pytest.fixture
+def sample_account():
+    """Provide test account."""
+    return Account(balance=10000)
+
+def test_with_fixture(sample_account):
+    """Test using fixture."""
+    sample_account.withdraw(500)
+    assert sample_account.balance == 9500
+```
+
+### Parametrized Tests
+
+```python
+@pytest.mark.parametrize("input,expected", [
+    (100, 105),  # 5% gain
+    (200, 210),  # 5% gain
+    (50, 52.5),  # 5% gain
+])
+def test_calculate_gain(input, expected):
+    """Test gain calculation with multiple inputs."""
+    result = calculate_gain(input, profit_percent=5)
+    assert result == expected
+```
+
+### Testing Exceptions
+
+```python
+def test_invalid_order():
+    """Test that invalid order raises exception."""
+    with pytest.raises(ValueError, match="Invalid quantity"):
+        place_order(quantity=-10)
+```
+
+### Testing Async Code
+
+```python
+import pytest
+
+@pytest.mark.asyncio
+async def test_async_function():
+    """Test asynchronous function."""
+    result = await fetch_data_async()
+    assert result is not None
+```
+
+---
+
+## Mocking External APIs
+
+### Mock Upstox API Responses
+
+```python
+from unittest.mock import Mock, patch
+
+@patch('scripts.auth_manager.requests.post')
+def test_token_exchange(mock_post):
+    """Test token exchange with mocked API."""
+    # Setup mock response
+    mock_response = Mock()
+    mock_response.json.return_value = {
+        'access_token': 'test_token',
+        'expires_in': 86400
+    }
+    mock_response.status_code = 200
+    mock_post.return_value = mock_response
+    
+    # Test
+    auth = AuthManager()
+    token_data = auth.exchange_code_for_token('test_code')
+    
+    # Assert
+    assert token_data['access_token'] == 'test_token'
+    mock_post.assert_called_once()
+```
+
+### Mock Database Operations
+
+```python
+@patch('scripts.database_pool.get_connection')
+def test_database_operation(mock_db):
+    """Test with mocked database."""
+    # Setup mock
+    mock_conn = Mock()
+    mock_cursor = Mock()
+    mock_cursor.fetchall.return_value = [(1, 'INFY', 1500.0)]
+    mock_conn.cursor.return_value = mock_cursor
+    mock_db.return_value = mock_conn
+    
+    # Test
+    result = fetch_holdings()
+    
+    # Assert
+    assert len(result) == 1
+    assert result[0]['symbol'] == 'INFY'
+```
+
+### Mock Time-Dependent Functions
+
+```python
+from datetime import datetime
+from unittest.mock import patch
+
+@patch('scripts.strategy_runner.datetime')
+def test_time_dependent(mock_datetime):
+    """Test function that depends on current time."""
+    # Fix time to specific value
+    mock_datetime.now.return_value = datetime(2026, 2, 3, 9, 15, 0)
+    
+    # Test
+    result = check_market_hours()
+    
+    # Assert
+    assert result is True  # Market is open at 9:15 AM
+```
+
+---
+
+## Coverage Reports
+
+### Generate HTML Coverage Report
+
+```bash
 # Run tests with coverage
-coverage run -m unittest discover tests -p "test_*.py"
+pytest --cov=scripts --cov-report=html
 
-# Generate coverage report
-coverage report
-coverage html  # Creates htmlcov/index.html
+# Open report in browser
+open htmlcov/index.html  # macOS
+xdg-open htmlcov/index.html  # Linux
+start htmlcov/index.html  # Windows
 ```
 
-### With pytest (requires pytest)
+### Coverage Configuration
+
+Create `.coveragerc`:
+
+```ini
+[run]
+source = scripts
+omit = 
+    */tests/*
+    */venv/*
+    */__pycache__/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+```
+
+### View Coverage in Terminal
+
 ```bash
-pip install pytest pytest-cov
-
-# Run all tests
-pytest tests/
-
-# Run specific test
-pytest tests/test_candle_fetcher.py
-
-# Run with coverage
-pytest --cov=scripts tests/
+pytest --cov=scripts --cov-report=term-missing
 ```
 
 ---
 
-## Test Requirements
+## CI/CD Integration
 
-### API Access
-Most tests require valid Upstox API credentials:
-- Valid OAuth access token
-- API keys configured in environment
+### GitHub Actions Configuration
 
-**If API is unavailable:**
-- Tests will be skipped with message: `Skipped: API unavailable`
-- This is normal behavior and not a failure
+Already configured in `.github/workflows/ci-cd.yml`:
 
-### Database
-Some tests use SQLite database:
-- Database is created automatically if missing
-- Use in-memory DB (`:memory:`) for isolated tests
-- Some tests may modify the database
-
-### Dependencies
-Required packages:
-```bash
-pip install requests pandas numpy vectorbt python-dateutil
+```yaml
+- name: Run pytest
+  run: pytest tests/ -v --tb=short || echo "Tests completed"
+  env:
+    REDIS_URL: redis://localhost:6379/0
 ```
 
----
+### Tests That Run in CI
 
-## Writing New Tests
+- ✅ Unit tests (all)
+- ✅ Integration tests with mocked APIs
+- ❌ Live tests (skipped - no credentials)
+- ❌ Manual tests (skipped - require human input)
 
-### Template for New Test Module
+### Skip Tests in CI
+
 ```python
 import os
-import sys
-import unittest
+import pytest
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from scripts.db_manager import initialize_database
-
-class TestNewFeature(unittest.TestCase):
-    """Test suite for new feature."""
-    
-    @classmethod
-    def setUpClass(cls):
-        """Set up test environment."""
-        initialize_database()
-    
-    def test_feature_basic(self):
-        """Test basic functionality."""
-        # Arrange
-        input_data = ...
-        
-        # Act
-        result = my_function(input_data)
-        
-        # Assert
-        self.assertEqual(result, expected_value)
-    
-    def test_feature_error_handling(self):
-        """Test error handling."""
-        with self.assertRaises(ValueError):
-            my_function(invalid_input)
-
-if __name__ == "__main__":
-    unittest.main()
-```
-
-### Common Assertion Methods
-```python
-# Equality
-self.assertEqual(a, b)
-self.assertNotEqual(a, b)
-
-# Truth
-self.assertTrue(x)
-self.assertFalse(x)
-self.assertIsNone(x)
-self.assertIsNotNone(x)
-
-# Membership
-self.assertIn(a, b)
-self.assertNotIn(a, b)
-
-# Type
-self.assertIsInstance(a, type)
-self.assertNotIsInstance(a, type)
-
-# Comparison
-self.assertGreater(a, b)
-self.assertLess(a, b)
-self.assertGreaterEqual(a, b)
-self.assertLessEqual(a, b)
-
-# Exceptions
-self.assertRaises(ExceptionType, function, *args)
-with self.assertRaises(ExceptionType):
-    function()
-
-# Floating point
-self.assertAlmostEqual(a, b, places=7)
+@pytest.mark.skipif(
+    os.getenv('CI') == 'true',
+    reason="Requires live credentials not available in CI"
+)
+def test_live_api():
+    """Test that only runs locally."""
+    pass
 ```
 
 ---
 
-## Continuous Integration
+## Common Testing Patterns
 
-### GitHub Actions Example
-Create `.github/workflows/tests.yml`:
-```yaml
-name: Tests
+### 1. Database Testing Pattern
 
-on: [push, pull_request]
+```python
+@pytest.fixture
+def test_database():
+    """Create in-memory test database."""
+    conn = sqlite3.connect(':memory:')
+    # Create tables
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE positions (
+            id INTEGER PRIMARY KEY,
+            symbol TEXT,
+            quantity INTEGER
+        )
+    ''')
+    conn.commit()
+    yield conn
+    conn.close()
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+def test_insert_position(test_database):
+    """Test database insertion."""
+    cursor = test_database.cursor()
+    cursor.execute(
+        "INSERT INTO positions (symbol, quantity) VALUES (?, ?)",
+        ('INFY', 100)
+    )
+    test_database.commit()
     
-    steps:
-    - uses: actions/checkout@v2
+    cursor.execute("SELECT * FROM positions WHERE symbol = ?", ('INFY',))
+    result = cursor.fetchone()
+    assert result[1] == 'INFY'
+    assert result[2] == 100
+```
+
+### 2. API Endpoint Testing Pattern
+
+```python
+def test_api_endpoint_success(client):
+    """Test successful API call."""
+    response = client.get('/api/portfolio/positions')
+    assert response.status_code == 200
+    assert 'positions' in response.json
+
+def test_api_endpoint_error(client):
+    """Test API error handling."""
+    response = client.post('/api/orders', json={})
+    assert response.status_code == 400
+    assert 'error' in response.json
+```
+
+### 3. Strategy Testing Pattern
+
+```python
+def test_strategy_signal():
+    """Test strategy signal generation."""
+    # Arrange: Create test OHLC data
+    data = [
+        {'timestamp': 1, 'close': 100},
+        {'timestamp': 2, 'close': 105},
+        {'timestamp': 3, 'close': 110},
+    ]
     
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
+    # Act: Run strategy
+    strategy = MomentumStrategy()
+    signal = strategy.generate_signal(data)
     
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-    
-    - name: Run tests
-      run: |
-        python tests/run_tests.py
+    # Assert: Check signal
+    assert signal == 'BUY'  # Upward momentum
 ```
 
 ---
 
-## Troubleshooting
+## Test Data Management
 
-### Tests Fail with "API unavailable"
-**Solution:** Ensure valid OAuth token exists
-```bash
-# Check if token file exists
-cat oauth_token.json
+### Test Fixtures Location
 
-# If missing, run OAuth flow
-python scripts/oauth_server.py
+```
+tests/
+├── fixtures/
+│   ├── sample_ohlc.json      # Sample candle data
+│   ├── sample_positions.json  # Sample positions
+│   └── sample_orders.json     # Sample orders
 ```
 
-### Database Locked Error
-**Solution:** Close other connections and try again
-```bash
-# Remove existing database and let tests recreate
-rm market_data.db
-python tests/run_tests.py
-```
+### Load Test Data
 
-### Import Errors
-**Solution:** Ensure scripts directory is in Python path
-```bash
-export PYTHONPATH="${PYTHONPATH}:/path/to/UPSTOX-project"
-```
-
-### Timeframe Issues
-**Solution:** Use correct format (1m, 5m, 15m, 30m, 1h, 1d, 1w, 1mo)
 ```python
-# Correct
-fetch_candle_data("INFY", "1d", start_date, end_date)
+import json
 
-# Incorrect
-fetch_candle_data("INFY", "1 day", start_date, end_date)
+@pytest.fixture
+def sample_ohlc_data():
+    """Load sample OHLC data from fixture."""
+    with open('tests/fixtures/sample_ohlc.json') as f:
+        return json.load(f)
+
+def test_with_sample_data(sample_ohlc_data):
+    """Test using fixture data."""
+    assert len(sample_ohlc_data) > 0
+```
+
+---
+
+## Debugging Failed Tests
+
+### Run Single Failing Test
+
+```bash
+# Run with more verbose output
+pytest tests/test_auth.py::test_token_refresh -vv
+
+# Show local variables on failure
+pytest tests/test_auth.py::test_token_refresh -l
+
+# Drop into debugger on failure
+pytest tests/test_auth.py::test_token_refresh --pdb
+```
+
+### Print Debug Information
+
+```python
+def test_calculation():
+    """Test with debug output."""
+    result = calculate(10, 20)
+    print(f"Result: {result}")  # Shown with pytest -s
+    assert result == 30
+```
+
+### Use Logging in Tests
+
+```python
+import logging
+
+def test_with_logging(caplog):
+    """Test with log capture."""
+    with caplog.at_level(logging.INFO):
+        perform_operation()
+    
+    assert "Operation completed" in caplog.text
 ```
 
 ---
 
 ## Best Practices
 
-1. **Run tests before committing**
-   ```bash
-   python tests/run_tests.py
-   ```
+1. **Test One Thing Per Test**
+   - Each test should verify one behavior
+   - Makes failures easier to diagnose
 
-2. **Write tests for new features**
-   - Test normal cases
-   - Test edge cases
-   - Test error handling
-
-3. **Keep tests independent**
-   - Don't rely on test execution order
-   - Use setUp/tearDown for isolation
-
-4. **Use descriptive test names**
+2. **Use Descriptive Names**
    ```python
    # Good
-   def test_fetch_option_chain_with_valid_underlying(self):
+   def test_order_placement_validates_quantity_is_positive():
+       pass
    
    # Bad
-   def test_option_chain(self):
+   def test_order():
+       pass
    ```
 
-5. **Document complex tests**
+3. **Keep Tests Independent**
+   - Tests should not depend on each other
+   - Can run in any order
+
+4. **Mock External Dependencies**
+   - Don't rely on external APIs in tests
+   - Use mocks and fixtures
+
+5. **Test Edge Cases**
    ```python
-   def test_complex_feature(self):
-       """Test complex feature with multiple steps.
-       
-       This test verifies that the feature handles edge cases
-       correctly by testing with boundary values.
-       """
+   @pytest.mark.parametrize("quantity", [0, -1, 1000000])
+   def test_quantity_edge_cases(quantity):
+       # Test boundary conditions
+       pass
+   ```
+
+6. **Clean Up After Tests**
+   ```python
+   @pytest.fixture
+   def temp_file():
+       f = open('test.txt', 'w')
+       yield f
+       f.close()
+       os.remove('test.txt')  # Clean up
    ```
 
 ---
 
-## Contact & Support
+## Additional Resources
 
-For test-related issues:
-1. Check existing test output
-2. Review test comments and docstrings
-3. Verify API credentials are valid
-4. Check database is initialized
+- **pytest Documentation:** https://docs.pytest.org/
+- **unittest Documentation:** https://docs.python.org/3/library/unittest.html
+- **pytest-cov:** https://pytest-cov.readthedocs.io/
+- **Testing Best Practices:** https://docs.python-guide.org/writing/tests/
 
 ---
 
-**Last Updated:** 2025-01-31
+**Test Status:** See CI/CD pipeline for latest results  
+**Coverage Goal:** 80%+ for critical modules  
+**CI/CD:** Tests run automatically on every PR
+

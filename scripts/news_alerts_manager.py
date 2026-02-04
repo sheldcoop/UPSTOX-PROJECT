@@ -48,6 +48,7 @@ import json
 import sqlite3
 import requests
 import argparse
+import re
 import hashlib
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
@@ -444,13 +445,17 @@ class NewsAlertsManager:
             pos, neg, neu = (
                 (1, 0, 0)
                 if sentiment == "POSITIVE"
-                else (0, 1, 0) if sentiment == "NEGATIVE" else (0, 0, 1)
+                else (0, 1, 0)
+                if sentiment == "NEGATIVE"
+                else (0, 0, 1)
             )
             total = 1
             avg_score = (
                 1.0
                 if sentiment == "POSITIVE"
-                else -1.0 if sentiment == "NEGATIVE" else 0.0
+                else -1.0
+                if sentiment == "NEGATIVE"
+                else 0.0
             )
 
             cursor.execute(
@@ -923,7 +928,9 @@ class NewsAlertsManager:
                 "sentiment_rating": (
                     "BULLISH"
                     if overall_sentiment > 0.2
-                    else "BEARISH" if overall_sentiment < -0.2 else "NEUTRAL"
+                    else "BEARISH"
+                    if overall_sentiment < -0.2
+                    else "NEUTRAL"
                 ),
                 "daily_breakdown": daily_sentiment,
             }
@@ -1046,7 +1053,9 @@ class NewsAlertsManager:
             sentiment_emoji = (
                 "🟢"
                 if sentiment == "POSITIVE"
-                else "🔴" if sentiment == "NEGATIVE" else "⚪"
+                else "🔴"
+                if sentiment == "NEGATIVE"
+                else "⚪"
             )
 
             print(f"\n{i}. {sentiment_emoji} {article.get('headline')}")

@@ -867,9 +867,7 @@ def main():
         )
 
         if success:
-            print(
-                f"✅ Alert set for {args.event_name} ({args.days_before} days before)"
-            )
+            print(f"✅ Alert set for {args.event_name} ({args.days_before} days before)")
         else:
             print(f"❌ Failed to set alert")
 

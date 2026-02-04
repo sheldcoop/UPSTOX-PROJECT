@@ -212,9 +212,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
     def send_news_alert(self, headline: str, symbol: str, sentiment: str, summary: str):
         """Send breaking news alert."""
         emoji = (
-            "🟢"
-            if sentiment == "POSITIVE"
-            else "🔴" if sentiment == "NEGATIVE" else "⚪"
+            "🟢" if sentiment == "POSITIVE" else "🔴" if sentiment == "NEGATIVE" else "⚪"
         )
 
         message = f"""

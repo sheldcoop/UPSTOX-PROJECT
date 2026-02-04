@@ -53,8 +53,7 @@ def auth_start():
     try:
         # Reload redirect_uri from environment for production deployment
         auth_manager.redirect_uri = os.getenv(
-            "UPSTOX_REDIRECT_URI",
-            "http://localhost:5050/auth/callback"
+            "UPSTOX_REDIRECT_URI", "http://localhost:5050/auth/callback"
         )
 
         auth_url = auth_manager.get_authorization_url()
@@ -154,12 +153,15 @@ def auth_status():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-from dotenv import load_dotenv
+
+if __name__ == "__main__":
+    from dotenv import load_dotenv
+
     load_dotenv()
-    
+
     # Get OAuth URL from environment or use localhost default
     oauth_url = os.getenv("OAUTH_URL", "http://localhost:5050/auth/start")
-    
+
     print("=" * 60)
     print("🚀 UPSTOX OAUTH SERVER RUNNING")
     print(f"   Open: {oauth_url}")
@@ -167,9 +169,7 @@ from dotenv import load_dotenv
 
     # Auto-open browser if requested
     if "--open-browser" in sys.argv or "-o" in sys.argv:
-        webbrowser.open(oauth_url
-    if "--open-browser" in sys.argv or "-o" in sys.argv:
-        webbrowser.open("http://localhost:5050/auth/start")
+        webbrowser.open(oauth_url)
 
     # Use port 5050 to avoid macOS AirPlay (5000) and common dev ports (8000/8080)
     app.run(host="0.0.0.0", port=5050, debug=True)

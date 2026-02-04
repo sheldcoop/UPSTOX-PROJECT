@@ -2,6 +2,7 @@
 """
 Check database schema
 """
+
 import sqlite3
 
 DB_PATH = "market_data.db"

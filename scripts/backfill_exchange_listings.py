@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Backfill exchange_listings with instrument_type, underlying_symbol, underlying_type from CDN JSON."""
+
 import gzip
 import io
 import json

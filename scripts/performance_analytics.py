@@ -390,7 +390,9 @@ class PerformanceAnalytics:
 
         # Only consider negative returns for downside deviation
         downside_returns = [min(r - daily_rf, 0) for r in returns]
-        downside_variance = sum(r**2 for r in downside_returns) / len(downside_returns)
+        downside_variance = sum(r**2 for r in downside_returns) / len(
+            downside_returns
+        )
         downside_std = math.sqrt(downside_variance)
 
         if downside_std == 0:

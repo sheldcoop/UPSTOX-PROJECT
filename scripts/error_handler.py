@@ -410,6 +410,120 @@ class ErrorHandler:
         except Exception as e:
             logger.error(f"Failed to cache data: {str(e)}")
 
+    def get_error_rate(self, minutes: int = 5) -> float:
+        """
+        Calculate error rate per minute for the specified time period.
+
+        Args:
+            minutes: Time window to calculate error rate (default: 5)
+
+        Returns:
+            float: Errors per minute
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM error_logs
+                WHERE timestamp >= datetime('now', '-{} minutes')
+            """.format(
+                    minutes
+                )
+            )
+
+            error_count = cursor.fetchone()[0]
+            conn.close()
+
+            return error_count / minutes if minutes > 0 else 0
+
+        except Exception as e:
+            logger.error(f"Failed to calculate error rate: {str(e)}")
+            return 0.0
+
+    def check_error_threshold(
+        self, threshold: float = 10.0, window_minutes: int = 5
+    ) -> Dict[str, Any]:
+        """
+        Check if error rate exceeds threshold and return alert info.
+
+        Args:
+            threshold: Error rate threshold (errors per minute)
+            window_minutes: Time window to check (default: 5 minutes)
+
+        Returns:
+            dict: Alert information with 'alert', 'rate', 'threshold', 'message'
+        """
+        error_rate = self.get_error_rate(window_minutes)
+
+        alert_info = {
+            "alert": error_rate > threshold,
+            "rate": error_rate,
+            "threshold": threshold,
+            "window_minutes": window_minutes,
+            "timestamp": datetime.now().isoformat(),
+        }
+
+        if alert_info["alert"]:
+            alert_info["message"] = (
+                f"⚠️  HIGH ERROR RATE ALERT: {error_rate:.2f} errors/min "
+                f"(threshold: {threshold}/min over {window_minutes}m window)"
+            )
+            logger.warning(alert_info["message"])
+
+            # Get recent error breakdown
+            try:
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+
+                cursor.execute(
+                    """
+                    SELECT error_type, COUNT(*) as count
+                    FROM error_logs
+                    WHERE timestamp >= datetime('now', '-{} minutes')
+                    GROUP BY error_type
+                    ORDER BY count DESC
+                    LIMIT 5
+                """.format(
+                        window_minutes
+                    )
+                )
+
+                error_breakdown = dict(cursor.fetchall())
+                alert_info["error_breakdown"] = error_breakdown
+                conn.close()
+
+            except Exception as e:
+                logger.error(f"Failed to get error breakdown: {str(e)}")
+
+        return alert_info
+
+    def send_alert(self, alert_info: Dict[str, Any]):
+        """
+        Send alert notification (can be extended to email, Slack, etc.).
+
+        Args:
+            alert_info: Alert information dictionary
+        """
+        # Log to console/file (can be extended to other channels)
+        if alert_info.get("alert"):
+            logger.critical(
+                f"\n{'='*60}\n"
+                f"CRITICAL ALERT: High Error Rate Detected\n"
+                f"Rate: {alert_info['rate']:.2f} errors/min\n"
+                f"Threshold: {alert_info['threshold']} errors/min\n"
+                f"Window: {alert_info['window_minutes']} minutes\n"
+                f"Time: {alert_info['timestamp']}\n"
+                f"Error Breakdown: {alert_info.get('error_breakdown', {})}\n"
+                f"{'='*60}\n"
+            )
+
+            # TODO: Extend to send email, Slack, Telegram notifications
+            # Example:
+            # self._send_email_alert(alert_info)
+            # self._send_slack_alert(alert_info)
+
 
 # Global error handler instance
 error_handler = ErrorHandler()

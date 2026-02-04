@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run 20 sample queries to inspect the database."""
+
 import sqlite3
 
 DB = "market_data.db"

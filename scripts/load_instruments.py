@@ -3,6 +3,7 @@
 
 Writes to ../market_data.db using the normalized schema.
 """
+
 import gzip
 import io
 import json

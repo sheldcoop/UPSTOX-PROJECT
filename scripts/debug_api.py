@@ -2,15 +2,16 @@
 """
 Debug candle fetch - check raw API response
 """
+
 import sys
 
 sys.path.insert(0, "/Users/prince/Desktop/UPSTOX-project/scripts")
 
-from candle_fetcher import get_access_token
+from auth_helper import auth
 import requests
 from datetime import datetime, timedelta
 
-token = get_access_token()
+token = auth.get_token()
 print(f"Token: {token[:20]}...")
 
 # Try with dates from 2025

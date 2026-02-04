@@ -34,6 +34,8 @@ class TestOptionHistoryFetcher(unittest.TestCase):
         strike = 23000
 
         try:
+            # Get expiries
+            expiries = get_option_expiries(underlying)
             if not expiries:
                 self.skipTest("No expiries available")
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Test queries: NSE EQ stocks and F&O coverage."""
+
 import sqlite3
 
 DB = "market_data.db"

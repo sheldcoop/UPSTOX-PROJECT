@@ -490,7 +490,6 @@ def api_debugger_page():
 
 
 def reset_state():
-    global DRILL_DOWN_STATE
     DRILL_DOWN_STATE["step"] = 1
     DRILL_DOWN_STATE["contracts"] = []
     DRILL_DOWN_STATE["expiry"] = None

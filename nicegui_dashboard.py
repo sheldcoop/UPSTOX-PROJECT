@@ -48,6 +48,7 @@ from dashboard_ui.pages import (
     positions,
     fno,
     guide,
+    guide_local,
     wip,
     live_data,
     ai_chat,
@@ -55,6 +56,27 @@ from dashboard_ui.pages import (
     option_greeks,
     historical_options,
     api_debugger,
+    health,
+    user_profile,
+    orders_alerts,
+    analytics,
+    backtest,
+    signals,
+    strategies,
+    upstox_live,
+    live_trading,
+    gtt_orders,
+    trade_pnl,
+    margins,
+    market_calendar,
+    funds,
+    order_book,
+    trade_book,
+    portfolio_summary,
+    charges_calc,
+    instruments_browser,
+    market_explorer,
+    corporate_announcements,
 )
 
 # Configuration
@@ -263,17 +285,44 @@ def main_dashboard(page: str = None):
 
                     menu_group("Trading")
                     menu_item("Positions", "positions", "pie_chart")
+                    menu_item("Portfolio", "portfolio_summary", "account_balance_wallet")
+                    menu_item("Orders & Alerts", "orders_alerts", "receipt")
+                    menu_item("Order Book", "order_book", "receipt_long")
+                    menu_item("Trade Book", "trade_book", "history")
+                    menu_item("GTT Orders", "gtt_orders", "schedule")
+                    menu_item("Live Trading", "live_trading", "local_atm")
                     menu_item("Option Chain", "option_chain", "list_alt")
                     menu_item("Option Greeks", "option_greeks", "data_exploration")
                     menu_item("F&O Analysis", "fno_analysis", "timeline")
 
+                    menu_group("Strategies")
+                    menu_item("Signals", "signals", "track_changes")
+                    menu_item("Strategy Builder", "strategies", "settings_suggest")
+                    menu_item("Backtest", "backtest", "science")
+
+                    menu_group("Upstox Live")
+                    menu_item("Live Data", "upstox_live", "cloud_sync")
+                    menu_item("Analytics", "analytics", "analytics")
+
+                    menu_group("Account")
+                    menu_item("User Profile", "user_profile", "account_circle")
+                    menu_item("Funds & Margins", "funds", "account_balance")
+                    menu_item("Margins", "margins", "calculate")
+                    menu_item("Trade P&L", "trade_pnl", "attach_money")
+                    menu_item("Health Status", "health", "health_and_safety")
+
                     menu_group("Tools")
+                    menu_item("Market Explorer", "market_explorer", "explore")
+                    menu_item("Corporate Announcements", "corporate_announcements", "campaign")
                     menu_item("AI Assistant", "ai_chat", "smart_toy")
                     menu_item(
                         "API Debugger", "api_debugger", "integration_instructions"
                     )
-                    menu_item("Backtest", "backtest", "science")
+                    menu_item("Instruments", "instruments_browser", "search")
+                    menu_item("Charges Calc", "charges_calc", "calculate")
+                    menu_item("Market Calendar", "market_calendar", "calendar_month")
                     menu_item("Market Guide", "market_guide", "library_books")
+                    menu_item("Local Dev Guide", "local_guide", "code")
                     menu_item("Configurations", "settings", "settings")
 
                     # Debug Item
@@ -331,6 +380,50 @@ def main_dashboard(page: str = None):
                 fno.render_page(state)
             elif state.current_page == "market_guide":
                 guide.render_page(state)
+            elif state.current_page == "local_guide":
+                guide_local.create_page()
+            elif state.current_page == "health":
+                health.render_page(state)
+            elif state.current_page == "user_profile":
+                user_profile.render_page(state)
+            elif state.current_page == "orders_alerts":
+                orders_alerts.render_page(state)
+            elif state.current_page == "analytics":
+                analytics.render_page(state)
+            elif state.current_page == "backtest":
+                backtest.render_page(state)
+            elif state.current_page == "signals":
+                signals.render_page(state)
+            elif state.current_page == "strategies":
+                strategies.render_page(state)
+            elif state.current_page == "upstox_live":
+                upstox_live.render_page(state)
+            elif state.current_page == "live_trading":
+                live_trading.render_page(state)
+            elif state.current_page == "gtt_orders":
+                gtt_orders.render_page(state)
+            elif state.current_page == "trade_pnl":
+                trade_pnl.render_page(state)
+            elif state.current_page == "margins":
+                margins.render_page(state)
+            elif state.current_page == "market_calendar":
+                market_calendar.render_page(state)
+            elif state.current_page == "funds":
+                funds.render_page(state)
+            elif state.current_page == "order_book":
+                order_book.render_page(state)
+            elif state.current_page == "trade_book":
+                trade_book.render_page(state)
+            elif state.current_page == "portfolio_summary":
+                portfolio_summary.render_page(state)
+            elif state.current_page == "charges_calc":
+                charges_calc.render_page(state)
+            elif state.current_page == "instruments_browser":
+                instruments_browser.render_page(state)
+            elif state.current_page == "market_explorer":
+                market_explorer.render_page(state)
+            elif state.current_page == "corporate_announcements":
+                corporate_announcements.render_page(state)
             else:
                 wip.render_page(state.current_page)
 
@@ -384,4 +477,4 @@ def main_dashboard(page: str = None):
         content_area()
 
 
-ui.run(title="Upstox Pro", host="127.0.0.1", port=8080, dark=True)
+ui.run(title="Upstox Pro", host="127.0.0.1", port=5001, dark=True)

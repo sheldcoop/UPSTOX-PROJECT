@@ -37,6 +37,7 @@ import json
 import sqlite3
 import sys
 import time
+import random
 from datetime import datetime
 from typing import Optional, Callable, Dict, List
 import websocket
@@ -190,12 +191,13 @@ class WebsocketQuoteStreamer:
         self.connected = False
         print(f"⚠️  Websocket closed (code: {close_status_code}, msg: {close_msg})")
 
-        # Attempt reconnect
+        # Attempt reconnect with exponential backoff + jitter
         if self.reconnect_attempts < self.max_reconnect_attempts:
             self.reconnect_attempts += 1
-            wait_time = self.reconnect_delay * self.reconnect_attempts
+            # Exponential backoff: 2^n seconds, capped at 300s (5 min), with jitter
+            wait_time = min(300, (2**self.reconnect_attempts) + random.uniform(0, 1))
             print(
-                f"🔄 Attempting reconnect #{self.reconnect_attempts} in {wait_time}s..."
+                f"🔄 Attempting reconnect #{self.reconnect_attempts} in {wait_time:.1f}s..."
             )
             time.sleep(wait_time)
             self.connect()
@@ -469,9 +471,25 @@ def main():
     args = parser.parse_args()
 
     # Get token from args or environment
-    token = args.token or os.getenv("UPSTOX_ACCESS_TOKEN")
-    if not token:
-        print("❌ Access token required. Set UPSTOX_ACCESS_TOKEN or use --token")
+    # Get access token using AuthManager
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from scripts.auth_manager import AuthManager
+        
+        # Try --token arg first, then AuthManager
+        if args.token:
+            token = args.token
+        else:
+            auth = AuthManager()
+            token = auth.get_valid_token()
+        
+        if not token:
+            print("❌ No valid token found. Please authenticate first:")
+            print("   python3 scripts/oauth_server.py")
+            print("   Then open: http://localhost:5050/auth/start")
+            sys.exit(1)
+    except Exception as e:
+        print(f"❌ Authentication error: {e}")
         sys.exit(1)
 
     streamer = WebsocketQuoteStreamer(token)

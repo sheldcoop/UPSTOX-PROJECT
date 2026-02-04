@@ -1064,7 +1064,9 @@ def main():
         symbols = (
             args.symbols.split(",")
             if args.symbols
-            else [args.symbol] if args.symbol else [None]
+            else [args.symbol]
+            if args.symbol
+            else [None]
         )
 
         for symbol in symbols:
@@ -1077,7 +1079,9 @@ def main():
         symbols = (
             args.symbols.split(",")
             if args.symbols
-            else [args.symbol] if args.symbol else [None]
+            else [args.symbol]
+            if args.symbol
+            else [None]
         )
 
         for symbol in symbols:
