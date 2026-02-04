@@ -4,7 +4,7 @@ import sqlite3
 from typing import Dict, Any, List
 
 # Configuration
-API_BASE = "http://localhost:9000"
+API_BASE = "http://localhost:8000"
 
 # ============================================================================
 # 📡 Async API Wrappers

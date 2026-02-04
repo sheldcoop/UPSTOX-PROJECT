@@ -13,7 +13,7 @@ from datetime import datetime
 
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-API_BASE = "http://localhost:9000/api"
+API_BASE = "http://localhost:8000/api"
 
 
 def render_page(state):
