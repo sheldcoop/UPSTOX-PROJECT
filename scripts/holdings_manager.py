@@ -418,10 +418,21 @@ def main():
 
     args = parser.parse_args()
 
-    # Get access token
-    access_token = os.getenv("UPSTOX_ACCESS_TOKEN")
-    if not access_token:
-        print("❌ UPSTOX_ACCESS_TOKEN not set")
+    # Get access token using AuthManager
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from scripts.auth_manager import AuthManager
+        
+        auth = AuthManager()
+        access_token = auth.get_valid_token()
+        
+        if not access_token:
+            print("❌ No valid token found. Please authenticate first:")
+            print("   python3 scripts/oauth_server.py")
+            print("   Then open: http://localhost:5050/auth/start")
+            sys.exit(1)
+    except Exception as e:
+        print(f"❌ Authentication error: {e}")
         sys.exit(1)
 
     manager = HoldingsManager(access_token)

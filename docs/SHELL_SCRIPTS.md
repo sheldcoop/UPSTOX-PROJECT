@@ -488,7 +488,7 @@ python --version  # Should be 3.11+
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
 - **[LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md)** - Development workflow
 - **[README.md](../README.md)** - Quick start guide
-- **[AUTH_GUIDE.md](AUTH_GUIDE.md)** - Authentication details
+- **[AUTHENTICATION.md](AUTHENTICATION.md)** - Authentication details
 
 ---
 

@@ -69,3 +69,11 @@ DB EXISTS: True
 Query returned 50 rows
 First row sample: ('ADANIENT', 'Adani Enterprises Ltd.', 'INE423A01024', None, None, 'Metals & Mining')
 Returning 50 constituents
+
+============================================================
+CALLED: get_index_constituents('NIFTY50')
+DB_PATH: /Users/prince/Desktop/UPSTOX-PROJECT/market_data.db
+DB EXISTS: True
+Query returned 50 rows
+First row sample: ('ADANIENT', 'Adani Enterprises Ltd.', 'INE423A01024', None, None, 'Metals & Mining')
+Returning 50 constituents

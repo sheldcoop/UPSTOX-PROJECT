@@ -13,7 +13,8 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 
 DB_PATH = Path(__file__).parent.parent.parent / "market_data.db"
-API_BASE = "http://localhost:8000"
+import os
+API_BASE = os.getenv("API_BASE_URL", "http://localhost:8000"
 
 
 # ============================================================================
