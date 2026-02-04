@@ -49,45 +49,25 @@ class UpstoxInstrumentsFetcher:
         try:
             logger.info(f"Downloading ALL instruments from Upstox...")
             
-            # Try CSV format (more reliable)
-            csv_url = "https://assets.upstox.com/market-quote/instruments/exchange/complete.csv.gz"
+            # Official Upstox CDN URL (gzipped JSON)
+            url = "https://assets.upstox.com/market-quote/instruments/exchange/complete.json.gz"
             
-            logger.info(f"URL: {csv_url}")
+            logger.info(f"URL: {url}")
             
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
                 'Accept': '*/*',
             }
             
-            response = requests.get(csv_url, headers=headers, timeout=60)
+            response = requests.get(url, headers=headers, timeout=60)
             response.raise_for_status()
             
-            # Decompress gzip
+            # Decompress gzip and parse JSON
             import gzip
-            import io
-            import csv
+            import json
             
             content = gzip.decompress(response.content).decode('utf-8')
-            
-            # Parse CSV
-            reader = csv.DictReader(io.StringIO(content))
-            instruments = []
-            
-            for row in reader:
-                # Convert CSV row to dict matching expected format
-                inst = {
-                    'instrument_key': row.get('instrument_key', ''),
-                    'exchange': row.get('exchange', ''),
-                    'tradingsymbol': row.get('tradingsymbol', ''),
-                    'symbol': row.get('name', ''),  # CSV has 'name' field
-                    'name': row.get('name', ''),
-                    'segment': row.get('exchange_segment', ''),
-                    'instrument_type': row.get('instrument_type', ''),
-                    'isin': row.get('isin', ''),
-                    'lot_size': int(row.get('lot_size', 1)) if row.get('lot_size') else 1,
-                    'tick_size': float(row.get('tick_size', 0.05)) if row.get('tick_size') else 0.05,
-                }
-                instruments.append(inst)
+            instruments = json.loads(content)
             
             self.stats["total_downloaded"] = len(instruments)
             
@@ -109,14 +89,19 @@ class UpstoxInstrumentsFetcher:
         
         for inst in instruments:
             try:
-                # Extract fields
+                # Extract fields - CORRECT MAPPING
                 instrument_key = inst.get('instrument_key', '')
                 exchange = inst.get('exchange', '')
                 segment = inst.get('segment', '')
                 instrument_type = inst.get('instrument_type', '')
-                symbol = inst.get('symbol', '')
-                trading_symbol = inst.get('tradingsymbol', '')
-                name = inst.get('name', symbol)
+                
+                # IMPORTANT: trading_symbol is the stock symbol (RELIANCE, TCS)
+                trading_symbol = inst.get('trading_symbol', '')
+                symbol = trading_symbol  # Use trading_symbol as symbol
+                
+                # name is the company name
+                company_name = inst.get('name', trading_symbol)
+                
                 isin = inst.get('isin', '')
                 lot_size = inst.get('lot_size', 1)
                 tick_size = inst.get('tick_size', 0.05)
@@ -133,7 +118,7 @@ class UpstoxInstrumentsFetcher:
                         lot_size, tick_size, is_active, last_updated
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
                 """, (
-                    instrument_key, symbol, trading_symbol, name,
+                    instrument_key, symbol, trading_symbol, company_name,
                     exchange, segment, instrument_type, isin,
                     lot_size, tick_size, datetime.now()
                 ))
@@ -159,7 +144,7 @@ class UpstoxInstrumentsFetcher:
                 self.category_counts[key] = self.category_counts.get(key, 0) + 1
                 
             except Exception as e:
-                logger.error(f"Error inserting {inst.get('symbol', 'UNKNOWN')}: {e}")
+                logger.error(f"Error inserting {inst.get('trading_symbol', 'UNKNOWN')}: {e}")
                 self.stats['errors'] += 1
         
         conn.commit()
