@@ -1,0 +1,522 @@
+Script started on Wed Feb  4 23:14:37 2026
+/Users/prince/.zshrc:6: command not found: pyenv
+/Users/prince/.zshrc:7: command not found: pyenv
+[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004hccd scripts[1m/[0m[0m/api
+[Japi/                  api_server.py.backup[A[0m[27m[24m[51Ccd scripts/api[K_server.py.backup[1m [0m[0m [?2004l
+[Jcd: not a directory: scripts/api_server.py.backup
+[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004hcclear[?2004l
+[3J[H[2J[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004hclearcd scripts/api_server.py.backup[?2004l
+cd: not a directory: scripts/api_server.py.backup
+[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004hcclear[?2004l
+[3J[H[2J[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004hclearcd scripts/api_server.py.backup[31Dclear                          [26Dcd scripts/api_server.py.backup[31Dclear                          [26Dpython3.11 run_platform.py[?2004l
+
+[0;36m============================================================[0m
+[1m  🚀 UPSTOX Trading Platform - One-Click Launcher[0m
+[0;36m============================================================[0m
+
+[0;36m⏳ Step 1/5: Environment Verification[0m
+
+[0;34m📋 Python Version: 3.11.14[0m
+[0;32m✅ Python Version: ✓ Python 3.11+ is installed[0m
+[0;32m✅ Virtual Environment: Found at .venv/[0m
+[0;36m⏳ Dependencies: Checking installation...[0m
+[1;33m⚠️ Dependencies: Installing 2 missing packages...[0m
+[0;36m⏳ Dependencies: Installing from requirements.txt...[0m
+Requirement already satisfied: Flask>=3.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.1.2)
+Requirement already satisfied: Flask-CORS>=4.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 3)) (6.0.2)
+Requirement already satisfied: Flask-SocketIO>=5.3.6 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 4)) (5.6.0)
+Requirement already satisfied: python-socketio>=5.11.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (5.16.0)
+Requirement already satisfied: requests>=2.31.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (2.32.5)
+Requirement already satisfied: pandas>=2.2.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 7)) (3.0.0)
+Requirement already satisfied: numpy>=1.26.2 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 8)) (2.4.2)
+Requirement already satisfied: scipy>=1.11.4 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 11)) (1.17.0)
+Requirement already satisfied: scikit-learn>=1.3.2 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 12)) (1.8.0)
+Requirement already satisfied: pyyaml>=6.0.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 15)) (6.0.3)
+Requirement already satisfied: python-dotenv>=1.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 16)) (1.2.1)
+Requirement already satisfied: psutil>=5.9.6 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 17)) (7.2.2)
+Requirement already satisfied: cryptography>=42.0.4 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 18)) (46.0.4)
+Requirement already satisfied: schedule>=1.2.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 19)) (1.2.2)
+Requirement already satisfied: python-dateutil>=2.8.2 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 20)) (2.9.0.post0)
+Requirement already satisfied: beautifulsoup4>=4.12.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 21)) (4.14.3)
+Requirement already satisfied: apscheduler>=3.10.4 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 22)) (3.11.2)
+Requirement already satisfied: markdown>=3.5.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 23)) (3.10.1)
+Requirement already satisfied: upstox-python-sdk>=2.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 26)) (2.19.0)
+Requirement already satisfied: protobuf>=4.25.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 27)) (5.29.5)
+Requirement already satisfied: websocket-client>=1.6.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 28)) (1.9.0)
+Requirement already satisfied: pytest>=7.4.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (9.0.2)
+Requirement already satisfied: black>=23.12.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (26.1.0)
+Requirement already satisfied: google-generativeai>=0.8.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.8.6)
+Requirement already satisfied: python-telegram-bot>=22.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (22.6)
+Requirement already satisfied: transformers>=4.37.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (5.0.0)
+Requirement already satisfied: torch>=2.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (2.10.0)
+Requirement already satisfied: gunicorn>=22.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 41)) (25.0.1)
+Requirement already satisfied: setproctitle>=1.3.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 42)) (1.3.7)
+Requirement already satisfied: tenacity>=8.2.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 45)) (9.1.2)
+Requirement already satisfied: openai>=2.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (2.16.0)
+Requirement already satisfied: nicegui>=1.4.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (3.6.1)
+Requirement already satisfied: redis>=5.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 55)) (7.1.0)
+Requirement already satisfied: flask-caching>=2.1.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 56)) (2.3.1)
+Requirement already satisfied: psycopg2-binary>=2.9.9 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 59)) (2.9.11)
+Requirement already satisfied: SQLAlchemy>=2.0.23 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 60)) (2.0.46)
+Requirement already satisfied: prometheus-client>=0.19.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 63)) (0.24.1)
+Requirement already satisfied: Flask-Limiter>=3.5.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (4.1.1)
+Requirement already satisfied: sentry-sdk>=1.39.2 in ./.venv/lib/python3.11/site-packages (from sentry-sdk[flask]>=1.39.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 69)) (2.52.0)
+Requirement already satisfied: Flask-WTF>=1.2.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 72)) (1.2.2)
+Requirement already satisfied: marshmallow>=3.20.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 73)) (4.2.2)
+Requirement already satisfied: Flask-Compress>=1.14 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 76)) (1.23)
+Requirement already satisfied: aiohttp>=3.13.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (3.13.3)
+Requirement already satisfied: blinker>=1.9.0 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (1.9.0)
+Requirement already satisfied: click>=8.1.3 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (8.3.1)
+Requirement already satisfied: itsdangerous>=2.2.0 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.1.6)
+Requirement already satisfied: markupsafe>=2.1.1 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.0.3)
+Requirement already satisfied: werkzeug>=3.1.0 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.1.5)
+Requirement already satisfied: bidict>=0.21.0 in ./.venv/lib/python3.11/site-packages (from python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (0.23.1)
+Requirement already satisfied: python-engineio>=4.11.0 in ./.venv/lib/python3.11/site-packages (from python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (4.13.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (3.4.4)
+Requirement already satisfied: idna<4,>=2.5 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (2026.1.4)
+Requirement already satisfied: joblib>=1.3.0 in ./.venv/lib/python3.11/site-packages (from scikit-learn>=1.3.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 12)) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.2.0 in ./.venv/lib/python3.11/site-packages (from scikit-learn>=1.3.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 12)) (3.6.0)
+Requirement already satisfied: cffi>=2.0.0 in ./.venv/lib/python3.11/site-packages (from cryptography>=42.0.4->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 18)) (2.0.0)
+Requirement already satisfied: six>=1.5 in ./.venv/lib/python3.11/site-packages (from python-dateutil>=2.8.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 20)) (1.17.0)
+Requirement already satisfied: soupsieve>=1.6.1 in ./.venv/lib/python3.11/site-packages (from beautifulsoup4>=4.12.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 21)) (2.8.3)
+Requirement already satisfied: typing-extensions>=4.0.0 in ./.venv/lib/python3.11/site-packages (from beautifulsoup4>=4.12.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 21)) (4.15.0)
+Requirement already satisfied: tzlocal>=3.0 in ./.venv/lib/python3.11/site-packages (from apscheduler>=3.10.4->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 22)) (5.3.1)
+Requirement already satisfied: uuid in ./.venv/lib/python3.11/site-packages (from upstox-python-sdk>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 26)) (1.30)
+Requirement already satisfied: iniconfig>=1.0.1 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (2.3.0)
+Requirement already satisfied: packaging>=22 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (26.0)
+Requirement already satisfied: pluggy<2,>=1.5 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (2.19.2)
+Requirement already satisfied: mypy-extensions>=0.4.3 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (1.1.0)
+Requirement already satisfied: pathspec>=1.0.0 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (1.0.4)
+Requirement already satisfied: platformdirs>=2 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (4.5.1)
+Requirement already satisfied: pytokens>=0.3.0 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (0.4.1)
+Requirement already satisfied: google-ai-generativelanguage==0.6.15 in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.6.15)
+Requirement already satisfied: google-api-core in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.29.0)
+Requirement already satisfied: google-api-python-client in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.189.0)
+Requirement already satisfied: google-auth>=2.15.0 in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.49.0.dev0)
+Requirement already satisfied: pydantic in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.12.5)
+Requirement already satisfied: tqdm in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (4.67.3)
+Requirement already satisfied: proto-plus<2.0.0dev,>=1.22.3 in ./.venv/lib/python3.11/site-packages (from google-ai-generativelanguage==0.6.15->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.27.1)
+Requirement already satisfied: googleapis-common-protos<2.0.0,>=1.56.2 in ./.venv/lib/python3.11/site-packages (from google-api-core->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.72.0)
+Requirement already satisfied: grpcio<2.0.0,>=1.33.2 in ./.venv/lib/python3.11/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.76.0)
+Requirement already satisfied: grpcio-status<2.0.0,>=1.33.2 in ./.venv/lib/python3.11/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.71.2)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in ./.venv/lib/python3.11/site-packages (from google-auth>=2.15.0->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.4.2)
+Requirement already satisfied: httpx<0.29,>=0.27 in ./.venv/lib/python3.11/site-packages (from python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (0.28.1)
+Requirement already satisfied: anyio in ./.venv/lib/python3.11/site-packages (from httpx<0.29,>=0.27->python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (4.12.1)
+Requirement already satisfied: httpcore==1.* in ./.venv/lib/python3.11/site-packages (from httpx<0.29,>=0.27->python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (1.0.9)
+Requirement already satisfied: h11>=0.16 in ./.venv/lib/python3.11/site-packages (from httpcore==1.*->httpx<0.29,>=0.27->python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (0.16.0)
+Requirement already satisfied: filelock in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (3.20.3)
+Requirement already satisfied: huggingface-hub<2.0,>=1.3.0 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (1.4.0)
+Requirement already satisfied: regex!=2019.12.17 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (2026.1.15)
+Requirement already satisfied: tokenizers<=0.23.0,>=0.22.0 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (0.22.2)
+Requirement already satisfied: typer-slim in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (0.21.1)
+Requirement already satisfied: safetensors>=0.4.3 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (0.7.0)
+Requirement already satisfied: fsspec>=2023.5.0 in ./.venv/lib/python3.11/site-packages (from huggingface-hub<2.0,>=1.3.0->transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (2026.1.0)
+Requirement already satisfied: hf-xet<2.0.0,>=1.2.0 in ./.venv/lib/python3.11/site-packages (from huggingface-hub<2.0,>=1.3.0->transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (1.2.0)
+Requirement already satisfied: shellingham in ./.venv/lib/python3.11/site-packages (from huggingface-hub<2.0,>=1.3.0->transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (1.5.4)
+Requirement already satisfied: sympy>=1.13.3 in ./.venv/lib/python3.11/site-packages (from torch>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (1.14.0)
+Requirement already satisfied: networkx>=2.5.1 in ./.venv/lib/python3.11/site-packages (from torch>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (3.6.1)
+Requirement already satisfied: distro<2,>=1.7.0 in ./.venv/lib/python3.11/site-packages (from openai>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (1.9.0)
+Requirement already satisfied: jiter<1,>=0.10.0 in ./.venv/lib/python3.11/site-packages (from openai>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (0.13.0)
+Requirement already satisfied: sniffio in ./.venv/lib/python3.11/site-packages (from openai>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (1.3.1)
+Requirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.11/site-packages (from pydantic->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in ./.venv/lib/python3.11/site-packages (from pydantic->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.41.5)
+Requirement already satisfied: typing-inspection>=0.4.2 in ./.venv/lib/python3.11/site-packages (from pydantic->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.4.2)
+Requirement already satisfied: aiofiles>=23.1.0 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (25.1.0)
+Requirement already satisfied: docutils>=0.19.0 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.22.4)
+Requirement already satisfied: fastapi!=0.123.5,>=0.109.1 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.128.1)
+Requirement already satisfied: ifaddr>=0.2.0 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.2.0)
+Requirement already satisfied: markdown2!=2.4.11,>=2.4.7 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (2.5.4)
+Requirement already satisfied: orjson>=3.9.15 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (3.11.7)
+Requirement already satisfied: python-multipart>=0.0.18 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.0.22)
+Requirement already satisfied: starlette>=0.49.1 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.50.0)
+Requirement already satisfied: uvicorn>=0.22.0 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.40.0)
+Requirement already satisfied: watchfiles>=0.18.1 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (1.1.1)
+Requirement already satisfied: cachelib>=0.9.0 in ./.venv/lib/python3.11/site-packages (from flask-caching>=2.1.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 56)) (0.13.0)
+Requirement already satisfied: limits>=3.13 in ./.venv/lib/python3.11/site-packages (from Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (5.7.0)
+Requirement already satisfied: ordered-set<5,>4 in ./.venv/lib/python3.11/site-packages (from Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (4.1.0)
+Requirement already satisfied: wtforms in ./.venv/lib/python3.11/site-packages (from Flask-WTF>=1.2.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 72)) (3.2.1)
+Requirement already satisfied: brotli in ./.venv/lib/python3.11/site-packages (from Flask-Compress>=1.14->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 76)) (1.2.0)
+Requirement already satisfied: backports.zstd in ./.venv/lib/python3.11/site-packages (from Flask-Compress>=1.14->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 76)) (1.3.0)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (1.4.0)
+Requirement already satisfied: attrs>=17.3.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (25.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (1.22.0)
+Requirement already satisfied: pycparser in ./.venv/lib/python3.11/site-packages (from cffi>=2.0.0->cryptography>=42.0.4->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 18)) (3.0)
+Requirement already satisfied: annotated-doc>=0.0.2 in ./.venv/lib/python3.11/site-packages (from fastapi!=0.123.5,>=0.109.1->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.0.4)
+Requirement already satisfied: deprecated>=1.2 in ./.venv/lib/python3.11/site-packages (from limits>=3.13->Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (1.3.1)
+Requirement already satisfied: wrapt<3,>=1.10 in ./.venv/lib/python3.11/site-packages (from deprecated>=1.2->limits>=3.13->Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (2.1.1)
+Requirement already satisfied: pyasn1<0.7.0,>=0.6.1 in ./.venv/lib/python3.11/site-packages (from pyasn1-modules>=0.2.1->google-auth>=2.15.0->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.6.2)
+Requirement already satisfied: simple-websocket>=0.10.0 in ./.venv/lib/python3.11/site-packages (from python-engineio>=4.11.0->python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (1.1.0)
+Requirement already satisfied: wsproto in ./.venv/lib/python3.11/site-packages (from simple-websocket>=0.10.0->python-engineio>=4.11.0->python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (1.3.2)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.11/site-packages (from sympy>=1.13.3->torch>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (1.3.0)
+Requirement already satisfied: httptools>=0.6.3 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.7.1)
+Requirement already satisfied: uvloop>=0.15.1 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.22.1)
+Requirement already satisfied: websockets>=10.4 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (16.0)
+Requirement already satisfied: httplib2<1.0.0,>=0.19.0 in ./.venv/lib/python3.11/site-packages (from google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.31.2)
+Requirement already satisfied: google-auth-httplib2<1.0.0,>=0.2.0 in ./.venv/lib/python3.11/site-packages (from google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.3.0)
+Requirement already satisfied: uritemplate<5,>=3.0.1 in ./.venv/lib/python3.11/site-packages (from google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (4.2.0)
+Requirement already satisfied: pyparsing<4,>=3.1 in ./.venv/lib/python3.11/site-packages (from httplib2<1.0.0,>=0.19.0->google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (3.3.2)
+[0;32m✅ Dependencies: Installed successfully[0m
+[0;32m✅ Environment: .env file found[0m
+[0;32m✅ Directories: Created logs, cache, downloads/[0m
+
+[0;36m⏳ Step 2/5: Zero-Error Validation[0m
+
+[0;36m⏳ Zero-Error Checks: Running comprehensive validation...[0m
+
+[0;36m⏳ Health Check: Validating system health...[0m
+[1;33m⚠️ Health Check: Passed with warnings[0m
+[0;36m⏳ Preflight Check: Running pre-flight safety checks...[0m
+[1;33m⚠️ Preflight Check: Passed with warnings[0m
+
+
+[0;36m⏳ Step 3/5: Starting Services[0m
+
+[0;32m✅ API Server: Started on port 8000 (PID: 42238)[0m
+[0;32m✅ OAuth Server: Started on port 5050 (PID: 42241)[0m
+[0;32m✅ Frontend Dashboard: Started on port 5001 (PID: 42252)[0m
+
+[0;36m⏳ Step 4/5: Health Checks[0m
+
+[0;36m⏳ API Server: Waiting for service to be ready...[0m
+[1;33m⚠️ API Server: Service health check timed out[0m
+[0;36m⏳ OAuth Server: Waiting for service to be ready...[0m
+^CTraceback (most recent call last):
+  File "/Users/prince/Desktop/UPSTOX-PROJECT-Oracle/run_platform.py", line 1030, in <module>
+    main()
+  File "/Users/prince/Desktop/UPSTOX-PROJECT-Oracle/run_platform.py", line 1025, in main
+    success = launcher.run()
+              ^^^^^^^^^^^^^^
+  File "/Users/prince/Desktop/UPSTOX-PROJECT-Oracle/run_platform.py", line 894, in run
+    self.wait_for_service(service_key)
+  File "/Users/prince/Desktop/UPSTOX-PROJECT-Oracle/run_platform.py", line 689, in wait_for_service
+    time.sleep(1)
+KeyboardInterrupt
+
+[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004hcclear[?2004l
+[3J[H[2J[1m[7m%[27m[1m[0m                                                                                          [0m[27m[24m[Jprince@Princes-MacBook-Air UPSTOX-PROJECT-Oracle % [K[?2004hclearpython3.11 run_platform.py[?2004l
+
+[0;36m============================================================[0m
+[1m  🚀 UPSTOX Trading Platform - One-Click Launcher[0m
+[0;36m============================================================[0m
+
+[0;36m⏳ Step 1/5: Environment Verification[0m
+
+[0;34m📋 Python Version: 3.11.14[0m
+[0;32m✅ Python Version: ✓ Python 3.11+ is installed[0m
+[0;32m✅ Virtual Environment: Found at .venv/[0m
+[0;36m⏳ Dependencies: Checking installation...[0m
+[1;33m⚠️ Dependencies: Installing 2 missing packages...[0m
+[0;36m⏳ Dependencies: Installing from requirements.txt...[0m
+Requirement already satisfied: Flask>=3.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.1.2)
+Requirement already satisfied: Flask-CORS>=4.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 3)) (6.0.2)
+Requirement already satisfied: Flask-SocketIO>=5.3.6 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 4)) (5.6.0)
+Requirement already satisfied: python-socketio>=5.11.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (5.16.0)
+Requirement already satisfied: requests>=2.31.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (2.32.5)
+Requirement already satisfied: pandas>=2.2.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 7)) (3.0.0)
+Requirement already satisfied: numpy>=1.26.2 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 8)) (2.4.2)
+Requirement already satisfied: scipy>=1.11.4 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 11)) (1.17.0)
+Requirement already satisfied: scikit-learn>=1.3.2 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 12)) (1.8.0)
+Requirement already satisfied: pyyaml>=6.0.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 15)) (6.0.3)
+Requirement already satisfied: python-dotenv>=1.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 16)) (1.2.1)
+Requirement already satisfied: psutil>=5.9.6 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 17)) (7.2.2)
+Requirement already satisfied: cryptography>=42.0.4 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 18)) (46.0.4)
+Requirement already satisfied: schedule>=1.2.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 19)) (1.2.2)
+Requirement already satisfied: python-dateutil>=2.8.2 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 20)) (2.9.0.post0)
+Requirement already satisfied: beautifulsoup4>=4.12.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 21)) (4.14.3)
+Requirement already satisfied: apscheduler>=3.10.4 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 22)) (3.11.2)
+Requirement already satisfied: markdown>=3.5.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 23)) (3.10.1)
+Requirement already satisfied: upstox-python-sdk>=2.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 26)) (2.19.0)
+Requirement already satisfied: protobuf>=4.25.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 27)) (5.29.5)
+Requirement already satisfied: websocket-client>=1.6.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 28)) (1.9.0)
+Requirement already satisfied: pytest>=7.4.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (9.0.2)
+Requirement already satisfied: black>=23.12.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (26.1.0)
+Requirement already satisfied: google-generativeai>=0.8.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.8.6)
+Requirement already satisfied: python-telegram-bot>=22.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (22.6)
+Requirement already satisfied: transformers>=4.37.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (5.0.0)
+Requirement already satisfied: torch>=2.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (2.10.0)
+Requirement already satisfied: gunicorn>=22.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 41)) (25.0.1)
+Requirement already satisfied: setproctitle>=1.3.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 42)) (1.3.7)
+Requirement already satisfied: tenacity>=8.2.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 45)) (9.1.2)
+Requirement already satisfied: openai>=2.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (2.16.0)
+Requirement already satisfied: nicegui>=1.4.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (3.6.1)
+Requirement already satisfied: redis>=5.0.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 55)) (7.1.0)
+Requirement already satisfied: flask-caching>=2.1.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 56)) (2.3.1)
+Requirement already satisfied: psycopg2-binary>=2.9.9 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 59)) (2.9.11)
+Requirement already satisfied: SQLAlchemy>=2.0.23 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 60)) (2.0.46)
+Requirement already satisfied: prometheus-client>=0.19.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 63)) (0.24.1)
+Requirement already satisfied: Flask-Limiter>=3.5.0 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (4.1.1)
+Requirement already satisfied: sentry-sdk>=1.39.2 in ./.venv/lib/python3.11/site-packages (from sentry-sdk[flask]>=1.39.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 69)) (2.52.0)
+Requirement already satisfied: Flask-WTF>=1.2.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 72)) (1.2.2)
+Requirement already satisfied: marshmallow>=3.20.1 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 73)) (4.2.2)
+Requirement already satisfied: Flask-Compress>=1.14 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 76)) (1.23)
+Requirement already satisfied: aiohttp>=3.13.3 in ./.venv/lib/python3.11/site-packages (from -r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (3.13.3)
+Requirement already satisfied: blinker>=1.9.0 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (1.9.0)
+Requirement already satisfied: click>=8.1.3 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (8.3.1)
+Requirement already satisfied: itsdangerous>=2.2.0 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.1.6)
+Requirement already satisfied: markupsafe>=2.1.1 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.0.3)
+Requirement already satisfied: werkzeug>=3.1.0 in ./.venv/lib/python3.11/site-packages (from Flask>=3.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 2)) (3.1.5)
+Requirement already satisfied: bidict>=0.21.0 in ./.venv/lib/python3.11/site-packages (from python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (0.23.1)
+Requirement already satisfied: python-engineio>=4.11.0 in ./.venv/lib/python3.11/site-packages (from python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (4.13.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (3.4.4)
+Requirement already satisfied: idna<4,>=2.5 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in ./.venv/lib/python3.11/site-packages (from requests>=2.31.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 6)) (2026.1.4)
+Requirement already satisfied: joblib>=1.3.0 in ./.venv/lib/python3.11/site-packages (from scikit-learn>=1.3.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 12)) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.2.0 in ./.venv/lib/python3.11/site-packages (from scikit-learn>=1.3.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 12)) (3.6.0)
+Requirement already satisfied: cffi>=2.0.0 in ./.venv/lib/python3.11/site-packages (from cryptography>=42.0.4->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 18)) (2.0.0)
+Requirement already satisfied: six>=1.5 in ./.venv/lib/python3.11/site-packages (from python-dateutil>=2.8.2->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 20)) (1.17.0)
+Requirement already satisfied: soupsieve>=1.6.1 in ./.venv/lib/python3.11/site-packages (from beautifulsoup4>=4.12.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 21)) (2.8.3)
+Requirement already satisfied: typing-extensions>=4.0.0 in ./.venv/lib/python3.11/site-packages (from beautifulsoup4>=4.12.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 21)) (4.15.0)
+Requirement already satisfied: tzlocal>=3.0 in ./.venv/lib/python3.11/site-packages (from apscheduler>=3.10.4->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 22)) (5.3.1)
+Requirement already satisfied: uuid in ./.venv/lib/python3.11/site-packages (from upstox-python-sdk>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 26)) (1.30)
+Requirement already satisfied: iniconfig>=1.0.1 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (2.3.0)
+Requirement already satisfied: packaging>=22 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (26.0)
+Requirement already satisfied: pluggy<2,>=1.5 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in ./.venv/lib/python3.11/site-packages (from pytest>=7.4.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 31)) (2.19.2)
+Requirement already satisfied: mypy-extensions>=0.4.3 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (1.1.0)
+Requirement already satisfied: pathspec>=1.0.0 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (1.0.4)
+Requirement already satisfied: platformdirs>=2 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (4.5.1)
+Requirement already satisfied: pytokens>=0.3.0 in ./.venv/lib/python3.11/site-packages (from black>=23.12.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 32)) (0.4.1)
+Requirement already satisfied: google-ai-generativelanguage==0.6.15 in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.6.15)
+Requirement already satisfied: google-api-core in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.29.0)
+Requirement already satisfied: google-api-python-client in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.189.0)
+Requirement already satisfied: google-auth>=2.15.0 in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.49.0.dev0)
+Requirement already satisfied: pydantic in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.12.5)
+Requirement already satisfied: tqdm in ./.venv/lib/python3.11/site-packages (from google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (4.67.3)
+Requirement already satisfied: proto-plus<2.0.0dev,>=1.22.3 in ./.venv/lib/python3.11/site-packages (from google-ai-generativelanguage==0.6.15->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.27.1)
+Requirement already satisfied: googleapis-common-protos<2.0.0,>=1.56.2 in ./.venv/lib/python3.11/site-packages (from google-api-core->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.72.0)
+Requirement already satisfied: grpcio<2.0.0,>=1.33.2 in ./.venv/lib/python3.11/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.76.0)
+Requirement already satisfied: grpcio-status<2.0.0,>=1.33.2 in ./.venv/lib/python3.11/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (1.71.2)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in ./.venv/lib/python3.11/site-packages (from google-auth>=2.15.0->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.4.2)
+Requirement already satisfied: httpx<0.29,>=0.27 in ./.venv/lib/python3.11/site-packages (from python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (0.28.1)
+Requirement already satisfied: anyio in ./.venv/lib/python3.11/site-packages (from httpx<0.29,>=0.27->python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (4.12.1)
+Requirement already satisfied: httpcore==1.* in ./.venv/lib/python3.11/site-packages (from httpx<0.29,>=0.27->python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (1.0.9)
+Requirement already satisfied: h11>=0.16 in ./.venv/lib/python3.11/site-packages (from httpcore==1.*->httpx<0.29,>=0.27->python-telegram-bot>=22.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 36)) (0.16.0)
+Requirement already satisfied: filelock in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (3.20.3)
+Requirement already satisfied: huggingface-hub<2.0,>=1.3.0 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (1.4.0)
+Requirement already satisfied: regex!=2019.12.17 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (2026.1.15)
+Requirement already satisfied: tokenizers<=0.23.0,>=0.22.0 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (0.22.2)
+Requirement already satisfied: typer-slim in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (0.21.1)
+Requirement already satisfied: safetensors>=0.4.3 in ./.venv/lib/python3.11/site-packages (from transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (0.7.0)
+Requirement already satisfied: fsspec>=2023.5.0 in ./.venv/lib/python3.11/site-packages (from huggingface-hub<2.0,>=1.3.0->transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (2026.1.0)
+Requirement already satisfied: hf-xet<2.0.0,>=1.2.0 in ./.venv/lib/python3.11/site-packages (from huggingface-hub<2.0,>=1.3.0->transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (1.2.0)
+Requirement already satisfied: shellingham in ./.venv/lib/python3.11/site-packages (from huggingface-hub<2.0,>=1.3.0->transformers>=4.37.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 37)) (1.5.4)
+Requirement already satisfied: sympy>=1.13.3 in ./.venv/lib/python3.11/site-packages (from torch>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (1.14.0)
+Requirement already satisfied: networkx>=2.5.1 in ./.venv/lib/python3.11/site-packages (from torch>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (3.6.1)
+Requirement already satisfied: distro<2,>=1.7.0 in ./.venv/lib/python3.11/site-packages (from openai>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (1.9.0)
+Requirement already satisfied: jiter<1,>=0.10.0 in ./.venv/lib/python3.11/site-packages (from openai>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (0.13.0)
+Requirement already satisfied: sniffio in ./.venv/lib/python3.11/site-packages (from openai>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 48)) (1.3.1)
+Requirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.11/site-packages (from pydantic->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in ./.venv/lib/python3.11/site-packages (from pydantic->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (2.41.5)
+Requirement already satisfied: typing-inspection>=0.4.2 in ./.venv/lib/python3.11/site-packages (from pydantic->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.4.2)
+Requirement already satisfied: aiofiles>=23.1.0 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (25.1.0)
+Requirement already satisfied: docutils>=0.19.0 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.22.4)
+Requirement already satisfied: fastapi!=0.123.5,>=0.109.1 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.128.1)
+Requirement already satisfied: ifaddr>=0.2.0 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.2.0)
+Requirement already satisfied: markdown2!=2.4.11,>=2.4.7 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (2.5.4)
+Requirement already satisfied: orjson>=3.9.15 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (3.11.7)
+Requirement already satisfied: python-multipart>=0.0.18 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.0.22)
+Requirement already satisfied: starlette>=0.49.1 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.50.0)
+Requirement already satisfied: uvicorn>=0.22.0 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.40.0)
+Requirement already satisfied: watchfiles>=0.18.1 in ./.venv/lib/python3.11/site-packages (from nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (1.1.1)
+Requirement already satisfied: cachelib>=0.9.0 in ./.venv/lib/python3.11/site-packages (from flask-caching>=2.1.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 56)) (0.13.0)
+Requirement already satisfied: limits>=3.13 in ./.venv/lib/python3.11/site-packages (from Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (5.7.0)
+Requirement already satisfied: ordered-set<5,>4 in ./.venv/lib/python3.11/site-packages (from Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (4.1.0)
+Requirement already satisfied: wtforms in ./.venv/lib/python3.11/site-packages (from Flask-WTF>=1.2.1->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 72)) (3.2.1)
+Requirement already satisfied: brotli in ./.venv/lib/python3.11/site-packages (from Flask-Compress>=1.14->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 76)) (1.2.0)
+Requirement already satisfied: backports.zstd in ./.venv/lib/python3.11/site-packages (from Flask-Compress>=1.14->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 76)) (1.3.0)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (1.4.0)
+Requirement already satisfied: attrs>=17.3.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (25.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in ./.venv/lib/python3.11/site-packages (from aiohttp>=3.13.3->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 79)) (1.22.0)
+Requirement already satisfied: pycparser in ./.venv/lib/python3.11/site-packages (from cffi>=2.0.0->cryptography>=42.0.4->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 18)) (3.0)
+Requirement already satisfied: annotated-doc>=0.0.2 in ./.venv/lib/python3.11/site-packages (from fastapi!=0.123.5,>=0.109.1->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.0.4)
+Requirement already satisfied: deprecated>=1.2 in ./.venv/lib/python3.11/site-packages (from limits>=3.13->Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (1.3.1)
+Requirement already satisfied: wrapt<3,>=1.10 in ./.venv/lib/python3.11/site-packages (from deprecated>=1.2->limits>=3.13->Flask-Limiter>=3.5.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 66)) (2.1.1)
+Requirement already satisfied: pyasn1<0.7.0,>=0.6.1 in ./.venv/lib/python3.11/site-packages (from pyasn1-modules>=0.2.1->google-auth>=2.15.0->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.6.2)
+Requirement already satisfied: simple-websocket>=0.10.0 in ./.venv/lib/python3.11/site-packages (from python-engineio>=4.11.0->python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (1.1.0)
+Requirement already satisfied: wsproto in ./.venv/lib/python3.11/site-packages (from simple-websocket>=0.10.0->python-engineio>=4.11.0->python-socketio>=5.11.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 5)) (1.3.2)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.11/site-packages (from sympy>=1.13.3->torch>=2.0.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 38)) (1.3.0)
+Requirement already satisfied: httptools>=0.6.3 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.7.1)
+Requirement already satisfied: uvloop>=0.15.1 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (0.22.1)
+Requirement already satisfied: websockets>=10.4 in ./.venv/lib/python3.11/site-packages (from uvicorn[standard]>=0.22.0->nicegui>=1.4.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 52)) (16.0)
+Requirement already satisfied: httplib2<1.0.0,>=0.19.0 in ./.venv/lib/python3.11/site-packages (from google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.31.2)
+Requirement already satisfied: google-auth-httplib2<1.0.0,>=0.2.0 in ./.venv/lib/python3.11/site-packages (from google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (0.3.0)
+Requirement already satisfied: uritemplate<5,>=3.0.1 in ./.venv/lib/python3.11/site-packages (from google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (4.2.0)
+Requirement already satisfied: pyparsing<4,>=3.1 in ./.venv/lib/python3.11/site-packages (from httplib2<1.0.0,>=0.19.0->google-api-python-client->google-generativeai>=0.8.0->-r /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/requirements.txt (line 35)) (3.3.2)
+[0;32m✅ Dependencies: Installed successfully[0m
+[0;32m✅ Environment: .env file found[0m
+[0;32m✅ Directories: Created logs, cache, downloads/[0m
+
+[0;36m⏳ Step 2/5: Zero-Error Validation[0m
+
+[0;36m⏳ Zero-Error Checks: Running comprehensive validation...[0m
+
+[0;36m⏳ Health Check: Validating system health...[0m
+[1;33m⚠️ Health Check: Passed with warnings[0m
+[0;36m⏳ Preflight Check: Running pre-flight safety checks...[0m
+[1;33m⚠️ Preflight Check: Passed with warnings[0m
+
+
+[0;36m⏳ Step 3/5: Starting Services[0m
+
+[0;32m✅ API Server: Started on port 8000 (PID: 42442)[0m
+[0;32m✅ OAuth Server: Started on port 5050 (PID: 42447)[0m
+[0;32m✅ Frontend Dashboard: Started on port 5001 (PID: 42468)[0m
+
+[0;36m⏳ Step 4/5: Health Checks[0m
+
+[0;36m⏳ API Server: Waiting for service to be ready...[0m
+[1;33m⚠️ API Server: Service health check timed out[0m
+[0;36m⏳ OAuth Server: Waiting for service to be ready...[0m
+[1;33m⚠️ OAuth Server: Service health check timed out[0m
+
+[0;36m⏳ Step 5/5: Starting Monitoring & Dashboard[0m
+
+[0;32m✅ Monitoring: Real-time monitoring started[0m
+[0;31m❌ API Server: Process crashed - attempting restart...[0m
+
+[0;32m============================================================[0m
+[1m  🎉 All services started successfully![0m
+[0;32m============================================================[0m
+
+[0;36m📍 Access Points:[0m
+   🌐 Frontend Dashboard: [1mhttp://localhost:5001[0m
+   📡 API Server:         [1mhttp://localhost:8000[0m
+   🔐 OAuth Service:      [1mhttp://localhost:5050[0m
+
+[0;36m📝 Logs:[0m
+   • API Server: tail -f /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/logs/api_server.log
+   • OAuth Server: tail -f /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/logs/oauth_server.log
+   • Frontend Dashboard: tail -f /Users/prince/Desktop/UPSTOX-PROJECT-Oracle/logs/nicegui_server.log
+
+[0;36m🛑 To stop:[0m
+   python run_platform.py --stop
+   Or press Ctrl+C
+
+[0;32m============================================================[0m
+
+[0;32m✅ API Server: Started on port 8000 (PID: 42649)[0m
+[0;31m❌ OAuth Server: Process crashed - attempting restart...[0m
+[0;32m✅ OAuth Server: Started on port 5050 (PID: 42656)[0m
+[0;31m❌ Frontend Dashboard: Process crashed - attempting restart...[0m
+[0;32m✅ Frontend Dashboard: Started on port 5001 (PID: 42662)[0m
+[0;32m✅ Browser: Opening http://localhost:5001[0m
+
+[0;36m============================================================[0m
+[1m  📊 Launching Real-Time Status Dashboard...[0m
+[0;36m============================================================[0m
+
+[1;33m⏳ Starting dashboard in 3 seconds...[0m
+
+[3J[H[2J
+[0;36m================================================================================[0m
+[1m  📊 UPSTOX Trading Platform - Real-Time Status Dashboard[0m
+[0;36m================================================================================[0m
+
+[0;34m⏰ Current Time: [1m2026-02-04 23:17:08[0m
+
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+[1mSERVICE              STATUS       UPTIME          RESTARTS   PORT    [0m
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+API Server           [1;33m● STARTING[0m  -               [1;33m1[0m         8000    
+OAuth Server         [1;33m● STARTING[0m  -               [1;33m1[0m         5050    
+Frontend Dashboard   [1;33m● STARTING[0m  -               [1;33m1[0m         5001    
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+
+[0;36m📝 Log Files:[0m
+   • API Server           [0;32m0.00MB (0%)[0m
+   • OAuth Server         [0;32m0.00MB (0%)[0m
+   • Frontend Dashboard   [0;32m0.00MB (0%)[0m
+
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+[0;34m💡 Press 's' for status, 'q' to quit, or Ctrl+C to stop all services[0m
+[0;36m================================================================================[0m
+
+[0;31m❌ API Server: Process crashed - attempting restart...[0m
+[0;32m✅ API Server: Started on port 8000 (PID: 42699)[0m
+[0;31m❌ OAuth Server: Process crashed - attempting restart...[0m
+[0;32m✅ OAuth Server: Started on port 5050 (PID: 42704)[0m
+[0;31m❌ Frontend Dashboard: Process crashed - attempting restart...[0m
+[0;32m✅ Frontend Dashboard: Started on port 5001 (PID: 42709)[0m
+[3J[H[2J
+[0;36m================================================================================[0m
+[1m  📊 UPSTOX Trading Platform - Real-Time Status Dashboard[0m
+[0;36m================================================================================[0m
+
+[0;34m⏰ Current Time: [1m2026-02-04 23:17:13[0m
+
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+[1mSERVICE              STATUS       UPTIME          RESTARTS   PORT    [0m
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+API Server           [1;33m● STARTING[0m  -               [1;33m2[0m         8000    
+OAuth Server         [1;33m● STARTING[0m  -               [1;33m2[0m         5050    
+Frontend Dashboard   [1;33m● STARTING[0m  -               [1;33m2[0m         5001    
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+
+[0;36m📝 Log Files:[0m
+   • API Server           [0;32m0.00MB (0%)[0m
+   • OAuth Server         [0;32m0.00MB (0%)[0m
+   • Frontend Dashboard   [0;32m0.00MB (0%)[0m
+
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+[0;34m💡 Press 's' for status, 'q' to quit, or Ctrl+C to stop all services[0m
+[0;36m================================================================================[0m
+
+[0;31m❌ API Server: Process crashed - attempting restart...[0m
+[0;32m✅ API Server: Started on port 8000 (PID: 42728)[0m
+[0;31m❌ OAuth Server: Process crashed - attempting restart...[0m
+[0;32m✅ OAuth Server: Started on port 5050 (PID: 42733)[0m
+[0;31m❌ Frontend Dashboard: Process crashed - attempting restart...[0m
+[0;32m✅ Frontend Dashboard: Started on port 5001 (PID: 42743)[0m
+[3J[H[2J
+[0;36m================================================================================[0m
+[1m  📊 UPSTOX Trading Platform - Real-Time Status Dashboard[0m
+[0;36m================================================================================[0m
+
+[0;34m⏰ Current Time: [1m2026-02-04 23:17:18[0m
+
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+[1mSERVICE              STATUS       UPTIME          RESTARTS   PORT    [0m
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+API Server           [1;33m● STARTING[0m  -               [1;33m3[0m         8000    
+OAuth Server         [1;33m● STARTING[0m  -               [1;33m3[0m         5050    
+Frontend Dashboard   [1;33m● STARTING[0m  -               [1;33m3[0m         5001    
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+
+[0;36m📝 Log Files:[0m
+   • API Server           [0;32m0.00MB (0%)[0m
+   • OAuth Server         [0;32m0.00MB (0%)[0m
+   • Frontend Dashboard   [0;32m0.00MB (0%)[0m
+
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+[0;34m💡 Press 's' for status, 'q' to quit, or Ctrl+C to stop all services[0m
+[0;36m================================================================================[0m
+
+[0;31m❌ API Server: Process crashed - attempting restart...[0m
+[3J[H[2J
+[0;36m================================================================================[0m
+[1m  📊 UPSTOX Trading Platform - Real-Time Status Dashboard[0m
+[0;36m================================================================================[0m
+
+[0;34m⏰ Current Time: [1m2026-02-04 23:17:23[0m
+
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+[1mSERVICE              STATUS       UPTIME          RESTARTS   PORT    [0m
+[0;36m────────────────────────────────────────────────────────────────────────────────[0m
+API Server           [0;31m● CRASHED[0m   -               [1;33m3[0m         8000    
+OAuth Server         [1;33m● STARTING[0m  -               [1;33m3[0m         5050    
+Frontend Dashboard   

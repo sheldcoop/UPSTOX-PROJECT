@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any, List, Tuple
 from datetime import date
 import time
 
-from scripts.market_info_service import MarketInfoService
+from scripts.services.market_info_service import MarketInfoService
 
 
 class MarketInformationService:

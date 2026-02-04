@@ -73,16 +73,14 @@ class PreFlightChecker:
         self.section("🔌 Integration Test - Frontend/Backend Port Matching")
         
         # Check API server configuration
-        api_server_file = Path('scripts/api_server.py')
+        api_server_file = Path('scripts/api/api_server.py')
         if api_server_file.exists():
             content = api_server_file.read_text()
-            
             # Look for port configuration
             api_port = 8000  # default
             port_match = re.search(r'port["\']?\s*[:=]\s*(\d+)', content)
             if port_match:
                 api_port = int(port_match.group(1))
-            
             self.log(f"Backend API configured for port {api_port}", "success")
         else:
             self.log("API server file not found", "error")
