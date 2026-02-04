@@ -147,6 +147,7 @@ from scripts.blueprints.charges import charges_bp
 from scripts.blueprints.quote_v3 import quote_v3_bp
 from scripts.blueprints.historical_v3 import historical_v3_bp
 from scripts.blueprints.websocket import websocket_bp
+from scripts.blueprints.instruments import instruments_bp
 
 # Register blueprints
 app.register_blueprint(portfolio_bp)
@@ -166,6 +167,7 @@ app.register_blueprint(charges_bp)
 app.register_blueprint(quote_v3_bp)
 app.register_blueprint(historical_v3_bp)
 app.register_blueprint(websocket_bp)
+app.register_blueprint(instruments_bp)
 
 logger.info("✅ All blueprints registered successfully")
 

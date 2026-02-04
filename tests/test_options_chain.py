@@ -148,7 +148,7 @@ def test_api_endpoint():
         import requests
 
         # Test market status
-        response = requests.get("http://localhost:5001/api/options/market-status")
+        response = requests.get("http://localhost:8000/api/options/market-status")
         if response.status_code == 200:
             data = response.json()
             print(f"✓ Market Status API: {data['message']}")
@@ -157,7 +157,7 @@ def test_api_endpoint():
             print(f"✗ Market Status API failed: {response.status_code}")
 
         # Test options chain
-        response = requests.get("http://localhost:5001/api/options/chain?symbol=NIFTY")
+        response = requests.get("http://localhost:8000/api/options/chain?symbol=NIFTY")
         if response.status_code == 200:
             data = response.json()
             print(f"✓ Options Chain API: SUCCESS")
@@ -174,7 +174,7 @@ def test_api_endpoint():
         print("  Install with: pip install requests")
         print()
     except requests.exceptions.ConnectionError:
-        print("⚠ API server not running at http://localhost:5001")
+        print("⚠ API server not running at http://localhost:8000")
         print("  Start with: python scripts/api_server.py")
         print()
 

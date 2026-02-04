@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 def place_upstox_order():
     """Place order via Upstox"""
     try:
-        from order_manager import OrderManager
+        from services import OrderService
 
         data = request.json
         required = ["symbol", "quantity", "order_type", "transaction_type"]
         if not all(k in data for k in required):
             return jsonify({"error": f"Missing required fields: {required}"}), 400
 
-        manager = OrderManager()
+        manager = OrderService()
         result = manager.place_order(
             symbol=data["symbol"],
             quantity=data["quantity"],
@@ -42,9 +42,9 @@ def place_upstox_order():
 def cancel_upstox_order(order_id):
     """Cancel order via Upstox"""
     try:
-        from order_manager import OrderManager
+        from services import OrderService
 
-        manager = OrderManager()
+        manager = OrderService()
         result = manager.cancel_order(order_id)
         return jsonify(result)
     except Exception as e:
@@ -56,10 +56,10 @@ def cancel_upstox_order(order_id):
 def modify_order(order_id):
     """Modify order via Upstox"""
     try:
-        from order_manager import OrderManager
+        from services import OrderService
 
         data = request.json
-        manager = OrderManager()
+        manager = OrderService()
         result = manager.modify_order(
             order_id=order_id,
             quantity=data.get("quantity"),
@@ -76,9 +76,9 @@ def modify_order(order_id):
 def get_order_status(order_id):
     """Get order status from Upstox"""
     try:
-        from order_manager import OrderManager
+        from services import OrderService
 
-        manager = OrderManager()
+        manager = OrderService()
         status = manager.get_order_status(order_id)
         return jsonify(status)
     except Exception as e:
