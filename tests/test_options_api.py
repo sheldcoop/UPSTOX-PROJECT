@@ -15,7 +15,7 @@ def test_options_api():
         print("=" * 60)
 
         # Test API endpoint
-        url = "http://localhost:5001/api/options/chain"
+        url = "http://localhost:8000/api/options/chain"
         params = {"symbol": "NIFTY"}
 
         print(f"\n📡 Request: GET {url}")
