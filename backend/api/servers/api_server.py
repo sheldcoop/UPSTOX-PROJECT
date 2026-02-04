@@ -1731,7 +1731,7 @@ if __name__ == '__main__':
     print("✅ Multi-expiry strategies with auto-rolling")
     print("✅ Calendar spreads, diagonal spreads, expiry management")
     print("\n🌐 WebSocket Server: Run separately on port 5002")
-    print("   cd scripts && python websocket_server.py")
+    print("   python backend/services/streaming/websocket_server.py")
     print("\nPress CTRL+C to stop\n")
     
     app.run(debug=False, host='0.0.0.0', port=8000)
