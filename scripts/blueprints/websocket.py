@@ -29,31 +29,15 @@ def authorize_portfolio_stream():
     - Trade executions
     """
     try:
-        from scripts.auth_manager import AuthManager
-        import requests
+        from scripts.services.feed_service import FeedService
 
         logger.info(f"[TraceID: {g.trace_id}] WebSocket feed authorization request")
 
-        # Get access token
-        auth_manager = AuthManager()
-        token = auth_manager.get_valid_token()
-
-        if not token:
-            return jsonify({"error": "Not authenticated"}), 401
-
-        # Call Upstox WebSocket authorization endpoint
-        url = "https://api.upstox.com/v2/feed/portfolio-stream-feed/authorize"
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        }
-
-        response = requests.get(url, headers=headers, timeout=15)
-
-        if response.status_code == 200:
-            data = response.json()
-            auth_data = data.get("data", {})
+        service = FeedService()
+        auth_data = service.authorize_portfolio_stream(
+            update_types=request.args.get("update_types")
+        )
+        access_token = service.auth_manager.get_valid_token()
 
             return jsonify(
                 {
@@ -65,7 +49,7 @@ def authorize_portfolio_stream():
                         "websocket_url": auth_data.get(
                             "authorized_redirect_uri"
                         ),  # Alias for clarity
-                        "access_token": token,
+                        "access_token": access_token,
                         "instructions": {
                             "1": "Use the websocket_url to establish WebSocket connection",
                             "2": "Send access_token in connection parameters",
@@ -75,14 +59,6 @@ def authorize_portfolio_stream():
                     },
                     "timestamp": datetime.now().isoformat(),
                 }
-            )
-        else:
-            logger.warning(
-                f"[TraceID: {g.trace_id}] WebSocket auth API returned {response.status_code}"
-            )
-            return (
-                jsonify({"error": f"API error: {response.status_code}"}),
-                response.status_code,
             )
 
     except Exception as e:
@@ -104,33 +80,15 @@ def authorize_market_data_feed():
     - Option chain updates
     """
     try:
-        from scripts.auth_manager import AuthManager
-        import requests
+        from scripts.services.feed_service import FeedService
 
         logger.info(
             f"[TraceID: {g.trace_id}] Market data WebSocket authorization request"
         )
 
-        # Get access token
-        auth_manager = AuthManager()
-        token = auth_manager.get_valid_token()
-
-        if not token:
-            return jsonify({"error": "Not authenticated"}), 401
-
-        # Call Upstox market data WebSocket authorization endpoint
-        url = "https://api.upstox.com/v2/feed/market-data-feed/authorize"
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        }
-
-        response = requests.get(url, headers=headers, timeout=15)
-
-        if response.status_code == 200:
-            data = response.json()
-            auth_data = data.get("data", {})
+        service = FeedService()
+        auth_data = service.authorize_market_data_feed()
+        access_token = service.auth_manager.get_valid_token()
 
             return jsonify(
                 {
@@ -140,7 +98,7 @@ def authorize_market_data_feed():
                             "authorized_redirect_uri"
                         ),
                         "websocket_url": auth_data.get("authorized_redirect_uri"),
-                        "access_token": token,
+                        "access_token": access_token,
                         "instructions": {
                             "1": "Use the websocket_url for market data WebSocket connection",
                             "2": "Subscribe to specific instruments for real-time quotes",
@@ -149,14 +107,6 @@ def authorize_market_data_feed():
                     },
                     "timestamp": datetime.now().isoformat(),
                 }
-            )
-        else:
-            logger.warning(
-                f"[TraceID: {g.trace_id}] Market data WebSocket auth returned {response.status_code}"
-            )
-            return (
-                jsonify({"error": f"API error: {response.status_code}"}),
-                response.status_code,
             )
 
     except Exception as e:

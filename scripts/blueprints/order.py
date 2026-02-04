@@ -16,21 +16,23 @@ logger = logging.getLogger(__name__)
 def place_upstox_order():
     """Place order via Upstox"""
     try:
-        from services import OrderService
+        from services import OrderExecutionService
 
         data = request.json
         required = ["symbol", "quantity", "order_type", "transaction_type"]
         if not all(k in data for k in required):
             return jsonify({"error": f"Missing required fields: {required}"}), 400
 
-        manager = OrderService()
+        manager = OrderExecutionService()
         result = manager.place_order(
-            symbol=data["symbol"],
+            instrument_key=data["symbol"],
             quantity=data["quantity"],
             order_type=data["order_type"],
             transaction_type=data["transaction_type"],
             price=data.get("price"),
             trigger_price=data.get("trigger_price"),
+            product=data.get("product", "D"),
+            validate_margin=bool(data.get("validate_margin", False)),
         )
         return jsonify(result)
     except Exception as e:
@@ -42,9 +44,9 @@ def place_upstox_order():
 def cancel_upstox_order(order_id):
     """Cancel order via Upstox"""
     try:
-        from services import OrderService
+        from services import OrderExecutionService
 
-        manager = OrderService()
+        manager = OrderExecutionService()
         result = manager.cancel_order(order_id)
         return jsonify(result)
     except Exception as e:
@@ -56,10 +58,10 @@ def cancel_upstox_order(order_id):
 def modify_order(order_id):
     """Modify order via Upstox"""
     try:
-        from services import OrderService
+        from services import OrderExecutionService
 
         data = request.json
-        manager = OrderService()
+        manager = OrderExecutionService()
         result = manager.modify_order(
             order_id=order_id,
             quantity=data.get("quantity"),
@@ -76,10 +78,10 @@ def modify_order(order_id):
 def get_order_status(order_id):
     """Get order status from Upstox"""
     try:
-        from services import OrderService
+        from services import OrderExecutionService
 
-        manager = OrderService()
-        status = manager.get_order_status(order_id)
+        manager = OrderExecutionService()
+        status = manager.get_order_details(order_id)
         return jsonify(status)
     except Exception as e:
         logger.error(f"[TraceID: {g.trace_id}] Order status error: {e}", exc_info=True)

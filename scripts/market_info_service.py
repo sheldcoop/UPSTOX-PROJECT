@@ -72,8 +72,14 @@ class MarketInfoService:
         self._init_database()
         logger.info("✅ MarketInfoService initialized")
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self, allow_unauth: bool = False) -> Dict[str, str]:
         """Get authorization headers with valid token"""
+        if allow_unauth:
+            return {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            }
+
         token = self.auth_manager.get_valid_token()
         if not token:
             logger.warning("No valid token, using unauthenticated request")
@@ -166,7 +172,7 @@ class MarketInfoService:
             Market status dictionary
         """
         try:
-            headers = self._get_headers()
+            headers = self._get_headers(allow_unauth=True)
             url = f"{self.BASE_URL}{self.MARKET_STATUS}"
 
             params = {}
@@ -250,7 +256,7 @@ class MarketInfoService:
             List of holiday dictionaries
         """
         try:
-            headers = self._get_headers()
+            headers = self._get_headers(allow_unauth=True)
             url = f"{self.BASE_URL}{self.MARKET_HOLIDAYS}"
 
             if year is None:

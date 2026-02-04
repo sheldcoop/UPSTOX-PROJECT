@@ -27,11 +27,10 @@ def get_db_connection():
 def get_portfolio():
     """Get portfolio summary - fetches real data from Upstox if authenticated"""
     try:
-        # Check if authenticated using AuthManager
-        from auth_manager import AuthManager
+        from scripts.services.identity_service import IdentityService
 
-        auth = AuthManager()
-        access_token = auth.get_valid_token()
+        identity_service = IdentityService()
+        access_token = identity_service.get_access_token()
 
         # If authenticated, fetch real portfolio from Upstox
         if access_token:
@@ -42,11 +41,7 @@ def get_portfolio():
 
             try:
                 # Fetch user profile (available 24/7)
-                profile_response = requests.get(
-                    "https://api.upstox.com/v2/user/profile",
-                    headers=headers,
-                    timeout=10,
-                )
+                user_profile = identity_service.get_profile()
 
                 # Fetch holdings (available during market hours)
                 holdings_response = requests.get(
@@ -56,20 +51,15 @@ def get_portfolio():
                 )
 
                 # Fetch funds (available 5:30 AM - 12:00 AM IST)
-                funds_response = requests.get(
-                    "https://api.upstox.com/v2/user/get-funds-and-margin",
-                    headers=headers,
-                    timeout=10,
-                )
+                funds_data = identity_service.get_funds()
 
                 # Check if we got valid responses
-                if profile_response.status_code == 200:
+                if user_profile:
                     # We're authenticated - build portfolio data
                     portfolio = {"authenticated": True, "mode": "live"}
 
                     # Try to get funds if API is available
-                    if funds_response.status_code == 200:
-                        funds_data = funds_response.json().get("data", {})
+                    if funds_data:
                         equity = funds_data.get("equity", {})
 
                         portfolio.update(
@@ -145,11 +135,10 @@ def get_portfolio():
 def get_user_profile():
     """Get user profile from Upstox"""
     try:
-        # Check if we have a valid token using AuthManager
-        from auth_manager import AuthManager
+        from scripts.services.identity_service import IdentityService
 
-        auth = AuthManager()
-        access_token = auth.get_valid_token()
+        identity_service = IdentityService()
+        access_token = identity_service.get_access_token()
 
         if not access_token:
             return jsonify({"error": "Not authenticated", "authenticated": False}), 401
@@ -160,13 +149,9 @@ def get_user_profile():
             "Accept": "application/json",
         }
 
-        response = requests.get(
-            "https://api.upstox.com/v2/user/profile", headers=headers, timeout=10
-        )
+        user_data = identity_service.get_profile()
 
-        if response.status_code == 200:
-            data = response.json()
-            user_data = data.get("data", {})
+        if user_data:
 
             return jsonify(
                 {
@@ -182,7 +167,7 @@ def get_user_profile():
         else:
             return (
                 jsonify({"error": "Failed to fetch profile", "authenticated": False}),
-                response.status_code,
+                500,
             )
 
     except Exception as e:

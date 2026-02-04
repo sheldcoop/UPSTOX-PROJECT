@@ -4,16 +4,13 @@ Provides endpoints for searching and browsing instruments
 """
 
 from flask import Blueprint, jsonify, request
-from scripts.upstox_live_api import get_upstox_api
+from scripts.services.instrument_service import InstrumentService
+from scripts.services.market_data_service import MarketDataService
 import logging
 
 logger = logging.getLogger(__name__)
 
 instruments_bp = Blueprint('instruments', __name__, url_prefix='/api/instruments')
-
-# Cache for instruments data
-_instruments_cache = {}
-
 
 @instruments_bp.route('/nse-eq', methods=['GET'])
 def search_nse_eq():
@@ -27,26 +24,13 @@ def search_nse_eq():
         query = request.args.get('query', '').upper()
         limit = int(request.args.get('limit', 100))
         
-        api = get_upstox_api()
-        
-        # Get all NSE_EQ instruments
-        if 'NSE_EQ' not in _instruments_cache:
-            # Fetch from Upstox API
-            # Note: This is a placeholder - you'll need to implement actual fetching
-            _instruments_cache['NSE_EQ'] = []
-        
-        instruments = _instruments_cache.get('NSE_EQ', [])
-        
-        # Filter by query if provided
-        if query:
-            instruments = [
-                inst for inst in instruments 
-                if query in inst.get('symbol', '').upper() or 
-                   query in inst.get('name', '').upper()
-            ]
-        
-        # Limit results
-        instruments = instruments[:limit]
+        service = InstrumentService()
+
+        instruments = service.search_instruments(
+            query=query,
+            limit=limit,
+            segment="NSE_EQ",
+        )
         
         return jsonify({
             'success': True,
@@ -69,21 +53,19 @@ def get_instrument_details(instrument_key):
     Get details for a specific instrument
     """
     try:
-        api = get_upstox_api()
-        
-        # Get quote for the instrument
-        quote = api.get_market_quote(instrument_key)
-        
-        if quote:
+        service = MarketDataService()
+        quotes = service.get_quotes([instrument_key])
+
+        if instrument_key in quotes:
             return jsonify({
                 'success': True,
-                'data': quote
+                'data': quotes[instrument_key]
             })
-        else:
-            return jsonify({
-                'success': False,
-                'error': 'Instrument not found'
-            }), 404
+
+        return jsonify({
+            'success': False,
+            'error': 'Instrument not found'
+        }), 404
             
     except Exception as e:
         logger.error(f"Error fetching instrument {instrument_key}: {e}")
@@ -113,14 +95,18 @@ def search_instruments():
                 'data': [],
                 'message': 'Query too short'
             })
-        
-        # For now, return empty results with proper structure
-        # This should be implemented with actual instrument data
+
+        service = InstrumentService()
+        results = service.search_instruments(
+            query=query,
+            limit=limit,
+            exchange=exchange or None,
+        )
+
         return jsonify({
             'success': True,
-            'data': [],
-            'count': 0,
-            'message': 'Instrument search requires database setup'
+            'data': results,
+            'count': len(results)
         })
         
     except Exception as e:

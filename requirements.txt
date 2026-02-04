@@ -24,6 +24,8 @@ markdown>=3.5.1
 
 # API Integration
 upstox-python-sdk>=2.0.0  # Official Upstox Python SDK
+protobuf>=4.25.0
+websocket-client>=1.6.1
 
 # Development
 pytest>=7.4.3

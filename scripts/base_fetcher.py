@@ -5,14 +5,27 @@ Eliminates code duplication and provides consistent error handling
 
 import requests
 import time
-import logging
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from abc import ABC, abstractmethod
 
 from scripts.auth_helper import auth
+from scripts.config_loader import (
+    get_api_base_url,
+    get_api_timeout,
+    get_min_request_interval,
+    get_rate_limit_wait_seconds,
+)
+from scripts.error_handler import (
+    error_handler,
+    UpstoxAPIError,
+    RateLimitError,
+    AuthenticationError,
+    NetworkError,
+)
+from scripts.logger_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class BaseFetcher(ABC):
@@ -21,12 +34,12 @@ class BaseFetcher(ABC):
     Provides common functionality: auth, retries, rate limiting, error handling.
     """
     
-    def __init__(self, base_url: str = "https://api.upstox.com/v2"):
-        self.base_url = base_url.rstrip("/")
+    def __init__(self, base_url: Optional[str] = None):
+        self.base_url = (base_url or get_api_base_url()).rstrip("/")
         self.auth = auth
         self.session = requests.Session()
         self._last_request_time = 0
-        self._min_request_interval = 0.1  # 100ms between requests
+        self._min_request_interval = get_min_request_interval()
     
     def _get_headers(self) -> Dict[str, str]:
         """Get authentication headers"""
@@ -46,7 +59,7 @@ class BaseFetcher(ABC):
         params: Optional[Dict] = None,
         data: Optional[Dict] = None,
         retries: int = 3,
-        timeout: int = 30
+        timeout: Optional[int] = None
     ) -> Dict[str, Any]:
         """
         Generic fetch method with retry logic and error handling.
@@ -66,6 +79,7 @@ class BaseFetcher(ABC):
             Exception: If all retries fail
         """
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
+        timeout = timeout or get_api_timeout()
         
         for attempt in range(retries):
             try:
@@ -82,36 +96,31 @@ class BaseFetcher(ABC):
                 
                 if response.status_code == 200:
                     return response.json()
-                elif response.status_code == 401:
-                    # Token expired, try refresh
+                if response.status_code == 401:
                     logger.warning("Token expired, refreshing...")
                     self.auth._auth_manager.get_valid_token(force_refresh=True)
                     continue
-                elif response.status_code == 429:
-                    # Rate limited
-                    wait_time = 2 ** attempt
+                if response.status_code == 429:
+                    wait_time = max(get_rate_limit_wait_seconds(), 2 ** attempt)
                     logger.warning(f"Rate limited, waiting {wait_time}s...")
                     time.sleep(wait_time)
                     continue
-                else:
-                    logger.error(f"HTTP {response.status_code}: {response.text}")
-                    if attempt == retries - 1:
-                        raise Exception(f"HTTP {response.status_code}: {response.text}")
+
+                error_handler.handle_http_error(response, endpoint)
                     
-            except requests.exceptions.Timeout:
-                logger.warning(f"Timeout on attempt {attempt + 1}/{retries}")
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+                logger.warning(f"Network error on attempt {attempt + 1}/{retries}: {e}")
                 if attempt == retries - 1:
-                    raise
-            except requests.exceptions.ConnectionError:
-                logger.warning(f"Connection error on attempt {attempt + 1}/{retries}")
-                if attempt == retries - 1:
+                    raise NetworkError(str(e))
+            except UpstoxAPIError as e:
+                if not error_handler.should_retry(e) or attempt == retries - 1:
                     raise
             except Exception as e:
                 logger.error(f"Unexpected error: {e}")
                 if attempt == retries - 1:
                     raise
         
-        raise Exception(f"Failed after {retries} attempts")
+        raise UpstoxAPIError(f"Failed after {retries} attempts")
     
     def fetch_paginated(
         self,

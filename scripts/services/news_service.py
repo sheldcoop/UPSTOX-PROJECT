@@ -7,6 +7,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from base_fetcher import BaseFetcher
+from scripts.config_loader import get_api_base_url
 from services.database_service import db
 
 
@@ -17,7 +18,7 @@ class NewsService(BaseFetcher):
     """
     
     def __init__(self):
-        super().__init__(base_url="https://api.upstox.com/v2")
+        super().__init__(base_url=get_api_base_url())
     
     def validate_response(self, response: Dict[str, Any]) -> bool:
         """Validate API response"""

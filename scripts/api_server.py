@@ -46,6 +46,24 @@ Path("logs").mkdir(exist_ok=True)
 # Enable CORS for frontend
 CORS(app)
 
+# Optional production monitoring & performance enhancements
+try:
+    from config.enhancements import (
+        setup_redis_cache,
+        setup_rate_limiting,
+        setup_compression,
+        setup_prometheus_metrics,
+        setup_sentry,
+    )
+
+    setup_redis_cache(app)
+    setup_rate_limiting(app)
+    setup_compression(app)
+    setup_prometheus_metrics(app)
+    setup_sentry(app)
+except Exception as e:
+    logger.warning(f"Monitoring enhancements skipped: {e}")
+
 # Database path
 DB_PATH = "market_data.db"
 
@@ -148,6 +166,8 @@ from scripts.blueprints.quote_v3 import quote_v3_bp
 from scripts.blueprints.historical_v3 import historical_v3_bp
 from scripts.blueprints.websocket import websocket_bp
 from scripts.blueprints.instruments import instruments_bp
+from scripts.blueprints.gtt import gtt_bp
+from scripts.blueprints.webhook import webhook_bp
 
 # Register blueprints
 app.register_blueprint(portfolio_bp)
@@ -168,6 +188,8 @@ app.register_blueprint(quote_v3_bp)
 app.register_blueprint(historical_v3_bp)
 app.register_blueprint(websocket_bp)
 app.register_blueprint(instruments_bp)
+app.register_blueprint(gtt_bp)
+app.register_blueprint(webhook_bp)
 
 logger.info("✅ All blueprints registered successfully")
 

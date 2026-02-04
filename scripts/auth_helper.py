@@ -113,6 +113,12 @@ class AuthHelper:
         """
         return self._auth_manager.get_authorization_url()
 
+    def exchange_code_for_token(self, auth_code: str) -> Dict[str, any]:
+        return self._auth_manager.exchange_code_for_token(auth_code)
+
+    def save_token(self, user_id: str, token_data: Dict[str, any]):
+        return self._auth_manager.save_token(user_id, token_data)
+
 
 # Singleton instance - import this everywhere
 auth = AuthHelper()

@@ -26,7 +26,7 @@ def calculate_brokerage():
         price: Order price
     """
     try:
-        from scripts.auth_manager import AuthManager
+        from scripts.services.risk_service import RiskService
 
         # Get query parameters
         instrument_token = request.args.get("instrument_token")
@@ -50,18 +50,8 @@ def calculate_brokerage():
                 400,
             )
 
-        # Get access token
-        auth_manager = AuthManager()
-        token = auth_manager.get_valid_token()
-
-        if not token:
-            return jsonify({"error": "Not authenticated"}), 401
-
-        # Initialize brokerage calculator
-        from scripts.brokerage_calculator import BrokerageCalculator
-
-        calculator = BrokerageCalculator(token)
-        charges = calculator.calculate_charges(
+        service = RiskService()
+        charges = service.calculate_brokerage(
             instrument_token=instrument_token,
             quantity=quantity,
             price=price,
@@ -99,8 +89,7 @@ def calculate_margin():
         price: Order price (optional, for limit orders)
     """
     try:
-        from scripts.auth_manager import AuthManager
-        import requests
+        from scripts.services.risk_service import RiskService
 
         # Get query parameters
         instrument_token = request.args.get("instrument_token")
@@ -121,49 +110,21 @@ def calculate_margin():
                 400,
             )
 
-        # Get access token
-        auth_manager = AuthManager()
-        token = auth_manager.get_valid_token()
+        service = RiskService()
+        data = service.calculate_margin(
+            instrument_token=instrument_token,
+            quantity=quantity,
+            transaction_type=transaction_type.upper(),
+            price=price,
+        )
 
-        if not token:
-            return jsonify({"error": "Not authenticated"}), 401
-
-        # Call Upstox margin API
-        url = "https://api.upstox.com/v2/charges/margin"
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        }
-
-        params = {
-            "instrument_token": instrument_token,
-            "quantity": quantity,
-            "transaction_type": transaction_type.upper(),
-        }
-
-        if price:
-            params["price"] = price
-
-        response = requests.get(url, headers=headers, params=params, timeout=15)
-
-        if response.status_code == 200:
-            data = response.json()
-            return jsonify(
-                {
-                    "success": True,
-                    "data": data.get("data", {}),
-                    "timestamp": datetime.now().isoformat(),
-                }
-            )
-        else:
-            logger.warning(
-                f"[TraceID: {g.trace_id}] Margin API returned {response.status_code}"
-            )
-            return (
-                jsonify({"error": f"API error: {response.status_code}"}),
-                response.status_code,
-            )
+        return jsonify(
+            {
+                "success": True,
+                "data": data,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     except Exception as e:
         logger.error(

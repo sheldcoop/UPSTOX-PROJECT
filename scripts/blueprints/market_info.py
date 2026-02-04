@@ -26,7 +26,7 @@ def get_market_status(exchange=None):
         segment: Market segment (EQ, FO, etc.)
     """
     try:
-        from scripts.market_info_service import MarketInfoService
+        from scripts.services.market_information_service import MarketInformationService
 
         segment = request.args.get("segment")
 
@@ -34,8 +34,8 @@ def get_market_status(exchange=None):
             f"[TraceID: {g.trace_id}] Market status request - exchange: {exchange}, segment: {segment}"
         )
 
-        service = MarketInfoService()
-        status = service.get_market_status(exchange=exchange, segment=segment)
+        service = MarketInformationService()
+        status = service.get_status(exchange=exchange, segment=segment)
 
         return jsonify(
             {"success": True, "data": status, "timestamp": datetime.now().isoformat()}
@@ -58,7 +58,7 @@ def get_market_holidays():
         exchange: Exchange code (NSE, BSE, etc.)
     """
     try:
-        from scripts.market_info_service import MarketInfoService
+        from scripts.services.market_information_service import MarketInformationService
 
         year = request.args.get("year", type=int)
         exchange = request.args.get("exchange")
@@ -67,8 +67,8 @@ def get_market_holidays():
             f"[TraceID: {g.trace_id}] Holidays request - year: {year}, exchange: {exchange}"
         )
 
-        service = MarketInfoService()
-        holidays = service.get_market_holidays(year=year, exchange=exchange)
+        service = MarketInformationService()
+        holidays = service.get_holidays(year=year, exchange=exchange)
 
         return jsonify(
             {
@@ -95,20 +95,20 @@ def get_holiday_for_date(date_str):
         date_str: Date in YYYY-MM-DD format
     """
     try:
-        from scripts.market_info_service import MarketInfoService
+        from scripts.services.market_information_service import MarketInformationService
 
         logger.info(f"[TraceID: {g.trace_id}] Holiday check for date: {date_str}")
 
         # Parse date
         check_date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
-        service = MarketInfoService()
+        service = MarketInformationService()
         is_holiday = service.is_holiday(check_date=check_date)
 
         # Get holiday details if it is a holiday
         holiday_info = None
         if is_holiday:
-            holidays = service.get_market_holidays(year=check_date.year)
+            holidays = service.get_holidays(year=check_date.year)
             for h in holidays:
                 if "date" in h and h["date"] == date_str:
                     holiday_info = h
@@ -148,7 +148,7 @@ def get_market_timings(date_str=None):
         segment: Market segment (EQ, FO, etc.)
     """
     try:
-        from scripts.market_info_service import MarketInfoService
+        from scripts.services.market_information_service import MarketInformationService
 
         exchange = request.args.get("exchange")
         segment = request.args.get("segment")
@@ -157,8 +157,8 @@ def get_market_timings(date_str=None):
             f"[TraceID: {g.trace_id}] Market timings request - date: {date_str}, exchange: {exchange}, segment: {segment}"
         )
 
-        service = MarketInfoService()
-        timings = service.get_market_timings(exchange=exchange, segment=segment)
+        service = MarketInformationService()
+        timings = service.get_timings(exchange=exchange, segment=segment)
 
         return jsonify(
             {
