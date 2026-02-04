@@ -78,14 +78,14 @@ class PlatformLauncher:
         self.services = {
             "api": {
                 "name": "API Server",
-                "command": ["python", "scripts/api_server.py"],
+                "command": ["python", "backend/api/servers/api_server.py"],
                 "port": 8000,
                 "health_endpoint": "http://localhost:8000/api/health",
                 "log_file": self.logs_dir / "api_server.log"
             },
             "oauth": {
                 "name": "OAuth Server",
-                "command": ["python", "scripts/api/oauth_server.py"],
+                "command": ["python", "backend/api/servers/oauth_server.py"],
                 "port": 5050,
                 "health_endpoint": "http://localhost:5050/debug/config",
                 "log_file": self.logs_dir / "oauth_server.log"

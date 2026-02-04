@@ -6,7 +6,7 @@ import logging
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from scripts.ai_service import AIService
+from backend.services.ai.service import AIService
 
 # Configure logging to see the output
 logging.basicConfig(level=logging.INFO)

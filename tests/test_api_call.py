@@ -1,4 +1,4 @@
-from scripts.auth_manager import AuthManager
+from backend.utils.auth.manager import AuthManager
 import requests
 
 auth = AuthManager()

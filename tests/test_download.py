@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from scripts.data_downloader import StockDownloader
+from backend.services.market_data.downloader import StockDownloader
 
 print("Downloading TCS 15-minute data from Upstox API...")
 downloader = StockDownloader()

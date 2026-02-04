@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from tests.test_utils import initialize_database
-from scripts.backtest_engine import (
+from backend.core.analytics.backtest_engine import (
     BacktestEngine,
     SMAStrategy,
     RSIStrategy,

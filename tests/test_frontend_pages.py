@@ -40,7 +40,7 @@ class TestFrontendPageImports:
     def test_import_home_page(self):
         """Test home page imports"""
         try:
-            from dashboard_ui.pages import home
+            from frontend.pages import home
 
             assert hasattr(home, "create_page")
         except ImportError as e:
@@ -49,7 +49,7 @@ class TestFrontendPageImports:
     def test_import_positions_page(self):
         """Test positions page imports"""
         try:
-            from dashboard_ui.pages import positions
+            from frontend.pages import positions
 
             assert hasattr(positions, "create_page")
         except ImportError as e:
@@ -58,7 +58,7 @@ class TestFrontendPageImports:
     def test_import_orders_alerts_page(self):
         """Test orders & alerts page imports"""
         try:
-            from dashboard_ui.pages import orders_alerts
+            from frontend.pages import orders_alerts
 
             assert hasattr(orders_alerts, "create_page")
         except ImportError as e:
@@ -67,7 +67,7 @@ class TestFrontendPageImports:
     def test_import_analytics_page(self):
         """Test analytics page imports"""
         try:
-            from dashboard_ui.pages import analytics
+            from frontend.pages import analytics
 
             assert hasattr(analytics, "create_page")
         except ImportError as e:
@@ -76,7 +76,7 @@ class TestFrontendPageImports:
     def test_import_backtest_page(self):
         """Test backtest page imports"""
         try:
-            from dashboard_ui.pages import backtest
+            from frontend.pages import backtest
 
             assert hasattr(backtest, "create_page")
         except ImportError as e:
@@ -85,7 +85,7 @@ class TestFrontendPageImports:
     def test_import_strategies_page(self):
         """Test strategies page imports"""
         try:
-            from dashboard_ui.pages import strategies
+            from frontend.pages import strategies
 
             assert hasattr(strategies, "create_page")
         except ImportError as e:
@@ -94,7 +94,7 @@ class TestFrontendPageImports:
     def test_import_signals_page(self):
         """Test signals page imports"""
         try:
-            from dashboard_ui.pages import signals
+            from frontend.pages import signals
 
             assert hasattr(signals, "create_page")
         except ImportError as e:
@@ -103,7 +103,7 @@ class TestFrontendPageImports:
     def test_import_live_trading_page(self):
         """Test live trading page imports"""
         try:
-            from dashboard_ui.pages import live_trading
+            from frontend.pages import live_trading
 
             assert hasattr(live_trading, "create_page")
         except ImportError as e:
@@ -112,7 +112,7 @@ class TestFrontendPageImports:
     def test_import_upstox_live_page(self):
         """Test upstox live page imports"""
         try:
-            from dashboard_ui.pages import upstox_live
+            from frontend.pages import upstox_live
 
             assert hasattr(upstox_live, "create_page")
         except ImportError as e:
@@ -121,7 +121,7 @@ class TestFrontendPageImports:
     def test_import_option_chain_page(self):
         """Test option chain page imports"""
         try:
-            from dashboard_ui.pages import option_chain
+            from frontend.pages import option_chain
 
             assert hasattr(option_chain, "create_page")
         except ImportError as e:
@@ -130,7 +130,7 @@ class TestFrontendPageImports:
     def test_import_historical_options_page(self):
         """Test historical options page imports"""
         try:
-            from dashboard_ui.pages import historical_options
+            from frontend.pages import historical_options
 
             assert hasattr(historical_options, "create_page")
         except ImportError as e:
@@ -139,7 +139,7 @@ class TestFrontendPageImports:
     def test_import_downloads_page(self):
         """Test downloads page imports"""
         try:
-            from dashboard_ui.pages import downloads
+            from frontend.pages import downloads
 
             assert hasattr(downloads, "create_page")
         except ImportError as e:
@@ -148,7 +148,7 @@ class TestFrontendPageImports:
     def test_import_user_profile_page(self):
         """Test user profile page imports"""
         try:
-            from dashboard_ui.pages import user_profile
+            from frontend.pages import user_profile
 
             assert hasattr(user_profile, "create_page")
         except ImportError as e:
@@ -157,7 +157,7 @@ class TestFrontendPageImports:
     def test_import_health_page(self):
         """Test health page imports"""
         try:
-            from dashboard_ui.pages import health
+            from frontend.pages import health
 
             assert hasattr(health, "create_page")
         except ImportError as e:
@@ -166,7 +166,7 @@ class TestFrontendPageImports:
     def test_import_ai_chat_page(self):
         """Test AI chat page imports"""
         try:
-            from dashboard_ui.pages import ai_chat
+            from frontend.pages import ai_chat
 
             assert hasattr(ai_chat, "create_page")
         except ImportError as e:
@@ -175,7 +175,7 @@ class TestFrontendPageImports:
     def test_import_api_debugger_page(self):
         """Test API debugger page imports"""
         try:
-            from dashboard_ui.pages import api_debugger
+            from frontend.pages import api_debugger
 
             assert hasattr(api_debugger, "create_page")
         except ImportError as e:
@@ -188,7 +188,7 @@ class TestDashboardState:
     def test_dashboard_state_import(self):
         """Test dashboard state module imports"""
         try:
-            from dashboard_ui.state import DashboardState
+            from frontend.state import DashboardState
 
             assert DashboardState is not None
         except ImportError as e:
@@ -197,7 +197,7 @@ class TestDashboardState:
     def test_dashboard_state_initialization(self):
         """Test dashboard state can be initialized"""
         try:
-            from dashboard_ui.state import DashboardState
+            from frontend.state import DashboardState
 
             state = DashboardState()
             assert hasattr(state, "api_base_url")
@@ -211,7 +211,7 @@ class TestCommonComponents:
     def test_common_components_import(self):
         """Test common components import"""
         try:
-            from dashboard_ui.common import Theme, Components
+            from frontend.common import Theme, Components
 
             assert Theme is not None
             assert Components is not None
@@ -230,7 +230,7 @@ class TestPageFunctionality:
         mock_get.return_value.json.return_value = {"status": "healthy"}
 
         try:
-            from dashboard_ui.pages import home
+            from frontend.pages import home
 
             # Just test that the module is importable
             assert home is not None
@@ -250,7 +250,7 @@ class TestPageFunctionality:
         }
 
         try:
-            from dashboard_ui.pages import positions
+            from frontend.pages import positions
 
             assert positions is not None
         except Exception as e:

@@ -40,9 +40,9 @@ mem_handler.setFormatter(formatter)
 logging.getLogger().addHandler(mem_handler)
 logging.getLogger().setLevel(logging.INFO)
 
-from dashboard_ui.state import DashboardState
-from dashboard_ui.common import Theme, Components
-from dashboard_ui.pages import (
+from frontend.state import DashboardState
+from frontend.common import Theme, Components
+from frontend.pages import (
     home,
     downloads,
     positions,
