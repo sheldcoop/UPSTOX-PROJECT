@@ -16,8 +16,10 @@ import requests
 from datetime import datetime
 from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add project root to Python path (go up 3 levels from backend/api/servers/)
+_current_file = Path(__file__).resolve()
+_project_root = _current_file.parent.parent.parent.parent
+sys.path.insert(0, str(_project_root))
 
 from backend.core.trading.paper_trading import PaperTradingSystem
 from backend.core.analytics.performance import PerformanceAnalytics

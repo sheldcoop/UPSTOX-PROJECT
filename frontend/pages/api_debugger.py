@@ -9,7 +9,7 @@ import os
 
 # Import backend logic
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from scripts.expired_options_fetcher import (
+from backend.data.fetchers.expired_options_fetcher import (
     get_available_expiries,
     fetch_expired_option_contracts,
     API_BASE_URL,

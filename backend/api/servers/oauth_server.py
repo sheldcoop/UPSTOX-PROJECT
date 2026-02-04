@@ -6,9 +6,12 @@ Handles OAuth flow with browser-based authorization
 
 import sys
 import os
+from pathlib import Path
 
-# Add project root to Python path (go up two levels from scripts/api/)
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# Add project root to Python path (go up 3 levels from backend/api/servers/)
+_current_file = Path(__file__).resolve()
+_project_root = _current_file.parent.parent.parent.parent
+sys.path.insert(0, str(_project_root))
 
 from flask import Flask, request, redirect, jsonify
 from backend.utils.auth.manager import AuthManager

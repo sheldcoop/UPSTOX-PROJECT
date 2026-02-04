@@ -5,7 +5,7 @@ from pathlib import Path
 # Add project root to path
 sys.path.append(os.getcwd())
 
-from dashboard_ui.services.movers import MarketMoversService
+from frontend.services.movers import MarketMoversService
 
 
 def test_movers():

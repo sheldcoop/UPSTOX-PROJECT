@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.services.upstox.live_api import get_upstox_api
 from frontend.services.movers import MarketMoversService
-from scripts.services import PortfolioService
+from backend.services.upstox.portfolio import PortfolioServicesV3 as PortfolioService
 from backend.utils.auth.manager import AuthManager
 
 # Setup Logging

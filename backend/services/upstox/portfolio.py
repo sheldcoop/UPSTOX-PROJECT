@@ -37,7 +37,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.utils.auth.manager import AuthManager
 from backend.utils.logging.error_handler import with_retry, UpstoxAPIError
-from scripts.database_pool import get_db_pool
+from backend.data.database.database_pool import get_db_pool
 from backend.utils.auth.mixins import AuthHeadersMixin
 import requests
 

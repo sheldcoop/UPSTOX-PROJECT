@@ -9,7 +9,7 @@ from typing import Optional, Dict, Any, List
 from datetime import datetime
 from abc import ABC, abstractmethod
 
-from scripts.auth_helper import auth
+# from scripts.auth_helper import auth  # TODO: Find correct location or remove
 from backend.utils.helpers.config import (
     get_api_base_url,
     get_api_timeout,
