@@ -129,6 +129,15 @@ class OptionChainPage:
         if self.spot_label:
             self.spot_label.text = f"{spot:,.2f}"
             self.timestamp_label.text = f"Last Upd: {timestamp}"
+            
+            # Status Badge Logic
+            is_mock = data.get("is_mock", False)
+            if is_mock:
+                self.status_badge.text = "SIMULATION"
+                self.status_badge.props("color=amber text-color=black")
+            else:
+                self.status_badge.text = "LIVE"
+                self.status_badge.props("color=green text-color=white")
 
         # --- THE GRID ---
         # Columns: 
