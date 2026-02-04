@@ -44,57 +44,106 @@ class MarketMoversService:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            # Use exchange_listings and master_stocks schema
+            # NEW SCHEMA: Use instruments and index_constituents tables
             if category == "NSE_MAIN":
-                query = "SELECT instrument_key, symbol, trading_symbol FROM exchange_listings WHERE segment='NSE_EQ' AND instrument_type IN ('EQ', 'BE')"
+                # All NSE equity stocks
+                query = """
+                SELECT instrument_key, symbol, trading_symbol 
+                FROM instruments 
+                WHERE exchange='NSE' AND segment='NSE_EQ' 
+                AND instrument_type IN ('EQ', 'BE')
+                AND is_active = 1
+                """
 
             elif category == "NSE_SME":
-                query = "SELECT instrument_key, symbol, trading_symbol FROM exchange_listings WHERE segment='NSE_EQ' AND instrument_type IN ('SM', 'SG')"
+                query = """
+                SELECT instrument_key, symbol, trading_symbol 
+                FROM instruments 
+                WHERE exchange='NSE' AND segment='NSE_EQ' 
+                AND instrument_type IN ('SM', 'SG')
+                AND is_active = 1
+                """
 
             elif category == "BSE_MAIN":
-                query = "SELECT instrument_key, symbol, trading_symbol FROM exchange_listings WHERE segment='BSE_EQ' AND instrument_type IN ('A', 'B', 'X', 'F', 'XT', 'GS', 'G', 'T', 'Z')"
+                query = """
+                SELECT instrument_key, symbol, trading_symbol 
+                FROM instruments 
+                WHERE exchange='BSE' AND segment='BSE_EQ' 
+                AND instrument_type IN ('A', 'B', 'X', 'F', 'XT', 'GS', 'G', 'T', 'Z')
+                AND is_active = 1
+                """
 
             elif category == "BSE_SME":
-                query = "SELECT instrument_key, symbol, trading_symbol FROM exchange_listings WHERE segment='BSE_EQ' AND instrument_type IN ('M', 'MT')"
+                query = """
+                SELECT instrument_key, symbol, trading_symbol 
+                FROM instruments 
+                WHERE exchange='BSE' AND segment='BSE_EQ' 
+                AND instrument_type IN ('M', 'MT')
+                AND is_active = 1
+                """
 
             elif category == "NSE_FUT":
-                query = "SELECT instrument_key, symbol, trading_symbol FROM exchange_listings WHERE segment='NSE_FO' AND instrument_type='FUT'"
+                query = """
+                SELECT instrument_key, symbol, trading_symbol 
+                FROM instruments 
+                WHERE exchange='NSE' AND segment='NSE_FO' 
+                AND instrument_type='FUT'
+                AND is_active = 1
+                """
 
             elif category == "NSE_FO_EQ":
-                # Stocks (Equity) that have F&O enabled in master_stocks
+                # Stocks that have F&O (from derivatives_metadata)
                 query = """
-                SELECT el.instrument_key, el.symbol, el.trading_symbol 
-                FROM exchange_listings el
-                JOIN master_stocks ms ON el.symbol = ms.symbol
-                WHERE el.segment='NSE_EQ' AND ms.is_fno_enabled = 1
+                SELECT DISTINCT i.instrument_key, i.symbol, i.trading_symbol 
+                FROM instruments i
+                JOIN derivatives_metadata dm ON i.symbol = dm.underlying_symbol
+                WHERE i.exchange='NSE' AND i.segment='NSE_EQ'
+                AND dm.is_active = 1
+                AND i.is_active = 1
                 """
 
             elif category == "VOLUME_SHOCKERS":
-                query = "SELECT instrument_key, symbol, trading_symbol FROM exchange_listings WHERE segment='NSE_EQ' AND instrument_type IN ('EQ', 'BE')"
+                # All NSE equity for volume analysis
+                query = """
+                SELECT instrument_key, symbol, trading_symbol 
+                FROM instruments 
+                WHERE exchange='NSE' AND segment='NSE_EQ' 
+                AND instrument_type IN ('EQ', 'BE')
+                AND is_active = 1
+                """
 
-            # --- INDEX CATEGORIES ---
+            # --- INDEX CATEGORIES (using index_constituents) ---
             elif category == "NIFTY_50":
                 query = """
                 SELECT i.instrument_key, i.symbol, i.trading_symbol 
-                FROM exchange_listings i
-                JOIN stock_metadata m ON i.symbol = m.symbol
-                WHERE i.segment='NSE_EQ' AND m.is_nifty50 = 1
+                FROM instruments i
+                JOIN index_constituents ic ON i.symbol = ic.symbol
+                WHERE ic.index_code = 'NIFTY50'
+                AND ic.is_active = 1
+                AND i.exchange='NSE' AND i.segment='NSE_EQ'
+                AND i.is_active = 1
                 """
 
             elif category == "NIFTY_500":
                 query = """
                 SELECT i.instrument_key, i.symbol, i.trading_symbol 
-                FROM exchange_listings i
-                JOIN stock_metadata m ON i.symbol = m.symbol
-                WHERE i.segment='NSE_EQ' AND m.is_nifty500 = 1
+                FROM instruments i
+                JOIN index_constituents ic ON i.symbol = ic.symbol
+                WHERE ic.index_code = 'NIFTY500'
+                AND ic.is_active = 1
+                AND i.exchange='NSE' AND i.segment='NSE_EQ'
+                AND i.is_active = 1
                 """
 
             elif category == "NIFTY_BANK":
                 query = """
                 SELECT i.instrument_key, i.symbol, i.trading_symbol 
-                FROM exchange_listings i
-                JOIN stock_metadata m ON i.symbol = m.symbol
-                WHERE i.segment='NSE_EQ' AND m.is_nifty_bank = 1
+                FROM instruments i
+                JOIN index_constituents ic ON i.symbol = ic.symbol
+                WHERE ic.index_code = 'NIFTYBANK'
+                AND ic.is_active = 1
+                AND i.exchange='NSE' AND i.segment='NSE_EQ'
+                AND i.is_active = 1
                 """
 
             else:

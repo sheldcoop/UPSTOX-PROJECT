@@ -2,9 +2,10 @@ from nicegui import run
 import requests
 import sqlite3
 from typing import Dict, Any, List
+import os
 
 # Configuration
-API_BASE = "http://localhost:9000"
+API_BASE = os.getenv("API_BASE_URL", "http://localhost:8000")
 
 # ============================================================================
 # 📡 Async API Wrappers

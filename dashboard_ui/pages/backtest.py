@@ -9,10 +9,11 @@ import sys
 from pathlib import Path
 import asyncio
 import requests
+import os
 
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-API_BASE = "http://localhost:9000/api"
+API_BASE = os.getenv("API_BASE_URL", "http://localhost:8000") + "/api"
 
 
 def render_page(state):
