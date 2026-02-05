@@ -54,6 +54,10 @@ logger = get_logger(__name__)
 # Create logs directory
 Path('logs').mkdir(exist_ok=True)
 
+# Register Blueprints
+from backend.api.routers.market_quote import market_quote_bp
+app.register_blueprint(market_quote_bp, url_prefix='/api/market-quote')
+
 
 # ============================================================================
 # REQUEST TRACING MIDDLEWARE (God-Mode Debugging)
