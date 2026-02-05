@@ -316,17 +316,16 @@ class OptionsChainService:
             if expiry_date:
                 params["expiry_date"] = expiry_date
 
-            # If no expiry provided for Live API, we MUST provide one or the API might fail or return default?
-            # Documentation says expiry_date is REQUIRED query param.
+            # If no expiry provided for Live API, we MUST provide one
             if not expiry_date:
-                # auto-fetch expiries
-                dates = self.get_expiry_dates(inst_key)
+                # auto-fetch expiries from DB (optimized)
+                dates = self.get_expiry_dates_from_db(symbol)
                 if dates:
                     params["expiry_date"] = dates[0]
                     # Also update result to show we picked this date
                     expiry_date = dates[0]
                 else:
-                    logger.warning("Could not find expiry dates")
+                    logger.warning(f"Could not find expiry dates for {symbol}")
                     return {}
 
             logger.debug(
@@ -420,16 +419,49 @@ class OptionsChainService:
         """
 
     def _get_instrument_key(self, symbol: str) -> str:
-        """Convert symbol to Upstox instrument key"""
-        # Index symbols
-        if symbol.upper() == "NIFTY":
-            return "NSE_INDEX|Nifty 50"
-        elif symbol.upper() == "BANKNIFTY":
-            return "NSE_INDEX|Nifty Bank"
-        elif symbol.upper() == "FINNIFTY":
-            return "NSE_INDEX|Nifty Fin Services"
-        else:
-            # Stock options
+        """
+        Convert symbol to Upstox instrument key by searching the database.
+        This dynamically resolves keys for all instruments (Indices, Equities, etc.)
+        including ISIN-based keys for equities.
+        """
+        try:
+            import sqlite3
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Lookup the instrument_key in the database
+            # We prefer INDEX over EQ for same symbol if it exists (e.g. NIFTY)
+            cursor.execute("""
+                SELECT instrument_key 
+                FROM exchange_listings 
+                WHERE symbol = ? 
+                ORDER BY CASE 
+                    WHEN instrument_type = 'INDEX' THEN 1 
+                    WHEN instrument_type = 'EQ' THEN 2 
+                    ELSE 3 
+                END ASC
+                LIMIT 1
+            """, (symbol.upper(),))
+            
+            row = cursor.fetchone()
+            conn.close()
+            
+            if row:
+                return row[0]
+                
+            # Fallback for common indices if DB lookup fails
+            if symbol.upper() == "NIFTY":
+                return "NSE_INDEX|Nifty 50"
+            elif symbol.upper() == "BANKNIFTY":
+                return "NSE_INDEX|Nifty Bank"
+            elif symbol.upper() == "FINNIFTY":
+                return "NSE_INDEX|Nifty Fin Services"
+            
+            # Generic fallback (likely to fail for many equities but better than nothing)
+            return f"NSE_EQ|{symbol.upper()}"
+            
+        except Exception as e:
+            logger.error(f"Error resolving instrument key for {symbol}: {e}")
             return f"NSE_EQ|{symbol.upper()}"
 
     def _process_upstox_response(
