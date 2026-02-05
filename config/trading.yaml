@@ -18,6 +18,89 @@ database:
   backup_interval_hours: 24
   retention_days: 90
 
+# Instruments Management (NEW - Tiered Architecture)
+instruments:
+  # Data source configuration
+  source:
+    format: "json"  # json (recommended) or csv (deprecated)
+    base_url: "https://assets.upstox.com/market-quote/instruments/exchange/"
+  
+  # Sync scheduling
+  sync:
+    enabled: true
+    schedule: "30 6 * * *"  # Daily at 6:30 AM IST (after Upstox 6 AM refresh)
+    auto_retry: true
+    retry_attempts: 3
+    retry_delay_minutes: 5
+  
+  # Tiered filtering configuration
+  tiers:
+    tier1:  # Liquid Equity
+      enabled: true
+      description: "NSE EQ + BSE A/B/XT (Liquid mainboard stocks)"
+      segments:
+        NSE: ['EQ']
+        BSE: ['A', 'B', 'XT']
+      expected_count: 5664
+    
+    sme:  # SME Stocks with risk warnings
+      enabled: true
+      description: "NSE SM + BSE M (High-risk SME stocks)"
+      segments:
+        NSE: ['SM']
+        BSE: ['M']
+      risk_warnings: true
+      lot_size_threshold: 1000  # Warn if lot > 1000
+      expected_count: 814
+    
+    derivatives:  # F&O Contracts
+      enabled: true
+      description: "Options + Futures (All F&O contracts)"
+      instrument_types: ['OPTIDX', 'OPTSTK', 'FUTIDX', 'FUTSTK', 'FUTCOM', 'FUTCUR', 'OPTCUR', 'OPTIRD']
+      auto_expire_cleanup: true
+      expire_check_schedule: "0 9 * * *"  # Daily 9 AM expiry check
+      expected_count: 186201
+    
+    indices_etfs:  # Market Indices & ETFs
+      enabled: true
+      description: "Indices (NIFTY, BANKNIFTY) + ETFs"
+      expected_count: 312
+  
+  # Suspended instruments tracking
+  suspended_tracking:
+    mode: "reactive"  # 'reactive' (on order failures) or 'proactive' (daily fetch)
+    alert_on_suspension: true
+    proactive_url: "suspended-instrument.json.gz"  # If mode = proactive
+  
+  # Future-proof features (to be populated later)
+  enrichment:
+    sector_industry:
+      enabled: false  # Enable when sector data source is available
+      source: "manual"  # manual, nse_api, yahoo_finance
+    
+    fno_availability:
+      enabled: true  # Auto-mark stocks with F&O contracts
+      auto_detect: true  # Cross-reference derivatives table
+    
+    index_membership:
+      enabled: false  # Enable when index constituents are loaded
+      auto_label: true  # Auto-mark NIFTY50/100/200/500
+      indices:
+        - NIFTY50
+        - NIFTY100
+        - NIFTY200
+        - NIFTY500
+        - BANKNIFTY
+        - NIFTYIT
+  
+  # Data validation
+  validation:
+    check_duplicates: true
+    check_missing_fields: true
+    check_expiry_dates: true  # Derivatives must have future expiry
+    alert_on_count_drop: true
+    count_drop_threshold_percent: 10  # Alert if count drops >10%
+
 # Risk Management
 risk:
   max_position_size: 100000  # INR

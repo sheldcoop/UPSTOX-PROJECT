@@ -13,6 +13,7 @@ import time
 import schedule
 
 from scripts.database_validator import DatabaseValidator
+from scripts.etl.upstox_instruments_fetcher_v2 import UpstoxInstrumentsFetcherV2
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -421,6 +422,231 @@ class DataSyncManager:
             "records_synced": total_records,
             "errors": errors,
         }
+
+    def sync_instruments_daily(self) -> Dict[str, Any]:
+        """
+        Daily instruments sync at 6:30 AM IST (called by scheduler)
+        Uses tiered fetcher v2 with JSON format
+        
+        Returns:
+            Sync summary with stats
+        """
+        sync_id = self.start_sync("instruments_daily_sync")
+        
+        try:
+            logger.info("🚀 Starting daily instruments sync (Tiered V2)")
+            
+            # Run tiered fetcher
+            fetcher = UpstoxInstrumentsFetcherV2(db_path=self.db_path)
+            success = fetcher.run_full_sync()
+            
+            if success:
+                self.complete_sync(
+                    sync_id,
+                    status="SUCCESS",
+                    records_synced=fetcher.stats['total_fetched'],
+                    errors_count=fetcher.stats['errors']
+                )
+                
+                logger.info("✅ Instruments daily sync completed")
+                
+                return {
+                    'status': 'SUCCESS',
+                    'total_fetched': fetcher.stats['total_fetched'],
+                    'tier1': fetcher.stats['tier1_inserted'],
+                    'sme': fetcher.stats['sme_inserted'],
+                    'derivatives': fetcher.stats['derivatives_inserted'],
+                    'indices': fetcher.stats['indices_inserted'],
+                    'expired_cleaned': fetcher.stats['expired_cleaned']
+                }
+            else:
+                self.complete_sync(
+                    sync_id,
+                    status="FAILED",
+                    errors_count=1,
+                    error_message="Instruments fetcher returned False"
+                )
+                
+                logger.error("❌ Instruments daily sync failed")
+                return {'status': 'FAILED'}
+                
+        except Exception as e:
+            self.complete_sync(
+                sync_id,
+                status="FAILED",
+                errors_count=1,
+                error_message=str(e)
+            )
+            
+            logger.error(f"❌ Instruments daily sync exception: {e}")
+            import traceback
+            traceback.print_exc()
+            
+            return {'status': 'FAILED', 'error': str(e)}
+
+    def schedule_instruments_sync(self):
+        """
+        Schedule daily instruments refresh at 6:30 AM IST
+        Registers job and configures scheduler
+        """
+        # Register job in database
+        self.register_sync_job(
+            name="instruments_daily_sync",
+            description="Daily tiered instruments fetch from Upstox CDN (JSON format)",
+            schedule_cron="30 6 * * *"  # 6:30 AM daily
+        )
+        
+        # Schedule with schedule library
+        schedule.every().day.at("06:30").do(self.sync_instruments_daily)
+        
+        logger.info("📅 Scheduled instruments sync: Daily at 6:30 AM IST")
+        logger.info("   - Fetches from: https://assets.upstox.com/.../complete.json.gz")
+        logger.info("   - Tiers: Tier1 (liquid), SME, Derivatives, Indices/ETFs")
+        logger.info("   - Auto-cleanup: Expired derivatives")
+    
+    def sync_nse_indices_monthly(self) -> Dict[str, Any]:
+        """
+        Monthly NSE index classification refresh
+        Updates sector/industry metadata and index memberships
+        
+        Runs orchestrator: schema -> scraper -> classifier
+        """
+        import subprocess
+        import sys
+        from pathlib import Path
+        
+        job_name = "nse_index_classification"
+        sync_id = self.start_sync(job_name)
+        
+        logger.info("=" * 70)
+        logger.info("🏛️  MONTHLY NSE INDEX CLASSIFICATION SYNC")
+        logger.info("=" * 70)
+        
+        try:
+            # Path to orchestrator script
+            orchestrator_path = Path(__file__).parent / "etl" / "nse_index_orchestrator.py"
+            
+            if not orchestrator_path.exists():
+                raise FileNotFoundError(f"Orchestrator not found: {orchestrator_path}")
+            
+            logger.info(f"📂 Running: {orchestrator_path.name}")
+            
+            # Run orchestrator
+            result = subprocess.run(
+                [sys.executable, str(orchestrator_path)],
+                capture_output=True,
+                text=True,
+                timeout=600  # 10 minutes max
+            )
+            
+            if result.returncode == 0:
+                logger.info("✅ NSE index classification completed")
+                logger.info(result.stdout)
+                
+                # Count updated instruments
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+                
+                cursor.execute("""
+                SELECT 
+                    COUNT(DISTINCT instrument_key) as classified_stocks,
+                    COUNT(DISTINCT index_code) as indices_count,
+                    SUM(CASE WHEN sector IS NOT NULL THEN 1 ELSE 0 END) as with_sector
+                FROM index_constituents_v2
+                WHERE is_active = 1
+                """)
+                
+                classified, indices, sectors = cursor.fetchone()
+                conn.close()
+                
+                self.complete_sync(
+                    sync_id,
+                    status="SUCCESS",
+                    records_synced=classified,
+                    error_message=None
+                )
+                
+                return {
+                    "status": "success",
+                    "classified_stocks": classified,
+                    "indices_processed": indices,
+                    "stocks_with_sector": sectors,
+                    "output": result.stdout
+                }
+            else:
+                error_msg = result.stderr or "Unknown error"
+                logger.error(f"❌ Classification failed: {error_msg}")
+                
+                self.complete_sync(
+                    sync_id,
+                    status="FAILED",
+                    records_synced=0,
+                    error_message=error_msg
+                )
+                
+                return {
+                    "status": "failed",
+                    "error": error_msg,
+                    "stderr": result.stderr
+                }
+        
+        except subprocess.TimeoutExpired:
+            error_msg = "Classification timed out (>10 minutes)"
+            logger.error(f"❌ {error_msg}")
+            
+            self.complete_sync(
+                sync_id,
+                status="TIMEOUT",
+                records_synced=0,
+                error_message=error_msg
+            )
+            
+            return {"status": "timeout", "error": error_msg}
+        
+        except Exception as e:
+            error_msg = str(e)
+            logger.error(f"❌ Classification error: {error_msg}")
+            
+            self.complete_sync(
+                sync_id,
+                status="ERROR",
+                records_synced=0,
+                error_message=error_msg
+            )
+            
+            return {"status": "error", "error": error_msg}
+    
+    def schedule_nse_indices_sync(self):
+        """Schedule monthly NSE index classification (1st of month at 7:00 AM IST)"""
+        # Register job in database
+        self.register_sync_job(
+            name="nse_index_classification",
+            description="Monthly NSE index classification (18 indices, sector/industry)",
+            schedule_cron="0 7 1 * *"  # 7:00 AM on 1st of month
+        )
+        
+        # Schedule with schedule library
+        schedule.every().month.at("07:00").do(self.sync_nse_indices_monthly)
+        
+        logger.info("📅 Scheduled NSE index classification: Monthly on 1st at 7:00 AM IST")
+        logger.info("   - Scrapes: 18 NSE indices (NIFTY50, NIFTY100, etc.)")
+        logger.info("   - Updates: sector/industry metadata, index memberships")
+        logger.info("   - Flags: is_nifty50/100/500, is_midcap, is_smallcap")
+
+    def run_scheduler(self):
+        """
+        Run the scheduled tasks loop
+        Call this to start automated sync operations
+        """
+        logger.info("🕐 Starting DataSyncManager scheduler...")
+        logger.info("   Press Ctrl+C to stop")
+        
+        try:
+            while True:
+                schedule.run_pending()
+                time.sleep(60)  # Check every minute
+        except KeyboardInterrupt:
+            logger.info("\n⏹️  Scheduler stopped by user")
 
     def get_sync_status(self) -> Dict[str, Any]:
         """Get status of all sync jobs"""
