@@ -25,6 +25,14 @@ class OptionChainPage:
         self.spot_label = None
         self.timestamp_label = None
         self.status_badge = None
+        self.sector_label = None
+        self.index_badge = None
+        self.nifty100_badge = None
+        
+        # Filter State
+        self.filter_options = {"indices": ["ALL"], "sectors": ["ALL"]}
+        self.selected_index_filter = "ALL"
+        self.selected_sector_filter = "ALL"
         
         # State
         self.current_data = None
@@ -59,9 +67,67 @@ class OptionChainPage:
                     self.selected_symbol = self.available_symbols[0]
                     if hasattr(self, 'symbol_select') and self.symbol_select:
                         self.symbol_select.value = self.selected_symbol
+
+            # Update Metadata UI
+            await self.update_metadata_ui(self.selected_symbol)
+            
+            # Fetch Filter Options
+            self.filter_options = await asyncio.to_thread(service.get_filter_options)
+            if self.filter_options and hasattr(self, 'sector_filter_select'):
+                self.sector_filter_select.options = self.filter_options.get("sectors", ["ALL"])
+                self.sector_filter_select.update()
                     
         except Exception as e:
             print(f"Error fetching symbols: {e}")
+
+    async def update_metadata_ui(self, symbol: str):
+        """Update Sector and Index labels for the selected symbol"""
+        try:
+            meta = await asyncio.to_thread(service.get_symbol_metadata, symbol)
+            if meta and self.sector_label:
+                self.sector_label.text = meta.get("sector", "Other")
+                
+                # Update Index Badge
+                if meta.get("is_nifty50"):
+                    self.index_badge.text = "NIFTY 50"
+                    self.index_badge.set_visibility(True)
+                elif meta.get("is_nifty_bank"):
+                    self.index_badge.text = "BANK NIFTY"
+                    self.index_badge.set_visibility(True)
+                else:
+                    self.index_badge.set_visibility(False)
+                
+                # NIFTY 100 Badge
+                if meta.get("is_nifty100"):
+                    self.nifty100_badge.set_visibility(True)
+                else:
+                    self.nifty100_badge.set_visibility(False)
+        except Exception as e:
+            print(f"Error updating metadata UI: {e}")
+
+    async def handle_filter_change(self, e):
+        """Handle Index or Sector filter change"""
+        self.selected_index_filter = self.index_filter_select.value
+        self.selected_sector_filter = self.sector_filter_select.value
+        
+        # Fetch filtered symbols
+        filtered_symbols = await asyncio.to_thread(
+            service.get_filtered_symbols, 
+            self.selected_index_filter, 
+            self.selected_sector_filter
+        )
+        
+        if filtered_symbols:
+            self.available_symbols = filtered_symbols
+            self.symbol_select.options = self.available_symbols
+            # If current selection not in new list, pick first
+            if self.selected_symbol not in self.available_symbols:
+                self.selected_symbol = self.available_symbols[0]
+                self.symbol_select.value = self.selected_symbol
+            self.symbol_select.update()
+        else:
+            ui.notify("No instruments matching filters", type="warning")
+
 
         # Get initial expiries from database (no API call needed)
         self.expiry_dates = await asyncio.to_thread(
@@ -91,6 +157,9 @@ class OptionChainPage:
         
         self.selected_symbol = new_symbol
         ui.notify(f"Switching to {new_symbol}...", type="info")
+
+        # Update Metadata UI
+        await self.update_metadata_ui(new_symbol)
         
         # Fetch new expiries from database (no API call needed)
         self.expiry_dates = await asyncio.to_thread(
@@ -345,6 +414,40 @@ class OptionChainPage:
             ).props(
                 "outlined dense dark options-dense bg-slate-900 color=cyan behavior=menu" # behavior=menu for better scrolling
             ).classes("w-48 font-bold")
+
+            # NEW: Sector & Index "Columns" (Metadata Badges)
+            with ui.row().classes("items-center gap-3 px-4 border-l border-slate-800"):
+                with ui.column().classes("gap-0"):
+                    ui.label("SECTOR").classes("text-[10px] tracking-widest text-slate-500 font-bold")
+                    self.sector_label = ui.label("---").classes("text-sm font-bold text-slate-200")
+                
+                with ui.column().classes("gap-0"):
+                    ui.label("INDEX").classes("text-[10px] tracking-widest text-slate-500 font-bold")
+                    with ui.row().classes("gap-1 items-center"):
+                        self.index_badge = ui.badge("NIFTY 50", color="indigo").props("rounded").classes("text-[10px] font-bold px-2")
+                        self.index_badge.set_visibility(False)
+                        self.nifty100_badge = ui.badge("NIFTY 100", color="blue-700").props("rounded").classes("text-[10px] font-bold px-2")
+                        self.nifty100_badge.set_visibility(False)
+
+            # --- NEW: Filter Bar Row ---
+            ui.separator().classes("bg-slate-800 my-1")
+            with ui.row().classes("w-full gap-4 items-center px-1"):
+                ui.label("FILTERS:").classes("text-[10px] font-bold text-slate-500 tracking-tighter")
+                
+                self.index_filter_select = ui.select(
+                    ["ALL", "NIFTY 50", "NIFTY 100", "BANK NIFTY"],
+                    value="ALL",
+                    on_change=self.handle_filter_change,
+                    label="Index Group"
+                ).props("outlined dense dark color=indigo").classes("w-40 scale-90 origin-left")
+                
+                # We'll populate sectors in initialize
+                self.sector_filter_select = ui.select(
+                    ["ALL"],
+                    value="ALL",
+                    on_change=self.handle_filter_change,
+                    label="Sector"
+                ).props("outlined dense dark color=primary").classes("w-56 scale-90 origin-left")
 
             # Expiry Selector
             self.expiry_select = ui.select(

@@ -8,7 +8,7 @@ import requests
 import sys
 import os
 from datetime import datetime, timedelta, time as dt_time
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -134,6 +134,109 @@ class OptionsChainService:
                 "currencies": [],
                 "ird": []
             }
+    def get_symbol_metadata(self, symbol: str) -> Dict[str, Any]:
+        """
+        Fetch metadata (Sector, Index Membership) for a given symbol
+        from stock_metadata table.
+        """
+        try:
+            import sqlite3
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                SELECT sector, is_nifty50, is_nifty100, is_nifty500, is_nifty_bank 
+                FROM stock_metadata 
+                WHERE symbol = ?
+            """, (symbol.upper(),))
+            
+            row = cursor.fetchone()
+            conn.close()
+            
+            if row:
+                return {
+                    "sector": row[0] or "Diversified",
+                    "is_nifty50": bool(row[1]),
+                    "is_nifty100": bool(row[2]),
+                    "is_nifty500": bool(row[3]),
+                    "is_nifty_bank": bool(row[4])
+                }
+            
+            # Default for indices or unknown
+            return {
+                "sector": "Index" if "NIFTY" in symbol.upper() or "SENSEX" in symbol.upper() else "Other",
+                "is_nifty50": symbol.upper() == "NIFTY" or "NIFTY50" in symbol.upper(),
+                "is_nifty100": symbol.upper() == "NIFTY" or "NIFTY100" in symbol.upper(),
+                "is_nifty500": False,
+                "is_nifty_bank": "BANKNIFTY" in symbol.upper()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error fetching metadata for {symbol}: {e}")
+            return {"sector": "N/A", "is_nifty50": False, "is_nifty100": False, "is_nifty500": False, "is_nifty_bank": False}
+
+    def get_filter_options(self) -> Dict[str, List[str]]:
+        """
+        Get all available sectors and indices for filtering.
+        """
+        try:
+            import sqlite3
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Get Sectors
+            cursor.execute("SELECT DISTINCT sector FROM stock_metadata WHERE sector IS NOT NULL ORDER BY sector")
+            sectors = [row[0] for row in cursor.fetchall()]
+            
+            conn.close()
+            
+            return {
+                "indices": ["ALL", "NIFTY 50", "NIFTY 100", "BANK NIFTY"],
+                "sectors": ["ALL"] + sectors
+            }
+        except Exception as e:
+            logger.error(f"Error fetching filter options: {e}")
+            return {"indices": ["ALL"], "sectors": ["ALL"]}
+
+    def get_filtered_symbols(self, index_filter: str = "ALL", sector_filter: str = "ALL") -> List[str]:
+        """
+        Get symbols filtered by index or sector.
+        """
+        try:
+            import sqlite3
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            query = "SELECT symbol FROM stock_metadata WHERE 1=1"
+            params = []
+            
+            if index_filter == "NIFTY 50":
+                query += " AND is_nifty50 = 1"
+            elif index_filter == "NIFTY 100":
+                query += " AND is_nifty100 = 1"
+            elif index_filter == "BANK NIFTY":
+                query += " AND is_nifty_bank = 1"
+                
+            if sector_filter != "ALL":
+                query += " AND sector = ?"
+                params.append(sector_filter)
+                
+            query += " ORDER BY symbol"
+            
+            cursor.execute(query, params)
+            symbols = [row[0] for row in cursor.fetchall()]
+            conn.close()
+            
+            # If no results (e.g. for non-stocks), return the standard FnO list if it's "ALL"
+            if not symbols and index_filter == "ALL" and sector_filter == "ALL":
+                all_fno = self.get_fno_symbols()
+                symbols = all_fno.get("indices", []) + all_fno.get("equities", [])
+                
+            return symbols
+        except Exception as e:
+            logger.error(f"Error fetching filtered symbols: {e}")
+            return []
+
 
     def get_expiry_dates_from_db(self, underlying_symbol: str) -> List[str]:
         """
