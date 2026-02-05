@@ -145,7 +145,12 @@ class OptionsChainService:
             cursor = conn.cursor()
             
             cursor.execute("""
-                SELECT sector, is_nifty50, is_nifty100, is_nifty500, is_nifty_bank 
+                SELECT sector, 
+                       is_nifty50, is_nifty100, is_nifty200, is_nifty500,
+                       is_nifty_next50, is_nifty_midcap50, is_nifty_midcap100, 
+                       is_nifty_midcap150, is_nifty_smallcap50, is_nifty_smallcap100, 
+                       is_nifty_smallcap250, is_nifty_largemidcap250, 
+                       is_nifty_midsmallcap400, is_nifty_bank 
                 FROM stock_metadata 
                 WHERE symbol = ?
             """, (symbol.upper(),))
@@ -158,17 +163,38 @@ class OptionsChainService:
                     "sector": row[0] or "Diversified",
                     "is_nifty50": bool(row[1]),
                     "is_nifty100": bool(row[2]),
-                    "is_nifty500": bool(row[3]),
-                    "is_nifty_bank": bool(row[4])
+                    "is_nifty200": bool(row[3]),
+                    "is_nifty500": bool(row[4]),
+                    "is_nifty_next50": bool(row[5]),
+                    "is_nifty_midcap50": bool(row[6]),
+                    "is_nifty_midcap100": bool(row[7]),
+                    "is_nifty_midcap150": bool(row[8]),
+                    "is_nifty_smallcap50": bool(row[9]),
+                    "is_nifty_smallcap100": bool(row[10]),
+                    "is_nifty_smallcap250": bool(row[11]),
+                    "is_nifty_largemidcap250": bool(row[12]),
+                    "is_nifty_midsmallcap400": bool(row[13]),
+                    "is_nifty_bank": bool(row[14])
                 }
             
             # Default for indices or unknown
+            upper_sym = symbol.upper()
             return {
-                "sector": "Index" if "NIFTY" in symbol.upper() or "SENSEX" in symbol.upper() else "Other",
-                "is_nifty50": symbol.upper() == "NIFTY" or "NIFTY50" in symbol.upper(),
-                "is_nifty100": symbol.upper() == "NIFTY" or "NIFTY100" in symbol.upper(),
-                "is_nifty500": False,
-                "is_nifty_bank": "BANKNIFTY" in symbol.upper()
+                "sector": "Index" if "NIFTY" in upper_sym or "SENSEX" in upper_sym else "Other",
+                "is_nifty50": upper_sym == "NIFTY" or "NIFTY50" in upper_sym,
+                "is_nifty100": upper_sym == "NIFTY" or "NIFTY100" in upper_sym,
+                "is_nifty200": upper_sym == "NIFTY" or "NIFTY200" in upper_sym,
+                "is_nifty500": upper_sym == "NIFTY" or "NIFTY500" in upper_sym,
+                "is_nifty_next50": "NEXT50" in upper_sym,
+                "is_nifty_midcap50": "MIDCAP50" in upper_sym,
+                "is_nifty_midcap100": "MIDCAP100" in upper_sym,
+                "is_nifty_midcap150": "MIDCAP150" in upper_sym,
+                "is_nifty_smallcap50": "SMALLCAP50" in upper_sym,
+                "is_nifty_smallcap100": "SMALLCAP100" in upper_sym,
+                "is_nifty_smallcap250": "SMALLCAP250" in upper_sym,
+                "is_nifty_largemidcap250": "LARGEMIDCAP250" in upper_sym,
+                "is_nifty_midsmallcap400": "MIDSMALLCAP400" in upper_sym,
+                "is_nifty_bank": "BANKNIFTY" in upper_sym
             }
             
         except Exception as e:
@@ -191,7 +217,13 @@ class OptionsChainService:
             conn.close()
             
             return {
-                "indices": ["ALL", "NIFTY 50", "NIFTY 100", "BANK NIFTY"],
+                "indices": [
+                    "ALL", "NIFTY 50", "NIFTY 100", "NIFTY 200", "NIFTY 500", 
+                    "NIFTY NEXT 50", "NIFTY MIDCAP 50", "NIFTY MIDCAP 100", 
+                    "NIFTY MIDCAP 150", "NIFTY SMALLCAP 50", "NIFTY SMALLCAP 100", 
+                    "NIFTY SMALLCAP 250", "NIFTY LARGEMIDCAP 250", 
+                    "NIFTY MIDSMALLCAP 400", "BANK NIFTY"
+                ],
                 "sectors": ["ALL"] + sectors
             }
         except Exception as e:
@@ -214,6 +246,28 @@ class OptionsChainService:
                 query += " AND is_nifty50 = 1"
             elif index_filter == "NIFTY 100":
                 query += " AND is_nifty100 = 1"
+            elif index_filter == "NIFTY 200":
+                query += " AND is_nifty200 = 1"
+            elif index_filter == "NIFTY 500":
+                query += " AND is_nifty500 = 1"
+            elif index_filter == "NIFTY NEXT 50":
+                query += " AND is_nifty_next50 = 1"
+            elif index_filter == "NIFTY MIDCAP 50":
+                query += " AND is_nifty_midcap50 = 1"
+            elif index_filter == "NIFTY MIDCAP 100":
+                query += " AND is_nifty_midcap100 = 1"
+            elif index_filter == "NIFTY MIDCAP 150":
+                query += " AND is_nifty_midcap150 = 1"
+            elif index_filter == "NIFTY SMALLCAP 50":
+                query += " AND is_nifty_smallcap50 = 1"
+            elif index_filter == "NIFTY SMALLCAP 100":
+                query += " AND is_nifty_smallcap100 = 1"
+            elif index_filter == "NIFTY SMALLCAP 250":
+                query += " AND is_nifty_smallcap250 = 1"
+            elif index_filter == "NIFTY LARGEMIDCAP 250":
+                query += " AND is_nifty_largemidcap250 = 1"
+            elif index_filter == "NIFTY MIDSMALLCAP 400":
+                query += " AND is_nifty_midsmallcap400 = 1"
             elif index_filter == "BANK NIFTY":
                 query += " AND is_nifty_bank = 1"
                 

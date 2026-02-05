@@ -28,6 +28,11 @@ class OptionChainPage:
         self.sector_label = None
         self.index_badge = None
         self.nifty100_badge = None
+        self.nifty200_badge = None
+        self.nifty500_badge = None
+        self.next50_badge = None
+        self.midcap_badge = None
+        self.smallcap_badge = None
         
         # Filter State
         self.filter_options = {"indices": ["ALL"], "sectors": ["ALL"]}
@@ -102,6 +107,32 @@ class OptionChainPage:
                     self.nifty100_badge.set_visibility(True)
                 else:
                     self.nifty100_badge.set_visibility(False)
+                
+                # NIFTY 200 Badge
+                if meta.get("is_nifty200"):
+                    self.nifty200_badge.set_visibility(True)
+                else:
+                    self.nifty200_badge.set_visibility(False)
+
+                # NIFTY 500 Badge
+                if meta.get("is_nifty500"):
+                    self.nifty500_badge.set_visibility(True)
+                else:
+                    self.nifty500_badge.set_visibility(False)
+                
+                # NEXT 50 Badge
+                if meta.get("is_nifty_next50"):
+                    self.next50_badge.set_visibility(True)
+                else:
+                    self.next50_badge.set_visibility(False)
+
+                # MIDCAP Badge (Grouped)
+                is_midcap = any([meta.get("is_nifty_midcap50"), meta.get("is_nifty_midcap100"), meta.get("is_nifty_midcap150")])
+                self.midcap_badge.set_visibility(is_midcap)
+
+                # SMALLCAP Badge (Grouped)
+                is_smallcap = any([meta.get("is_nifty_smallcap50"), meta.get("is_nifty_smallcap100"), meta.get("is_nifty_smallcap250")])
+                self.smallcap_badge.set_visibility(is_smallcap)
         except Exception as e:
             print(f"Error updating metadata UI: {e}")
 
@@ -118,11 +149,12 @@ class OptionChainPage:
         )
         
         if filtered_symbols:
-            self.available_symbols = filtered_symbols
+            # Expert Addition: Always have "ALL" as first option in list
+            self.available_symbols = ["ALL"] + filtered_symbols
             self.symbol_select.options = self.available_symbols
             # If current selection not in new list, pick first
             if self.selected_symbol not in self.available_symbols:
-                self.selected_symbol = self.available_symbols[0]
+                self.selected_symbol = "ALL"
                 self.symbol_select.value = self.selected_symbol
             self.symbol_select.update()
         else:
@@ -185,6 +217,15 @@ class OptionChainPage:
 
     async def load_initial_data(self):
         """Load initial static data before WS kicks in"""
+        if self.selected_symbol == "ALL":
+             with self.chain_container:
+                self.chain_container.clear()
+                with ui.column().classes("w-full items-center justify-center py-12"):
+                    ui.icon("filter_list", size="xl").classes("text-slate-600 mb-4")
+                    ui.label("Select an Instrument").classes("text-slate-500 font-medium")
+                    ui.label("Please select a specific stock from the filtered list to view its Option Chain").classes("text-slate-600 text-sm")
+             return
+
         if self.chain_container:
             self.chain_container.clear()
             with self.chain_container:
@@ -197,8 +238,11 @@ class OptionChainPage:
         self.render_chain_table(data)
 
     async def handle_live_update(self, data):
-        """Handle WebSocket update"""
+        """Handle incoming WebSocket data"""
         # Only process if matching current symbol
+        if self.selected_symbol == "ALL":
+            return
+            
         if data.get("symbol") != self.selected_symbol:
             return
             
@@ -428,6 +472,16 @@ class OptionChainPage:
                         self.index_badge.set_visibility(False)
                         self.nifty100_badge = ui.badge("NIFTY 100", color="blue-700").props("rounded").classes("text-[10px] font-bold px-2")
                         self.nifty100_badge.set_visibility(False)
+                        self.nifty200_badge = ui.badge("NIFTY 200", color="blue-800").props("rounded").classes("text-[10px] font-bold px-2")
+                        self.nifty200_badge.set_visibility(False)
+                        self.nifty500_badge = ui.badge("NIFTY 500", color="slate-700").props("rounded").classes("text-[10px] font-bold px-2")
+                        self.nifty500_badge.set_visibility(False)
+                        self.next50_badge = ui.badge("NEXT 50", color="teal-700").props("rounded").classes("text-[10px] font-bold px-2")
+                        self.next50_badge.set_visibility(False)
+                        self.midcap_badge = ui.badge("MIDCAP", color="orange-800").props("rounded").classes("text-[10px] font-bold px-2")
+                        self.midcap_badge.set_visibility(False)
+                        self.smallcap_badge = ui.badge("SMALLCAP", color="brown-700").props("rounded").classes("text-[10px] font-bold px-2")
+                        self.smallcap_badge.set_visibility(False)
 
             # --- NEW: Filter Bar Row ---
             ui.separator().classes("bg-slate-800 my-1")
@@ -435,11 +489,15 @@ class OptionChainPage:
                 ui.label("FILTERS:").classes("text-[10px] font-bold text-slate-500 tracking-tighter")
                 
                 self.index_filter_select = ui.select(
-                    ["ALL", "NIFTY 50", "NIFTY 100", "BANK NIFTY"],
+                    [
+                        "ALL", "NIFTY 50", "NIFTY 100", "NIFTY 200", "NIFTY 500", 
+                        "NIFTY NEXT 50", "NIFTY MIDCAP 100", "NIFTY SMALLCAP 100",
+                        "BANK NIFTY"
+                    ],
                     value="ALL",
                     on_change=self.handle_filter_change,
                     label="Index Group"
-                ).props("outlined dense dark color=indigo").classes("w-40 scale-90 origin-left")
+                ).props("outlined dense dark color=indigo").classes("w-48 scale-90 origin-left")
                 
                 # We'll populate sectors in initialize
                 self.sector_filter_select = ui.select(
