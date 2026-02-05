@@ -43,9 +43,16 @@ class OptionChainPage:
                 # Combine Indices + Equities, Indices first
                 self.available_symbols = fno_data.get("indices", []) + sorted(fno_data.get("equities", []))
                 
+                # Update dropdown if it exists (it's created before initialize is called)
+                if hasattr(self, 'symbol_select') and self.symbol_select:
+                    self.symbol_select.options = self.available_symbols
+                    self.symbol_select.update()
+                
                 # Check if current selection is valid
                 if self.selected_symbol not in self.available_symbols:
                     self.selected_symbol = self.available_symbols[0]
+                    if hasattr(self, 'symbol_select') and self.symbol_select:
+                        self.symbol_select.value = self.selected_symbol
                     
         except Exception as e:
             print(f"Error fetching symbols: {e}")
