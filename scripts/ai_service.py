@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scripts.upstox_live_api import get_upstox_api
 from dashboard_ui.services.movers import MarketMoversService
-from scripts.holdings_manager import HoldingsManager
+from scripts.services import PortfolioService
 from scripts.auth_manager import AuthManager
 
 # Setup Logging
@@ -42,9 +42,8 @@ class AIService:
         self.movers_service = MarketMoversService()
         self.auth_manager = AuthManager()
 
-        # Initialize Holdings Manager
-        token = self.auth_manager.get_valid_token()
-        self.holdings_manager = HoldingsManager(access_token=token) if token else None
+        # Initialize Portfolio Service
+        self.portfolio_service = PortfolioService()
 
         # -- AI Clients --
         self.clients = []
@@ -348,13 +347,11 @@ class AIService:
 
     def get_portfolio_holdings(self) -> Any:
         """Fetch holdings"""
-        if not self.holdings_manager:
-            return {"error": "Auth failed (No Token)"}
-
-        token = self.auth_manager.get_valid_token()
-        self.holdings_manager.access_token = token
-        self.holdings_manager.headers["Authorization"] = f"Bearer {token}"
-        return self.holdings_manager.get_holdings()
+        try:
+            with self.portfolio_service as portfolio:
+                return portfolio.get_holdings()
+        except Exception as e:
+            return {"error": str(e)}
 
     def get_account_balance(self) -> Dict[str, Any]:
         """Fetch funds"""
