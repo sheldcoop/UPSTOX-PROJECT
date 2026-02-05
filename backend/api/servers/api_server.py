@@ -743,8 +743,21 @@ def get_signals_by_strategy(strategy):
 
 
 # ============================================================================
-# INSTRUMENTS - NSE Equity Stock Search
+# INSTRUMENTS & MARKET DATA
 # ============================================================================
+
+@app.route("/market-data/fno-symbols", methods=["GET"])
+def get_fno_symbols():
+    """Get all available FnO symbols (Indices & Equities)"""
+    try:
+        from backend.services.market_data.options_chain import OptionsChainService
+        service = OptionsChainService()
+        data = service.get_fno_symbols()
+        return jsonify({"status": "success", "data": data})
+    except Exception as e:
+        logger.error(f"Error fetching FnO symbols: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route('/api/instruments/nse-eq', methods=['GET'])
 def get_nse_equity_instruments():

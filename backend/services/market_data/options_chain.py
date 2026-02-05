@@ -62,6 +62,56 @@ class OptionsChainService:
             logger.error(f"Error fetching expiries: {e}")
             return []
 
+    def get_fno_symbols(self) -> Dict[str, List[str]]:
+        """
+        Get list of all FnO symbols (Indices and Stocks)
+        Returns: {'indices': [...], 'equities': [...]}
+        """
+        try:
+            import sqlite3
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Get distinct underlying symbols for NSE_FO
+            cursor.execute("""
+                SELECT DISTINCT underlying_symbol, underlying_type 
+                FROM exchange_listings 
+                WHERE segment = 'NSE_FO' 
+                ORDER BY underlying_symbol
+            """)
+            
+            rows = cursor.fetchall()
+            conn.close()
+            
+            indices = []
+            equities = []
+            
+            for symbol, type_ in rows:
+                if type_ == 'INDEX':
+                    indices.append(symbol)
+                else:
+                    equities.append(symbol)
+            
+            # Ensure major indices are at the top
+            major_indices = ['NIFTY', 'BANKNIFTY', 'FINNIFTY']
+            for idx in reversed(major_indices):
+                if idx in indices:
+                    indices.remove(idx)
+                    indices.insert(0, idx)
+                    
+            return {
+                "indices": indices,
+                "equities": equities
+            }
+            
+        except Exception as e:
+            logger.error(f"Error fetching FnO symbols: {e}")
+            # Fallback
+            return {
+                "indices": ["NIFTY", "BANKNIFTY", "FINNIFTY"],
+                "equities": ["RELIANCE", "TCS", "INFY", "HDFCBANK"]
+            }
+
     def get_option_greeks(self, instrument_keys: List[str]) -> Dict:
         """
         Fetch detailed option greeks using v3 API.

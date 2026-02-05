@@ -18,6 +18,7 @@ class OptionChainPage:
         self.selected_symbol = "NIFTY"
         self.selected_expiry = None
         self.expiry_dates = []
+        self.available_symbols = ["NIFTY", "BANKNIFTY", "FINNIFTY", "RELIANCE", "HDFCBANK", "INFY", "TCS"] # Default fallback
         
         # UI References
         self.chain_container = None
@@ -31,6 +32,24 @@ class OptionChainPage:
 
     async def initialize(self):
         """Initialize page data"""
+        # Fetch Available Symbols
+        try:
+            import requests
+            # Use internal direct call if possible, or http request
+            # Since this is running in the same process group, we can use the service directly if imported, 
+            # but to be safe and consistent with architecture, let's use the service instance we already have:
+            fno_data = await asyncio.to_thread(service.get_fno_symbols)
+            if fno_data:
+                # Combine Indices + Equities, Indices first
+                self.available_symbols = fno_data.get("indices", []) + sorted(fno_data.get("equities", []))
+                
+                # Check if current selection is valid
+                if self.selected_symbol not in self.available_symbols:
+                    self.selected_symbol = self.available_symbols[0]
+                    
+        except Exception as e:
+            print(f"Error fetching symbols: {e}")
+
         # Get initial expiries
         self.expiry_dates = await asyncio.to_thread(
             service.get_expiry_dates, service._get_instrument_key(self.selected_symbol)
@@ -305,13 +324,13 @@ class OptionChainPage:
             "w-full gap-4 items-center bg-[#0F1419] p-3 rounded-xl border border-slate-800 mb-2 shadow-sm"
         ):
             # Symbol Selector
-            ui.select(
-                ["NIFTY", "BANKNIFTY", "FINNIFTY", "RELIANCE", "HDFCBANK", "INFY", "TCS"],
+            self.symbol_select = ui.select(
+                self.available_symbols,
                 label="Instrument",
                 value=self.selected_symbol,
                 on_change=self.handle_change_symbol,
             ).props(
-                "outlined dense dark options-dense bg-slate-900 color=cyan"
+                "outlined dense dark options-dense bg-slate-900 color=cyan behavior=menu" # behavior=menu for better scrolling
             ).classes("w-48 font-bold")
 
             # Expiry Selector
