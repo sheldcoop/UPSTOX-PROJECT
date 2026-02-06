@@ -53,7 +53,13 @@ def get_screener_data(segment=None, sector=None, industry=None, index=None, sear
                 im.instrument_key,
                 q.close as last_price,
                 q.volume,
-                (q.close - q.open) as net_change
+                (q.close - q.open) as net_change,
+                q.open, q.high, q.low,
+                q.bid_price_1, q.bid_qty_1, q.ask_price_1, q.ask_qty_1,
+                q.bid_price_2, q.bid_qty_2, q.ask_price_2, q.ask_qty_2,
+                q.bid_price_3, q.bid_qty_3, q.ask_price_3, q.ask_qty_3,
+                q.bid_price_4, q.bid_qty_4, q.ask_price_4, q.ask_qty_4,
+                q.bid_price_5, q.bid_qty_5, q.ask_price_5, q.ask_qty_5
             FROM instrument_master im
             LEFT JOIN market_quota_nse500_data q ON im.instrument_key = q.instrument_key
         """
@@ -92,6 +98,12 @@ def get_screener_data(segment=None, sector=None, industry=None, index=None, sear
         
         df = pd.read_sql_query(query, conn, params=params)
         conn.close()
+        
+        # DEBUG: Print to terminal
+        print(f"DEBUG: Fetched {len(df)} rows.")
+        if not df.empty:
+            print(f"DEBUG: Sample Row: {df.iloc[0].to_dict()}")
+            
         return df.to_dict('records')
         
     except Exception as e:
@@ -164,6 +176,57 @@ def render_page(state):
             
             ui.button(icon="refresh", on_click=lambda: update_table()).props("flat round")
 
+    # --- Detail Dialog ---
+    with ui.dialog() as dialog, ui.card():
+        ui.label().bind_text_from(dialog, 'title').classes("text-xl font-bold mb-4")
+        
+        # Depth Table Container
+        depth_container = ui.column().classes("w-full")
+        
+    def show_details(row):
+        dialog.title = f"Market Depth: {row['trading_symbol']}"
+        depth_container.clear()
+        
+        with depth_container:
+            # Stats
+            with ui.row().classes("w-full justify-between mb-4"):
+                ui.label(f"Price: ₹{row.get('last_price', 0)}").classes("text-lg font-mono")
+                ui.label(f"Vol: {row.get('volume', 0):,}").classes("text-lg font-mono text-slate-400")
+
+            # Bid/Ask Table
+            with ui.grid(columns=2).classes("w-full gap-4"):
+                # Bids (Buy)
+                with ui.column():
+                    ui.label("BID (Buy)").classes("font-bold text-green-400")
+                    with ui.row().classes("w-full justify-between text-xs text-slate-500 border-b"):
+                        ui.label("Qty")
+                        ui.label("Price")
+                    
+                    for i in range(1, 6):
+                        price = row.get(f'bid_price_{i}', 0)
+                        qty = row.get(f'bid_qty_{i}', 0)
+                        if price:
+                            with ui.row().classes("w-full justify-between font-mono text-sm"):
+                                ui.label(f"{qty:,}")
+                                ui.label(f"{price:.2f}").classes("text-green-300")
+
+                # Asks (Sell)
+                with ui.column():
+                    ui.label("ASK (Sell)").classes("font-bold text-red-400")
+                    with ui.row().classes("w-full justify-between text-xs text-slate-500 border-b"):
+                        ui.label("Price")
+                        ui.label("Qty")
+                        
+                    for i in range(1, 6):
+                        price = row.get(f'ask_price_{i}', 0)
+                        qty = row.get(f'ask_qty_{i}', 0)
+                        if price:
+                            with ui.row().classes("w-full justify-between font-mono text-sm"):
+                                ui.label(f"{price:.2f}").classes("text-red-300")
+                                ui.label(f"{qty:,}")
+
+        dialog.open()
+
     # --- Data Grid ---
     grid_container = ui.column().classes("w-full mt-4")
     
@@ -186,15 +249,18 @@ def render_page(state):
             if not rows:
                 ui.label("No unique records found.").classes("text-slate-400 italic")
                 return
-
+ 
             ui.label(f"Found {len(rows)} instruments").classes("text-xs text-slate-500 mb-2")
             
             columns = [
                 {'name': 'symbol', 'label': 'Symbol', 'field': 'trading_symbol', 'sortable': True, 'align': 'left'},
                 {'name': 'ltp', 'label': 'Price', 'field': 'last_price', 'sortable': True, 'align': 'right'},
                 {'name': 'change', 'label': 'Change', 'field': 'net_change', 'sortable': True, 'align': 'right'},
-                {'name': 'sector', 'label': 'Sector', 'field': 'sector', 'sortable': True, 'align': 'left'},
-                {'name': 'industry', 'label': 'Industry', 'field': 'industry', 'sortable': True, 'align': 'left'},
+                {'name': 'volume', 'label': 'Volume', 'field': 'volume', 'sortable': True, 'align': 'right'},
+                {'name': 'open', 'label': 'Open', 'field': 'open', 'sortable': True, 'align': 'right'},
+                {'name': 'high', 'label': 'High', 'field': 'high', 'sortable': True, 'align': 'right'},
+                {'name': 'low', 'label': 'Low', 'field': 'low', 'sortable': True, 'align': 'right'},
+                {'name': 'action', 'label': 'Depth', 'field': 'action', 'align': 'center'},
             ]
             
             table = ui.table(
@@ -203,10 +269,10 @@ def render_page(state):
                 pagination=15
             ).classes("w-full bg-slate-900 border border-slate-800")
             
-            # Styling
+            # Styling & Interactions
             table.add_slot('body-cell-symbol', '''
                 <q-td :props="props">
-                    <div class="font-bold text-blue-400 cursor-pointer" @click="$parent.$emit('row-click', props.row)">
+                    <div class="font-bold text-blue-400 cursor-pointer">
                         {{ props.value }}
                     </div>
                 </q-td>
@@ -228,6 +294,17 @@ def render_page(state):
                     </div>
                 </q-td>
             ''')
+
+            # Depth Button
+            table.add_slot('body-cell-action', '''
+                <q-td :props="props">
+                    <q-btn flat dense size="sm" icon="format_list_bulleted" color="primary" 
+                        @click="$parent.$emit('row-click', props.row)" />
+                </q-td>
+            ''')
+
+            # Listen for row click from button or symbol
+            table.on('row-click', lambda e: show_details(e.args))
 
     # Initial Load
     update_table()

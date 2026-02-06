@@ -86,6 +86,22 @@ class NSE500QuotePoller:
             logger.error(f"Failed to load Mainboard instruments: {e}")
             return []
 
+    def get_instrument_map(self) -> Dict[str, str]:
+        """Create a map of Trading Symbol -> Instrument Key (Canonical)"""
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            query = "SELECT trading_symbol, instrument_key FROM instrument_master WHERE segment='NSE_EQ' AND is_active=1"
+            cursor.execute(query)
+            # Map 'NSE_EQ:RELIANCE' -> 'NSE_EQ|INE002A01018'
+            # API returns 'NSE_EQ:SYMBOL', so we match on symbol
+            key_map = {f"NSE_EQ:{row[0]}": row[1] for row in cursor.fetchall()}
+            conn.close()
+            return key_map
+        except Exception as e:
+            logger.error(f"Failed to load key map: {e}")
+            return {}
+
     async def fetch_quotes_batch(self, session: aiohttp.ClientSession, keys: List[str], headers: Dict) -> Dict:
         try:
             if not keys: return {}
@@ -118,7 +134,7 @@ class NSE500QuotePoller:
                 target_dict[f'{prefix}_qty_{idx}'] = 0
                 target_dict[f'{prefix}_orders_{idx}'] = 0
 
-    def save_batch(self, quotes: Dict):
+    def save_batch(self, quotes: Dict, key_map: Dict[str, str]):
         if not quotes: return
 
         try:
@@ -128,14 +144,18 @@ class NSE500QuotePoller:
             timestamp = datetime.now().isoformat()
             data_to_insert = []
             
-            for key, data in quotes.items():
+            for api_key, data in quotes.items():
                 if not data: continue
+                
+                # NORMALIZE KEY: Convert API key (NSE_EQ:REL) to Canonical (NSE_EQ|INE...)
+                # If mapping fails, fallback to API key (though this shouldn't happen for valid stocks)
+                canonical_key = key_map.get(api_key, api_key)
                 
                 ohlc = data.get('ohlc', {})
                 depth = data.get('depth', {})
                 
                 row_dict = {
-                    'instrument_key': key,
+                    'instrument_key': canonical_key,
                     'timestamp': timestamp,
                     'open': ohlc.get('open'),
                     'high': ohlc.get('high'),
@@ -187,12 +207,14 @@ class NSE500QuotePoller:
         
         headers = {'Authorization': f'Bearer {token}', 'Accept': 'application/json'}
         all_keys = self.get_mainboard_instruments()
+        # Load Mapping dynamically each cycle (or cache it)
+        key_map = self.get_instrument_map()
         
         async with aiohttp.ClientSession() as session:
             for i in range(0, len(all_keys), BATCH_SIZE):
                 batch_keys = all_keys[i:i+BATCH_SIZE]
                 quotes = await self.fetch_quotes_batch(session, batch_keys, headers)
-                self.save_batch(quotes)
+                self.save_batch(quotes, key_map)
                 await asyncio.sleep(0.2)
                 
         logger.info(f"Polled {len(all_keys)} instruments.")
