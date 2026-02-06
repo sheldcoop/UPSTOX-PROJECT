@@ -21,12 +21,20 @@ python-dateutil>=2.8.2
 beautifulsoup4>=4.12.3
 apscheduler>=3.10.4
 markdown>=3.5.1
+pytz>=2024.1
+PyJWT>=2.8.0
 
 # API Integration
-upstox-python-sdk>=2.0.0  # Official Upstox Python SDK
+# NOTE: NO SDK - Using raw requests for full control over error handling
+# upstox-python-sdk removed - we build custom wrapper per requirements
+protobuf>=4.25.0
+websocket-client>=1.6.1
 
-# Development
+# Development & Testing
 pytest>=7.4.3
+pytest-mock>=3.12.0  # For mocking in unit tests
+pytest-cov>=4.1.0    # For code coverage
+pytest-asyncio>=0.23.5 # For async tests
 black>=23.12.1
 
 # AI Assistant

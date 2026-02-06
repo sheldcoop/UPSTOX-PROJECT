@@ -11,12 +11,27 @@ from flask import request, jsonify
 logger = logging.getLogger(__name__)
 
 
+def _redis_available(redis_url: str) -> bool:
+    try:
+        import redis
+
+        client = redis.Redis.from_url(redis_url, socket_connect_timeout=2)
+        client.ping()
+        return True
+    except Exception:
+        return False
+
+
 def setup_redis_cache(app):
     """Setup Redis caching for Flask app"""
     try:
         from flask_caching import Cache
 
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+        if not _redis_available(redis_url):
+            logger.warning("Redis not available, using simple cache")
+            return Cache(app, config={"CACHE_TYPE": "simple"})
 
         cache_config = {
             "CACHE_TYPE": "redis",
@@ -63,11 +78,14 @@ def setup_rate_limiting(app):
         from flask_limiter.util import get_remote_address
 
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+        storage_uri = redis_url if _redis_available(redis_url) else "memory://"
+        if storage_uri == "memory://":
+            logger.warning("Redis not available, using in-memory rate limiting")
 
         limiter = Limiter(
             app=app,
             key_func=get_remote_address,
-            storage_uri=redis_url,
+            storage_uri=storage_uri,
             default_limits=["200 per day", "50 per hour"],
             storage_options={"socket_connect_timeout": 30},
             strategy="fixed-window",

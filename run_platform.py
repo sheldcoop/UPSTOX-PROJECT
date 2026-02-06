@@ -57,7 +57,8 @@ class PlatformLauncher:
         self.pid_files = {
             "api": self.logs_dir / "api.pid",
             "oauth": self.logs_dir / "oauth.pid",
-            "frontend": self.logs_dir / "frontend.pid"
+            "frontend": self.logs_dir / "frontend.pid",
+            "websocket": self.logs_dir / "websocket.pid"
         }
         
         # Monitoring state
@@ -66,7 +67,8 @@ class PlatformLauncher:
         self.service_stats = {
             "api": {"status": "stopped", "uptime": 0, "restarts": 0, "last_check": None},
             "oauth": {"status": "stopped", "uptime": 0, "restarts": 0, "last_check": None},
-            "frontend": {"status": "stopped", "uptime": 0, "restarts": 0, "last_check": None}
+            "frontend": {"status": "stopped", "uptime": 0, "restarts": 0, "last_check": None},
+            "websocket": {"status": "stopped", "uptime": 0, "restarts": 0, "last_check": None}
         }
         self.start_times = {}
         
@@ -78,14 +80,14 @@ class PlatformLauncher:
         self.services = {
             "api": {
                 "name": "API Server",
-                "command": ["python", "scripts/api_server.py"],
+                "command": ["python", "backend/api/servers/api_server.py"],
                 "port": 8000,
                 "health_endpoint": "http://localhost:8000/api/health",
                 "log_file": self.logs_dir / "api_server.log"
             },
             "oauth": {
                 "name": "OAuth Server",
-                "command": ["python", "scripts/oauth_server.py"],
+                "command": ["python", "backend/api/servers/oauth_server.py"],
                 "port": 5050,
                 "health_endpoint": "http://localhost:5050/debug/config",
                 "log_file": self.logs_dir / "oauth_server.log"
@@ -96,6 +98,13 @@ class PlatformLauncher:
                 "port": 5001,
                 "health_endpoint": None,  # NiceGUI doesn't have built-in health endpoint
                 "log_file": self.logs_dir / "nicegui_server.log"
+            },
+            "websocket": {
+                "name": "WebSocket Server",
+                "command": ["python", "backend/services/streaming/websocket_server.py"],
+                "port": 5002,
+                "health_endpoint": None,  # Socket.IO doesn't have standard health endpoint
+                "log_file": self.logs_dir / "websocket_server.log"
             }
         }
 
@@ -375,14 +384,24 @@ class PlatformLauncher:
                         if process.poll() is not None:
                             # Process died
                             self.service_stats[service_key]["status"] = "crashed"
-                            self.print_step(
-                                self.services[service_key]["name"],
-                                "Process crashed - attempting restart...",
-                                "error"
-                            )
-                            # Auto-restart
-                            self.start_service(service_key)
-                            self.service_stats[service_key]["restarts"] += 1
+                            restarts = self.service_stats[service_key]["restarts"]
+                            
+                            if restarts >= 2:
+                                self.print_step(
+                                    self.services[service_key]["name"],
+                                    f"Process crashed too many times ({restarts}). Giving up.",
+                                    "error"
+                                )
+                                self.service_stats[service_key]["status"] = "failed"
+                            else:
+                                self.print_step(
+                                    self.services[service_key]["name"],
+                                    "Process crashed - attempting restart...",
+                                    "error"
+                                )
+                                # Auto-restart
+                                self.start_service(service_key)
+                                self.service_stats[service_key]["restarts"] += 1
                         else:
                             # Process is running
                             self.service_stats[service_key]["status"] = "running"
@@ -876,7 +895,7 @@ class PlatformLauncher:
         self.print_step("Step 3/5", "Starting Services", "running")
         print()
         
-        for service_key in ["api", "oauth", "frontend"]:
+        for service_key in ["api", "oauth", "frontend", "websocket"]:
             if not self.start_service(service_key):
                 self.stop_all_services()
                 return False
